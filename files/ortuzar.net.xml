@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<graph>
+    <node id="A"/>
+    <node id="B"/>
+    <node id="C"/>
+    <node id="D"/>
+    <node id="E"/>
+    <node id="F"/>
+    <node id="G"/>
+    <node id="H"/>
+    <node id="I"/>
+    <node id="J"/>
+    <node id="K"/>
+    <node id="L"/>
+    <node id="M"/>
+ 
+    <edge id="AB" from="A" to="B" fftime="7" alpha="0.02" />
+    <edge id="BA" from="B" to="A" fftime="7" alpha="0.02" />
+    <edge id="AC" from="A" to="C" fftime="5" alpha="0.02" />
+    <edge id="CA" from="C" to="A" fftime="5" alpha="0.02" />
+    <edge id="AD" from="A" to="D" fftime="15" alpha="0.02" />
+    <edge id="DA" from="D" to="A" fftime="15" alpha="0.02" />
+	
+    <edge id="BD" from="B" to="D" fftime="11" alpha="0.02" />
+    <edge id="DB" from="D" to="B" fftime="11" alpha="0.02" />
+    <edge id="BE" from="B" to="E" fftime="11" alpha="0.02" />
+    <edge id="EB" from="E" to="B" fftime="11" alpha="0.02" />
+	
+    <edge id="CD" from="C" to="D" fftime="7" alpha="0.02" />
+    <edge id="DC" from="D" to="C" fftime="7" alpha="0.02" />
+    <edge id="CF" from="C" to="F" fftime="11" alpha="0.02" />
+    <edge id="FC" from="F" to="C" fftime="11" alpha="0.02" />
+    <edge id="CG" from="C" to="G" fftime="9" alpha="0.02" />
+    <edge id="GC" from="G" to="C" fftime="9" alpha="0.02" />
+	
+    <edge id="DE" from="D" to="E" fftime="7" alpha="0.02" />
+    <edge id="ED" from="E" to="D" fftime="7" alpha="0.02" />
+    <edge id="DG" from="D" to="G" fftime="7" alpha="0.02" />
+    <edge id="GD" from="G" to="D" fftime="7" alpha="0.02" />
+    <edge id="DH" from="D" to="H" fftime="9" alpha="0.02" />
+    <edge id="HD" from="H" to="D" fftime="9" alpha="0.02" />
+	
+    <edge id="EH" from="E" to="H" fftime="7" alpha="0.02" />
+    <edge id="HE" from="H" to="E" fftime="7" alpha="0.02" />
+	
+    <edge id="FG" from="F" to="G" fftime="9" alpha="0.02" />
+    <edge id="GF" from="G" to="F" fftime="9" alpha="0.02" />
+    <edge id="FI" from="F" to="I" fftime="13" alpha="0.02" />
+    <edge id="IF" from="I" to="F" fftime="13" alpha="0.02" />
+	
+    <edge id="GH" from="G" to="H" fftime="9" alpha="0.02" />
+    <edge id="HG" from="H" to="G" fftime="9" alpha="0.02" />
+    <edge id="GJ" from="G" to="J" fftime="3" alpha="0.02" />
+    <edge id="JG" from="J" to="G" fftime="3" alpha="0.02" />
+    <edge id="GK" from="G" to="K" fftime="13" alpha="0.02" />
+    <edge id="KG" from="K" to="G" fftime="13" alpha="0.02" />
+	
+    <edge id="HK" from="H" to="K" fftime="3" alpha="0.02" />
+    <edge id="KH" from="K" to="H" fftime="3" alpha="0.02" />
+	
+    <edge id="IJ" from="I" to="J" fftime="9" alpha="0.02" />
+    <edge id="JI" from="J" to="I" fftime="9" alpha="0.02" />
+    <edge id="IL" from="I" to="L" fftime="2" alpha="0.02" />
+    <edge id="LI" from="L" to="I" fftime="2" alpha="0.02" />
+	
+    <edge id="JK" from="J" to="K" fftime="9" alpha="0.02" />
+    <edge id="KJ" from="K" to="J" fftime="9" alpha="0.02" />
+    <edge id="JL" from="J" to="L" fftime="12" alpha="0.02" />
+    <edge id="LJ" from="L" to="J" fftime="12" alpha="0.02" />
+    <edge id="JM" from="J" to="M" fftime="12" alpha="0.02" />
+    <edge id="MJ" from="M" to="J" fftime="12" alpha="0.02" />
+	
+    <edge id="KM" from="K" to="M" fftime="2" alpha="0.02" />
+    <edge id="MK" from="M" to="K" fftime="2" alpha="0.02" />
+</graph>

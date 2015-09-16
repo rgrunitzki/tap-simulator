@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<graph>
+    <node id="1"/>
+    <node id="2"/>
+    <node id="3"/>
+    <node id="4"/>
+    <node id="5"/>
+    <node id="6"/>
+    <node id="7"/>
+    <node id="8"/>
+    <node id="9"/>
+    <node id="10"/>
+    <node id="11"/>
+    <node id="12"/>
+    <node id="13"/>
+    <node id="14"/>
+    <node id="15"/>
+    <node id="16"/>
+    <node id="17"/>
+    <node id="18"/>
+    <node id="19"/>
+    <node id="20"/>
+    <node id="21"/>
+    <node id="22"/>
+    <node id="23"/>
+    <node id="24"/>
+
+    <edge id="1" from="1" to="2" capacity="25900.20064" fftime="6" alpha="0.15" beta="4" />
+    <edge id="2" from="1" to="3" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="3" from="2" to="1" capacity="25900.20064" fftime="6" alpha="0.15" beta="4" />
+    <edge id="4" from="2" to="6" capacity="4958.180928" fftime="5" alpha="0.15" beta="4" />
+    <edge id="5" from="3" to="1" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="6" from="3" to="4" capacity="17110.52372" fftime="4" alpha="0.15" beta="4" />
+    <edge id="7" from="3" to="12" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="8" from="4" to="3" capacity="17110.52372" fftime="4" alpha="0.15" beta="4" />
+    <edge id="9" from="4" to="5" capacity="17782.7941" fftime="2" alpha="0.15" beta="4" />
+    <edge id="10" from="4" to="11" capacity="4908.82673" fftime="6" alpha="0.15" beta="4" />
+    <edge id="11" from="5" to="4" capacity="17782.7941" fftime="2" alpha="0.15" beta="4" />
+    <edge id="12" from="5" to="6" capacity="4947.995469" fftime="4" alpha="0.15" beta="4" />
+    <edge id="13" from="5" to="9" capacity="10000" fftime="5" alpha="0.15" beta="4" />
+    <edge id="14" from="6" to="2" capacity="4958.180928" fftime="5" alpha="0.15" beta="4" />
+    <edge id="15" from="6" to="5" capacity="4947.995469" fftime="4" alpha="0.15" beta="4" />
+    <edge id="16" from="6" to="8" capacity="4898.587646" fftime="2" alpha="0.15" beta="4" />
+    <edge id="17" from="7" to="8" capacity="7841.81131" fftime="3" alpha="0.15" beta="4" />
+    <edge id="18" from="7" to="18" capacity="23403.47319" fftime="2" alpha="0.15" beta="4" />
+    <edge id="19" from="8" to="6" capacity="4898.587646" fftime="2" alpha="0.15" beta="4" />
+    <edge id="20" from="8" to="7" capacity="7841.81131" fftime="3" alpha="0.15" beta="4" />
+    <edge id="21" from="8" to="9" capacity="5050.193156" fftime="10" alpha="0.15" beta="4" />
+    <edge id="22" from="8" to="16" capacity="5045.822583" fftime="5" alpha="0.15" beta="4" />
+    <edge id="23" from="9" to="5" capacity="10000" fftime="5" alpha="0.15" beta="4" />
+    <edge id="24" from="9" to="8" capacity="5050.193156" fftime="10" alpha="0.15" beta="4" />
+    <edge id="25" from="9" to="10" capacity="13915.78842" fftime="3" alpha="0.15" beta="4" />
+    <edge id="26" from="10" to="9" capacity="13915.78842" fftime="3" alpha="0.15" beta="4" />
+    <edge id="27" from="10" to="11" capacity="10000" fftime="5" alpha="0.15" beta="4" />
+    <edge id="28" from="10" to="15" capacity="13512.00155" fftime="6" alpha="0.15" beta="4" />
+    <edge id="29" from="10" to="16" capacity="4854.917717" fftime="4" alpha="0.15" beta="4" />
+    <edge id="30" from="10" to="17" capacity="4993.510694" fftime="8" alpha="0.15" beta="4" />
+    <edge id="31" from="11" to="4" capacity="4908.82673" fftime="6" alpha="0.15" beta="4" />
+    <edge id="32" from="11" to="10" capacity="10000" fftime="5" alpha="0.15" beta="4" />
+    <edge id="33" from="11" to="12" capacity="4908.82673" fftime="6" alpha="0.15" beta="4" />
+    <edge id="34" from="11" to="14" capacity="4876.508287" fftime="4" alpha="0.15" beta="4" />
+    <edge id="35" from="12" to="3" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="36" from="12" to="11" capacity="4908.82673" fftime="6" alpha="0.15" beta="4" />
+    <edge id="37" from="12" to="13" capacity="25900.20064" fftime="3" alpha="0.15" beta="4" />
+    <edge id="38" from="13" to="12" capacity="25900.20064" fftime="3" alpha="0.15" beta="4" />
+    <edge id="39" from="13" to="24" capacity="5091.256152" fftime="4" alpha="0.15" beta="4" />
+    <edge id="40" from="14" to="11" capacity="4876.508287" fftime="4" alpha="0.15" beta="4" />
+    <edge id="41" from="14" to="15" capacity="5127.526119" fftime="5" alpha="0.15" beta="4" />
+    <edge id="42" from="14" to="23" capacity="4924.790605" fftime="4" alpha="0.15" beta="4" />
+    <edge id="43" from="15" to="10" capacity="13512.00155" fftime="6" alpha="0.15" beta="4" />
+    <edge id="44" from="15" to="14" capacity="5127.526119" fftime="5" alpha="0.15" beta="4" />
+    <edge id="45" from="15" to="19" capacity="14564.75315" fftime="3" alpha="0.15" beta="4" />
+    <edge id="46" from="15" to="22" capacity="9599.180565" fftime="3" alpha="0.15" beta="4" />
+    <edge id="47" from="16" to="8" capacity="5045.822583" fftime="5" alpha="0.15" beta="4" />
+    <edge id="48" from="16" to="10" capacity="4854.917717" fftime="4" alpha="0.15" beta="4" />
+    <edge id="49" from="16" to="17" capacity="5229.910063" fftime="2" alpha="0.15" beta="4" />
+    <edge id="50" from="16" to="18" capacity="19679.89671" fftime="3" alpha="0.15" beta="4" />
+    <edge id="51" from="17" to="10" capacity="4993.510694" fftime="8" alpha="0.15" beta="4" />
+    <edge id="52" from="17" to="16" capacity="5229.910063" fftime="2" alpha="0.15" beta="4" />
+    <edge id="53" from="17" to="19" capacity="4823.950831" fftime="2" alpha="0.15" beta="4" />
+    <edge id="54" from="18" to="7" capacity="23403.47319" fftime="2" alpha="0.15" beta="4" />
+    <edge id="55" from="18" to="16" capacity="19679.89671" fftime="3" alpha="0.15" beta="4" />
+    <edge id="56" from="18" to="20" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="57" from="19" to="15" capacity="14564.75315" fftime="3" alpha="0.15" beta="4" />
+    <edge id="58" from="19" to="17" capacity="4823.950831" fftime="2" alpha="0.15" beta="4" />
+    <edge id="59" from="19" to="20" capacity="5002.607563" fftime="4" alpha="0.15" beta="4" />
+    <edge id="60" from="20" to="18" capacity="23403.47319" fftime="4" alpha="0.15" beta="4" />
+    <edge id="61" from="20" to="19" capacity="5002.607563" fftime="4" alpha="0.15" beta="4" />
+    <edge id="62" from="20" to="21" capacity="5059.91234" fftime="6" alpha="0.15" beta="4" />
+    <edge id="63" from="20" to="22" capacity="5075.697193" fftime="5" alpha="0.15" beta="4" />
+    <edge id="64" from="21" to="20" capacity="5059.91234" fftime="6" alpha="0.15" beta="4" />
+    <edge id="65" from="21" to="22" capacity="5229.910063" fftime="2" alpha="0.15" beta="4" />
+    <edge id="66" from="21" to="24" capacity="4885.357564" fftime="3" alpha="0.15" beta="4" />
+    <edge id="67" from="22" to="15" capacity="9599.180565" fftime="3" alpha="0.15" beta="4" />
+    <edge id="68" from="22" to="20" capacity="5075.697193" fftime="5" alpha="0.15" beta="4" />
+    <edge id="69" from="22" to="21" capacity="5229.910063" fftime="2" alpha="0.15" beta="4" />
+    <edge id="70" from="22" to="23" capacity="5000" fftime="4" alpha="0.15" beta="4" />
+    <edge id="71" from="23" to="14" capacity="4924.790605" fftime="4" alpha="0.15" beta="4" />
+    <edge id="72" from="23" to="22" capacity="5000" fftime="4" alpha="0.15" beta="4" />
+    <edge id="73" from="23" to="24" capacity="5078.508436" fftime="2" alpha="0.15" beta="4" />
+    <edge id="74" from="24" to="13" capacity="5091.256152" fftime="4" alpha="0.15" beta="4" />
+    <edge id="75" from="24" to="21" capacity="4885.357564" fftime="3" alpha="0.15" beta="4" />
+    <edge id="76" from="24" to="23" capacity="5078.508436" fftime="2" alpha="0.15" beta="4" />
+</graph>

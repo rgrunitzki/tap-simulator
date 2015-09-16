@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<od-matrix>
+    <od origin="A" destination="L" trips="600"/>
+    <od origin="A" destination="M" trips="400"/>
+    <od origin="B" destination="L" trips="300"/>
+    <od origin="B" destination="M" trips="400"/>
+</od-matrix>
