@@ -19,10 +19,9 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
         Double cost = 0.0;
         for (Object edge : driver.getRoute().getEdgeList()) {
             Edge e = (Edge) edge;
-            cost -= e.getCostFunction().evalDesirableCost(e, e.getAuxFlow());
+            cost -= e.getCostFunction().evalCost(e);
         }
         return cost;
-//        return -driver.travelCost();
     }
 
     @Override
@@ -30,13 +29,19 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
         Double cost = 0.0;
         for (Object edge : driver.getRoute().getEdgeList()) {
             Edge e = (Edge) edge;
-            cost -= e.getCostFunction().evalDesirableCost(e, e.getAuxFlow());
+            if (e.getTotalFlow() > 0) {
+                cost -= e.getCost() * e.getTotalFlow();
+            } else {
+                cost -= e.getCost();
+            }
         }
+
         return cost;
     }
 
     @Override
-    public Double getDifferenceRewards(QLStateless driver) {
+    public Double getDifferenceRewards(QLStateless driver
+    ) {
         double soma_gz = 0;
         double gz_zi = 0;
         for (Object edge : driver.getRoute().getGraph().edgeSet()) {
@@ -47,7 +52,7 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
             } else {
                 soma_gz -= e.getCost();
             }
-            
+
             if (driver.getRoute().getEdgeList().contains(e)) {
                 if (e.getTotalFlow() > 0) {
                     gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1) * (e.getTotalFlow() - 1);
@@ -61,8 +66,7 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
                     gz_zi -= e.getCost();
                 }
             }
-            
-            
+
         }
         return (soma_gz - gz_zi) / Params.DEMAND_SIZE;
     }

@@ -11,6 +11,7 @@ import scenario.TAP;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  *
  * @author rgrunitzki
@@ -29,8 +30,8 @@ public class QLStatelessOW {
         Params.E_DECAY_RATE = 0.99f;
         Params.STEPS = 100;
         
-        Params.REWARDFUNCTION = RewardFunction.DifferenceRewards;
-        QLStateless.K = 8;
+        Params.REWARDFUNCTION = RewardFunction.StandardReward;
+        QLStateless.K = 7;
         QLStateless.ALPHA = 0.1f;
 
         int repetitions = 1;

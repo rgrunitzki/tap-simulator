@@ -15,7 +15,7 @@ import scenario.TAP;
  *
  * @author rgrunitzki
  */
-public class QLStatelessSFDiff {
+public class QLStatelessSF {
 
     public static TAP tap = TAP.SF(QLStateless.class);
 
@@ -30,8 +30,9 @@ public class QLStatelessSFDiff {
         Params.E_DECAY_RATE = 0.99f;
         Params.STEPS = 100;
         
-        Params.REWARDFUNCTION = RewardFunction.DifferenceRewards;
+        Params.REWARDFUNCTION = RewardFunction.StandardReward;
         QLStateless.K = 8;
+        QLStateless.ALPHA = 0.8f;
         
 
         int repetitions = 1;

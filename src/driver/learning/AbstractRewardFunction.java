@@ -32,6 +32,11 @@ public abstract class AbstractRewardFunction <T extends Driver>{
                 case StandardReward:
                     rewards.put(route, getStandardReward(driver));
                     break;
+                case RewardShaping:
+                    rewards.put(route, getRewardShaping(driver));
+                    break;
+                default:
+                    throw new AssertionError(Params.REWARDFUNCTION.name());
             }
         }
         return rewards.get(route);

@@ -36,6 +36,7 @@ public class Experiment {
         try {
             while (run++ <= runs) {
                 simulation.execute();
+                simulation.printLinksFlow();
                 costs.add(simulation.getAverageCost());
                 simulation.reset();
             }
