@@ -6,6 +6,9 @@
 package driver.learning;
 
 import driver.Driver;
+import experiments.bazzan.AditionalData;
+import experiments.bazzan.InformationType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +17,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import scenario.Edge;
+import simulation.Params;
 
 /**
  *
@@ -25,9 +30,14 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
+    //Armazena os dados utilizados pela extensão jan 2016
+    static Map<Edge, AditionalData> aditionalData = new ConcurrentHashMap<>();
+
     public static StatefullMDP staticMdp;
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
+
+    public static InformationType INFORMATION_TYPE = InformationType.None;
 
 //    private Edge previousEdge;
 //    private String previousVertex;
@@ -111,6 +121,13 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
 
         this.mdp.setValue(currentEdge, qa);
 
+        if (!QLStatefull.aditionalData.containsKey(currentEdge)) {
+            QLStatefull.aditionalData.put(currentEdge, new AditionalData());
+        }
+
+//        QLStatefull.aditionalData.get(currentEdge).addValue(qa);
+        QLStatefull.aditionalData.get(currentEdge).addValue(travelTime);
+
 //        if (this.currentEdge.getTargetVertex().equalsIgnoreCase(destination)) {
 //            this.currentEdge = null;
 //        }
@@ -134,4 +151,24 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
     public List<Edge> getRoute() {
         return this.route;
     }
+
+    @Override
+    public List<Pair> getParameters() {
+        List<Pair> list = new ArrayList<>();
+        list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
+        list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
+        list.add(Pair.of("alpha", QLStatefull.ALPHA));
+        list.add(Pair.of("gamma", QLStatefull.GAMMA));
+        return list;
+    }
+
+    @Override
+    public double getTravelTime() {
+        double cost = 0;
+        for (Edge e : this.route) {
+            cost += e.getCost();
+        }
+        return cost;
+    }
+
 }

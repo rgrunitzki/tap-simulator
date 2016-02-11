@@ -1,6 +1,6 @@
 package experiments.qlstateless;
 
-import experiments.Experiment;
+import experiments.core.Experiment;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +39,6 @@ public class QLStatelessSFStandard {
 //        Experiment experiment = new Experiment(repetitions, tap);
 //        experiment.run();
         
-        System.out.println(Params.getParameterValues());
         for (QLStateless.K = 2; QLStateless.K <= 12; QLStateless.K++) {
 
             QLStateless.ksps = new ConcurrentHashMap<>();

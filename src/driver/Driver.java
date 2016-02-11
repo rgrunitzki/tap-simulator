@@ -5,7 +5,9 @@
  */
 package driver;
 
+import java.util.List;
 import java.util.concurrent.Callable;
+import org.apache.commons.lang3.tuple.Pair;
 import scenario.Edge;
 import org.jgrapht.Graph;
 
@@ -69,6 +71,8 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
     public abstract void afterStep();
 
     public abstract void resetAll();
+    
+    public abstract List<Pair> getParameters();
 
     public boolean hasArrived() {
         return this.getCurrentEdge() == null;
@@ -111,5 +115,9 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
     
     public String getDestination() {
         return destination;
+    }
+
+    public double getTravelTime() {
+        return travelTime;
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+    scenario from Heinz Spiess, EMME/2 Support Center, 1996.
+    link: http://emme2.spiess.ch/e2news/news02/node3.html
+    accessed in: 02/10/2016
+-->
+<graph>
+    <node id="P"/>
+    <node id="Q"/>
+    <node id="A1"/>
+    <node id="A2"/>
+    <node id="A3"/>
+    
+    
+    <edge id="1" from="P" to="A1" capacity="200" fftime="10" alpha="0.15" beta="4" />
+    <edge id="2" from="P" to="A2" capacity="400" fftime="20" alpha="0.15" beta="4" />
+    <edge id="3" from="P" to="A3" capacity="300" fftime="25" alpha="0.15" beta="4" />
+    
+    <edge id="4" from="A1" to="Q" capacity="0" fftime="0" alpha="0" beta="0" />
+    <edge id="5" from="A2" to="Q" capacity="0" fftime="0" alpha="0" beta="0" />
+    <edge id="6" from="A3" to="Q" capacity="0" fftime="0" alpha="0" beta="0" />
+</graph>

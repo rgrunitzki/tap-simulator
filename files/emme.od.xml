@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--
+    scenario from Heinz Spiess, EMME/2 Support Center, 1996.
+    link: http://emme2.spiess.ch/e2news/news02/node3.html
+    accessed in: 02/10/2016
+-->
+<od-matrix>
+    <od origin="P" destination="Q" trips="1000" />
+</od-matrix>

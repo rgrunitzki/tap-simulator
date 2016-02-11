@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+    J. Ortúzar and L. G. Willumsen. Modelling Transport. John Wiley & Sons, 3rd edition, 2001.
+    Example 10.4
+    accessed in: 02/10/2016
+-->
+<graph>
+    <node id="A"/>
+    <node id="A1"/>
+    <node id="B"/>
+    <node id="A2"/>
+    
+    
+    <edge id="BYPASS" from="A" to="A1" fftime="15" alpha="0.005"/>
+    <edge id="BYPASS-2" from="A1" to="B" fftime="0" alpha="0"/>
+    <edge id="TOW" from="A" to="A2" fftime="10" alpha="0.02"/>
+    <edge id="TOW-2" from="A2" to="B" fftime="0" alpha="0"/>
+</graph>

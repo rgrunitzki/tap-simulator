@@ -6,14 +6,14 @@ package scenario;
  */
 public abstract class AbstractCostFunction {
 
-    public abstract float evalCost(Edge edge);
-    public abstract float evalDesirableCost(Edge edge, int desirableFlow);
+    public abstract double evalCost(Edge edge);
+    public abstract double evalDesirableCost(Edge edge, double desirableFlow);
 
-    protected Float stringToFloat(String value) {
+    protected Double stringToDouble(String value) {
         if (value.equals("")) {
-            return 0f;
+            return 0.0;
         } else {
-            return Float.parseFloat(value);
+            return Double.parseDouble(value);
         }
     }
 }

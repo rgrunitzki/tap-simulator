@@ -23,8 +23,18 @@ public class Params {
     public static int DEMAND_SIZE = 0;
 
     public static boolean PRINT_ALL_EPISODES = true;
-    public static boolean PRINT_PARAMS = true;
+    public static boolean PRINT_AVERAGE = false;
+//    public static boolean PRINT_PARAMS = false;
     public static boolean AVERAGE_RESULTS = false;
+
+    public static boolean PRINT_ALL_OD_PAIR = true;
+    public static boolean PRINT_FLOWS = true;
+    public static String OUTPUTS_DIRECTORY = "results";
+    public static boolean PRINT_ON_FILE = true;
+    public static boolean PRINT_ON_TERMINAL = true;
+    
+    
+    
 
     //QLStateless
     public static float EPSILON = 1.0f;
@@ -33,7 +43,10 @@ public class Params {
     public static Random RANDOM = new Random();
     public static RewardFunction REWARDFUNCTION = RewardFunction.StandardReward;
 
-    public static String getParameterValues() {
+    public static String SEPARATOR = " ";
+    public static String COMMENT = "#";
+
+    private String getParameterValues() {
 
         String params = "";
         params += "E_DECAY_RATE\t\t" + E_DECAY_RATE + "\n";
@@ -41,7 +54,7 @@ public class Params {
         params += "QLStateless.ALPHA:\t\t" + QLStateless.ALPHA + "\n";
         params += "QLStateless.K:\t\t" + QLStateless.K + "\n";
         params += "QLStatefull.ALPHA:\t\t" + QLStatefull.ALPHA + "\n";
-        params += "QLStatefull.GAMMA.K:\t\t" + QLStatefull.GAMMA + "\n";
+        params += "QLStatefull.GAMMA:\t\t" + QLStatefull.GAMMA + "\n";
         params += "SEED:\t\t" + SEED;
         return params;
     }

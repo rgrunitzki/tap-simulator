@@ -16,18 +16,18 @@ package scenario;
 public class BPRFunction extends AbstractCostFunction {
 
     @Override
-    public float evalCost(Edge edge) {
-        return (stringToFloat((String) edge.getParams().get("fftime")) * 
-                (1 + stringToFloat((String) edge.getParams().get("alpha")) * 
-                (float) Math.pow(edge.getTotalFlow() / stringToFloat((String) edge.getParams().get("capacity")), 
-                        stringToFloat((String) edge.getParams().get("beta")))));
+    public double evalCost(Edge edge) {
+        return (stringToDouble((String) edge.getParams().get("fftime")) * 
+                (1 + stringToDouble((String) edge.getParams().get("alpha")) * 
+                (float) Math.pow(edge.getTotalFlow() / stringToDouble((String) edge.getParams().get("capacity")), 
+                        stringToDouble((String) edge.getParams().get("beta")))));
     }
 
     @Override
-    public float evalDesirableCost(Edge edge, int desirableFlow) {
-        return (stringToFloat((String) edge.getParams().get("fftime")) * 
-                (1 + stringToFloat((String) edge.getParams().get("alpha")) * 
-                (float) Math.pow(desirableFlow / stringToFloat((String) edge.getParams().get("capacity")), 
-                        stringToFloat((String) edge.getParams().get("beta")))));
+    public double evalDesirableCost(Edge edge, double desirableFlow) {
+        return (stringToDouble((String) edge.getParams().get("fftime")) * 
+                (1 + stringToDouble((String) edge.getParams().get("alpha")) * 
+                (float) Math.pow(desirableFlow / stringToDouble((String) edge.getParams().get("capacity")), 
+                        stringToDouble((String) edge.getParams().get("beta")))));
     }
 }

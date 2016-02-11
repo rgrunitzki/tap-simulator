@@ -1,10 +1,8 @@
 package experiments.reward;
 
-import experiments.Experiment;
-import driver.learning.QLStatefull;
+import experiments.core.Experiment;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
-import oracle.jrockit.jfr.tools.ConCatRepository;
 import simulation.Params;
 import scenario.TAP;
 
@@ -24,7 +22,6 @@ public class BruteForceRewardSearch {
 
         Params.PRINT_ALL_EPISODES = true;
         Params.AVERAGE_RESULTS = false;
-        Params.PRINT_PARAMS = false;
 
         Params.EPISODES = 3000;
         Params.E_DECAY_RATE = 0.995f;

@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!--
+    scenario from Hillel Bargera Repository
+    link: http://www.bgu.ac.il/~bargera/tntp/
+    accessed in: 02/10/2016
+-->
 <od-matrix>
     <od origin="1" destination="2" trips="100" />
     <od origin="1" destination="3" trips="100" />

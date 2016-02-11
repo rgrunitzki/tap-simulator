@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--
+    J. Ortúzar and L. G. Willumsen. Modelling Transport. John Wiley & Sons, 3rd edition, 2001.
+    Example 10.4
+    accessed in: 02/10/2016
+-->
+<od-matrix>
+    <od origin="A" destination="B" trips="2000" />
+</od-matrix>

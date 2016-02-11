@@ -16,16 +16,16 @@ package scenario;
 public class BraessParadoxCostFunction extends AbstractCostFunction {
 
     @Override
-    public float evalCost(Edge edge) {
-        return eval(((String) edge.getParams().get("operation")), edge.getTotalFlow(), (stringToFloat((String) edge.getParams().get("fftime"))));
+    public double evalCost(Edge edge) {
+        return eval(((String) edge.getParams().get("operation")), edge.getTotalFlow(), (stringToDouble((String) edge.getParams().get("fftime"))));
     }
 
     @Override
-    public float evalDesirableCost(Edge edge, int desirableFlow) {
-        return eval(((String) edge.getParams().get("operation")), desirableFlow, (stringToFloat((String) edge.getParams().get("fftime"))));
+    public double evalDesirableCost(Edge edge, double desirableFlow) {
+        return eval(((String) edge.getParams().get("operation")), desirableFlow, (stringToDouble((String) edge.getParams().get("fftime"))));
     }
 
-    public float eval(String operation, int flow, float ffttime) {
+    public double eval(String operation, double flow, double ffttime) {
         if (operation.equalsIgnoreCase("*")) {
             if (flow < 1) {
                 return ffttime;

@@ -1,15 +1,19 @@
 package driver.learning;
 
 import driver.Driver;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.tuple.Pair;
 import scenario.Edge;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.KShortestPaths;
+import simulation.Params;
 
 /**
  *
@@ -115,6 +119,17 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
     @Override
     public GraphPath getRoute() {
         return this.route;
+    }
+
+    @Override
+    public List<Pair> getParameters() {
+
+        List<Pair> list = new ArrayList<>();
+        list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
+        list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
+        list.add(Pair.of("k", QLStateless.K));
+        list.add(Pair.of("alpha", QLStateless.ALPHA));
+        return list;
     }
 
 }

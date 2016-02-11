@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!--
+    scenario from Hillel Bargera Repository
+    link: http://www.bgu.ac.il/~bargera/tntp/
+    accessed in: 02/10/2016
+-->
 <graph>
     <node id="1"/>
     <node id="2"/>

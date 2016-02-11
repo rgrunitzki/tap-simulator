@@ -1,6 +1,6 @@
 package experiments.qlstatefull;
 
-import experiments.Experiment;
+import experiments.core.Experiment;
 import driver.learning.QLStatefull;
 import driver.learning.RewardFunction;
 import simulation.Params;
@@ -27,9 +27,9 @@ public class QLStatefull_N_Runs {
         Params.EPISODES = 1000;
         Params.E_DECAY_RATE = 0.99f;
         Params.STEPS = 100;
-        Params.REWARDFUNCTION = RewardFunction.DifferenceRewards;
+        Params.REWARDFUNCTION = RewardFunction.StandardReward;
 
-        QLStatefull.ALPHA = 0.99;
+        QLStatefull.ALPHA = 0.3;
         QLStatefull.GAMMA = 0.99;
 
         TAP tap = TAP.OW(QLStatefull.class);

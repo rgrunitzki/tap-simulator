@@ -9,6 +9,8 @@ import driver.Driver;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.Graph;
@@ -24,15 +26,18 @@ public class TAP {
     private AbstractCostFunction costFunction;
     private List<Driver> drivers;
     private Graph graph;
+    private Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
+    private Class clazz;
 
     public TAP(File demand, File network, AbstractCostFunction costFunction, Class clazz) {
         this.demandFile = demand;
         this.networkFile = network;
         this.costFunction = costFunction;
-
         this.graph = Loader.loadNetwork(networkFile, costFunction);
+        this.clazz = clazz;
         try {
             this.drivers = Loader.processODMatrix(graph, demandFile, clazz);
+            this.odpairs = Loader.odpairs;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -63,13 +68,28 @@ public class TAP {
         this.graph = graph;
     }
 
+    public Map<String, ODPair> getOdpairs() {
+        return odpairs;
+    }
+
+    public void setOdpairs(Map<String, ODPair> odpairs) {
+        this.odpairs = odpairs;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
     public static TAP OW(Class clazz) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
-
-        netFile = "files/ortuzar.net.xml";
-        demandFile = "files/ortuzar.od.xml";
+        netFile = "files/ow.net.xml";
+        demandFile = "files/ow.od.xml";
         costFunction = new LinearCostFunction();
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
@@ -86,20 +106,32 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
+    
+    public static TAP EMME(Class clazz) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+
+        netFile = "files/emme.net.xml";
+        demandFile = "files/emme.od.xml";
+        costFunction = new BPRFunction();
+
+        return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
+    }
 
     public static TAP ND(Class clazz) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
 
-        netFile = "files/ND.net.xml";
-        demandFile = "files/ND.od.xml";
+        netFile = "files/nd.net.xml";
+        demandFile = "files/nd.od.xml";
         costFunction = new LinearCostFunction();
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
 
-    public static TAP BP(Class clazz) {
+    public static TAP BRAESS(Class clazz) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
@@ -110,5 +142,34 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
+    
+    
+    
+    public String getNetworkName(){
+        return  networkFile.getName().split(".net")[0];
+//        return name.split(".net")[0];
+    }
+    
+     public static TAP ANA(Class clazz) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/ana.net.xml";
+        demandFile = "files/ana.od.xml";
+        costFunction = new LinearCostFunction();
 
+        return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
+    }
+     public static TAP BYPASS(Class clazz) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/bypass.net.xml";
+        demandFile = "files/bypass.od.xml";
+        costFunction = new LinearCostFunction();
+
+        return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
+    }
+     
+     
 }

@@ -3,7 +3,6 @@ package scenario;
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import simulation.Params;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,7 +13,7 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class Edge extends DefaultWeightedEdge {
+public class Edge extends DefaultWeightedEdge implements Comparable<Edge> {
 
     private Map<String, Object> params;
 
@@ -22,16 +21,18 @@ public class Edge extends DefaultWeightedEdge {
 
     private int totalFlow;
 
-    private int auxFlow;
+    private double msaFlow;
 
-    private AbstractCostFunction costFunction;
+    public static boolean MSA = false;
+
+    private final AbstractCostFunction costFunction;
 
     public Edge(AbstractCostFunction costFunction) {
         this.params = new HashMap<>();
         this.currentFlow = 0;
         this.totalFlow = 0;
         this.costFunction = costFunction;
-        this.auxFlow = 0;
+        this.msaFlow = 0.0;
     }
 
     public void setParams(Map<String, Object> params) {
@@ -60,7 +61,11 @@ public class Edge extends DefaultWeightedEdge {
 
     @Override
     protected double getWeight() {
-        return this.costFunction.evalCost(this); //To change body of generated methods, choose Tools | Templates.
+        if (Edge.MSA) {
+            return this.costFunction.evalDesirableCost(this, msaFlow);
+        } else {
+            return this.costFunction.evalCost(this);
+        }
     }
 
     public synchronized void clearCurrentFlow() {
@@ -68,8 +73,6 @@ public class Edge extends DefaultWeightedEdge {
     }
 
     public synchronized void reset() {
-        float param = 1.0f/Params.EPISODE;
-        this.auxFlow =  (int) ((1-param)*this.auxFlow + param*totalFlow);
         this.currentFlow = 0;
         this.totalFlow = 0;
     }
@@ -85,7 +88,7 @@ public class Edge extends DefaultWeightedEdge {
     }
 
     public String getName() {
-        return "(" + this.getSource().toString() + " : " + this.getTarget().toString() + ")";
+        return this.getSource().toString() + "|" + this.getTarget().toString();
     }
 
     public String getSourceVertex() {
@@ -104,8 +107,21 @@ public class Edge extends DefaultWeightedEdge {
         return costFunction;
     }
 
-    public int getAuxFlow() {
-        return auxFlow;
+    public double getMsaFlow() {
+        return msaFlow;
+    }
+
+    public synchronized void setMsaFlow(double msaFlow) {
+        this.msaFlow = msaFlow;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return this.getName().compareTo(o.getName());
+    }
+
+    public synchronized void  incrementTotalFlow(int flow) {
+        this.totalFlow += flow;
     }
 
 }

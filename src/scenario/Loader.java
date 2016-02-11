@@ -1,5 +1,6 @@
 package scenario;
 
+import driver.Driver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -73,6 +75,8 @@ public class Loader {
 
     }
 
+    public static Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
+
     public static <T> List<T> processODMatrix(Graph graph, File demandFile, Class clazz) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         List<T> drivers = new ArrayList<>();
         try {
@@ -96,12 +100,18 @@ public class Loader {
 
                 //create as many drivers as the number of trips defined
                 int size = (Integer.parseInt(e.getAttribute("trips")));
+                
+                
+                ODPair od = new ODPair<>(origin+"-"+destination);
+                
                 for (int d = size; d > 0; d--) {
-
+                    
                     Object driver = clazz.getConstructor(clazz.getConstructors()[0].getParameterTypes()).newInstance(
                             ++countD, origin, destination, graph);
                     drivers.add((T) driver);
+                    od.addDriver((Driver) driver);
                 }
+                odpairs.put(od.getName(), od);
             }
 
         } catch (IOException | NumberFormatException | ParserConfigurationException | SAXException e) {

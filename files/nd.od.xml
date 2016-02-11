@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--
+    Nguyen, S., Dupuis, C., 1984. An efficient method for computing traffic equilibria in networks with asymmetric transportation costs. 
+    Transportation Science 18, 185–202. Oppenheim
+-->
+<od-matrix>
+    <od origin="1" destination="2" trips="400" />
+    <od origin="1" destination="3" trips="800" />
+    <od origin="4" destination="2" trips="600" />
+    <od origin="4" destination="3" trips="200" />
+</od-matrix>

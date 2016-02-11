@@ -1,7 +1,7 @@
 package experiments.qlstateless;
 
 import driver.learning.QLStatefull;
-import experiments.Experiment;
+import experiments.core.Experiment;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
 import simulation.Params;
@@ -32,7 +32,7 @@ public class QLStatelessBP {
         Params.REWARDFUNCTION = RewardFunction.DifferenceRewards;
         QLStateless.K = 3;
         
-        TAP tap = TAP.BP(QLStateless.class);
+        TAP tap = TAP.BRAESS(QLStateless.class);
         int repetitions = 10;
         
         Experiment experiment = new Experiment(repetitions, tap);

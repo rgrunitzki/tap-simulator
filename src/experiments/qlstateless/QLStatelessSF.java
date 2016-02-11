@@ -1,6 +1,6 @@
 package experiments.qlstateless;
 
-import experiments.Experiment;
+import experiments.core.Experiment;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
 import simulation.Params;
