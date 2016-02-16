@@ -49,7 +49,6 @@ public class Simulation {
         this.graph = tap.getGraph();
         this.odpairs = tap.getOdpairs();
         this.tap = tap;
-        Params.DEMAND_SIZE = drivers.size();
     }
 
     String fileNameToPrint = "";
@@ -60,7 +59,7 @@ public class Simulation {
             driver.beforeSimulation();
         });
 
-        for (Params.EPISODE = 0; Params.EPISODE < Params.EPISODES; Params.EPISODE++) {
+        for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.EPISODES; Params.CURRENT_EPISODE++) {
 
             drivers.parallelStream().forEach((driver) -> {
                 driver.beforeEpisode();
@@ -86,7 +85,7 @@ public class Simulation {
 
             if (Params.PRINT_ALL_EPISODES) {
 //                System.out.println(getSimulationOutputs());
-//                System.out.println(Params.EPISODE + Params.SEPARATOR + getTravelTimeAndFlows());
+//                System.out.println(Params.CURRENT_EPISODE + Params.SEPARATOR + getTravelTimeAndFlows());
             }
         }
 
@@ -214,16 +213,9 @@ public class Simulation {
             List<String> keys = new ArrayList<>(odpairs.keySet());
             Collections.sort(keys);
 
-            double totalCost = 0.0;
-            int demand = 0;
             for (String key : keys) {
                 out += Params.SEPARATOR + odpairs.get(key).getAverageCost();
-                totalCost += odpairs.get(key).demandSize() * odpairs.get(key).getAverageCost();
-                demand += odpairs.get(key).demandSize();
             }
-
-            System.out.println("avg_tt: " + simulationTravelTime() + "\tavg_tt2:" + totalCost / demand);
-            System.out.println("");
         }
         return out;
     }
@@ -248,10 +240,10 @@ public class Simulation {
 //    }
     public String getSimulationOutputs() {
         String output = "";
-        if (Params.EPISODE == 0) {
+        if (Params.CURRENT_EPISODE == 0) {
             output += getExperimentOutputHeader() + "\n";
         }
-        output += Params.EPISODE + Params.SEPARATOR + getAverageTravelCosts();
+        output += Params.CURRENT_EPISODE + Params.SEPARATOR + getAverageTravelCosts();
         if (Params.PRINT_FLOWS) {
             output += Params.SEPARATOR + getFlows();
         }
@@ -288,7 +280,7 @@ public class Simulation {
             Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (Params.EPISODE >= Params.EPISODES - 1) {
+        if (Params.CURRENT_EPISODE >= Params.EPISODES - 1) {
 
             try {
                 fileWriter.flush();

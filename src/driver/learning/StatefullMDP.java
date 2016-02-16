@@ -5,7 +5,6 @@
  */
 package driver.learning;
 
-import experiments.bazzan.InformationType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,18 +41,18 @@ public class StatefullMDP extends AbstractMDP<String, Edge, Double> {
             Collections.shuffle(l, Params.RANDOM);
             return (Edge) l.get(0);
         } else {
-//CHANGED
-            if (QLStatefull.INFORMATION_TYPE != InformationType.None) {
-                for (Map.Entry<Edge, Double> entrySet : mdp2.entrySet()) {
-                    Edge key2 = entrySet.getKey();
-                    Double value = entrySet.getValue();
-
-                    if (value.equals(0.0) && (QLStatefull.aditionalData.containsKey(key2))) {
-                        mdp2.put(key2, QLStatefull.aditionalData.get(entrySet.getKey()).getValue());
-                    }
-                }
-            }
-//CHANGED            
+//CHANGED FOR INFORMATION SHARING
+//            if (QLStatefull.INFORMATION_TYPE != InformationType.None) {
+//                for (Map.Entry<Edge, Double> entrySet : mdp2.entrySet()) {
+//                    Edge key2 = entrySet.getKey();
+//                    Double value = entrySet.getValue();
+//
+//                    if (value.equals(0.0) && (QLStatefull.aditionalData.containsKey(key2))) {
+//                        mdp2.put(key2, QLStatefull.aditionalData.get(entrySet.getKey()).getValue());
+//                    }
+//                }
+//            }
+//CHANGED FOR INFORMATION SHARING
             return Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getKey();
         }
 

@@ -68,6 +68,6 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
             }
 
         }
-        return (soma_gz - gz_zi) / Params.DEMAND_SIZE;
+        return (soma_gz - gz_zi) / Params.USED_TAP.getDrivers().size();
     }
 }

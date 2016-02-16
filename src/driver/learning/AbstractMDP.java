@@ -50,7 +50,7 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
     }
 
     protected double getEpsilon() {
-        double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.EPISODE);
+        double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
         return epsilon;
     }
 }

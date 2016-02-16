@@ -6,8 +6,7 @@
 package driver.learning;
 
 import driver.Driver;
-import experiments.bazzan.AditionalData;
-import experiments.bazzan.InformationType;
+import experiments.InformationType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -31,7 +30,7 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
     private StatefullMDP mdp = new StatefullMDP();
 
     //Armazena os dados utilizados pela extensão jan 2016
-    static Map<Edge, AditionalData> aditionalData = new ConcurrentHashMap<>();
+//    static Map<Edge, AditionalData> aditionalData = new ConcurrentHashMap<>();
 
     public static StatefullMDP staticMdp;
     public static double ALPHA = 0.5;
@@ -109,7 +108,6 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
 
         //update q-table
         double qa = this.mdp.getValue(currentEdge);
-//        double r = this.rewardFunction.getStandardReward(this);
         double r = this.rewardFunction.getReward(this);
 
         double maxQa = 0.0;
@@ -120,17 +118,6 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
         qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
 
         this.mdp.setValue(currentEdge, qa);
-
-        if (!QLStatefull.aditionalData.containsKey(currentEdge)) {
-            QLStatefull.aditionalData.put(currentEdge, new AditionalData());
-        }
-
-//        QLStatefull.aditionalData.get(currentEdge).addValue(qa);
-        QLStatefull.aditionalData.get(currentEdge).addValue(travelTime);
-
-//        if (this.currentEdge.getTargetVertex().equalsIgnoreCase(destination)) {
-//            this.currentEdge = null;
-//        }
     }
 
     @Override

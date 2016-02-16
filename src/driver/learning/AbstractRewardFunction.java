@@ -25,18 +25,18 @@ public abstract class AbstractRewardFunction <T extends Driver>{
         if (rewards.containsKey(route)) {
             return rewards.get(route);
         } else {
-            switch (Params.REWARDFUNCTION) {
-                case DifferenceRewards:
+            switch (Params.REWARD_FUNCTION) {
+                case DIFFERENCE_REWARDS:
                     rewards.put(route, getDifferenceRewards(driver));
                     break;
-                case StandardReward:
+                case STANDARD_REWARD:
                     rewards.put(route, getStandardReward(driver));
                     break;
-                case RewardShaping:
+                case REWARD_SHAPING:
                     rewards.put(route, getRewardShaping(driver));
                     break;
                 default:
-                    throw new AssertionError(Params.REWARDFUNCTION.name());
+                    throw new AssertionError(Params.REWARD_FUNCTION.name());
             }
         }
         return rewards.get(route);

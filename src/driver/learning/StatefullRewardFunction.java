@@ -24,10 +24,10 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
 
     @Override
     public Double getReward(QLStatefull driver) {
-        switch (Params.REWARDFUNCTION) {
-            case DifferenceRewards:
+        switch (Params.REWARD_FUNCTION) {
+            case DIFFERENCE_REWARDS:
                 return getDifferenceRewards(driver);
-            case StandardReward:
+            case STANDARD_REWARD:
                 return getStandardReward(driver);
         }
         return getStandardReward(driver);
@@ -70,7 +70,7 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
                 }
             }
         }
-        return (soma_gz - gz_zi) / Params.DEMAND_SIZE;
+        return (soma_gz - gz_zi) / Params.USED_TAP.getDrivers().size();
 //
 //        Double gz = driver.getCurrentEdge().getCost();
 //        Double gz_zi = (double) driver.getCurrentEdge().getCostFunction().evalDesirableCost(driver.getCurrentEdge(), driver.getCurrentEdge().getTotalFlow() - 1);

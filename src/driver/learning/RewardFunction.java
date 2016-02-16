@@ -11,9 +11,9 @@ package driver.learning;
  */
 public enum RewardFunction {
 
-    DifferenceRewards("Difference Rewards"),
-    RewardShaping("Reward Shaping"),
-    StandardReward("Standard Reward");
+    DIFFERENCE_REWARDS("Difference Rewards"),
+    REWARD_SHAPING("Reward Shaping"),
+    STANDARD_REWARD("Standard Reward");
 
     private final String value;
 

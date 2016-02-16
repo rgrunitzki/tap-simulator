@@ -87,11 +87,11 @@ public class MethodOfSuccessiveAveragesAssignment_no_parallel {
             }
 
 //            double cost2 = 0;
-//            for (Driver d : tap.getDrivers()) {
+//            for (Driver d : USED_TAP.getDrivers()) {
 //                cost2 += d.getTravelTime();
 //            }
 //
-//            System.out.println((cost / tap.getDrivers().size()) + " " + (cost2 / tap.getDrivers().size()));
+//            System.out.println((cost / USED_TAP.getDrivers().size()) + " " + (cost2 / USED_TAP.getDrivers().size()));
 //            if (iteration == 0) {
 //                System.out.println(header);
 //            }
