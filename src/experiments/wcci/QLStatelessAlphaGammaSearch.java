@@ -1,8 +1,8 @@
-package experiments;
+package experiments.wcci;
 
-import experiments.Experiment;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
+import experiments.DefaultExperiment;
 import java.util.concurrent.ConcurrentHashMap;
 import simulation.Params;
 import scenario.TAP;
@@ -23,8 +23,6 @@ public class QLStatelessAlphaGammaSearch {
     public static void main(String[] args) {
         System.out.println("QLStateless on Sioux Falls Network");
 
-        Params.PRINT_ALL_EPISODES = true;
-
         Params.EPISODES = 1000;
         Params.E_DECAY_RATE = 0.99f;
         Params.STEPS = 100;
@@ -41,7 +39,7 @@ public class QLStatelessAlphaGammaSearch {
 
             for (QLStateless.ALPHA = 0.1f; QLStateless.ALPHA <= 1.0f; QLStateless.ALPHA += 0.1) {
                 System.out.println("K=" + QLStateless.K + "\tAlpha=" + QLStateless.ALPHA);
-                Experiment experiment = new Experiment();
+                DefaultExperiment experiment = new DefaultExperiment();
                 experiment.run();
             }
         }

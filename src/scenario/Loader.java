@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import simulation.Params;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,9 +33,9 @@ import org.xml.sax.SAXException;
  */
 public class Loader {
 
-    public static Graph loadNetwork(File netFile, AbstractCostFunction costFunction) {
+    public static Graph loadNetwork(File netFile, Class edgeClass, AbstractCostFunction costFunction) throws NoSuchMethodException {
 
-        Graph<String, Edge> graph = new DefaultDirectedWeightedGraph<>(Edge.class);
+        Graph<String, AbstractEdge> graph = new DefaultDirectedWeightedGraph<>(Params.DEFAULT_EDGE);
 
         try {
 
@@ -54,8 +57,17 @@ public class Loader {
 
             for (int i = 0; i < list.getLength(); i++) {
                 Element e = (Element) list.item(i);
-
-                Edge edge = new Edge(costFunction);
+                
+//                AbstractEdge edge = new AbstractEdge(costFunction);
+                
+                AbstractEdge edge = null;
+                try {
+                    edge = (AbstractEdge) edgeClass.getConstructor(edgeClass.getConstructors()[0].getParameterTypes()).newInstance(
+                            costFunction);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 Map<String, Object> params = new HashMap<>();
 
                 for (int j = 0; j < e.getAttributes().getLength(); j++) {
@@ -77,7 +89,7 @@ public class Loader {
 
     public static Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
 
-    public static <T> List<T> processODMatrix(Graph graph, File demandFile, Class clazz) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public static <T> List<T> processODMatrix(Graph graph, File demandFile, Class driverClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         List<T> drivers = new ArrayList<>();
         try {
 
@@ -106,7 +118,7 @@ public class Loader {
                 
                 for (int d = size; d > 0; d--) {
                     
-                    Object driver = clazz.getConstructor(clazz.getConstructors()[0].getParameterTypes()).newInstance(
+                    Object driver = driverClass.getConstructor(driverClass.getConstructors()[0].getParameterTypes()).newInstance(
                             ++countD, origin, destination, graph);
                     drivers.add((T) driver);
                     od.addDriver((Driver) driver);

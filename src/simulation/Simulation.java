@@ -22,9 +22,9 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
-import scenario.Edge;
 import scenario.TAP;
 import org.jgrapht.Graph;
+import scenario.AbstractEdge;
 import scenario.ODPair;
 
 /**
@@ -34,7 +34,7 @@ import scenario.ODPair;
 public class Simulation {
 
     private final List<Driver> drivers;
-    private final Graph<String, Edge> graph;
+    private final Graph<String, AbstractEdge> graph;
     private final Map<String, ODPair> odpairs;
     private final TAP tap;
 
@@ -83,10 +83,6 @@ public class Simulation {
                 this.printExperimentResultsOnFile(getExperimentPath(), fileNameToPrint, results);
             }
 
-            if (Params.PRINT_ALL_EPISODES) {
-//                System.out.println(getSimulationOutputs());
-//                System.out.println(Params.CURRENT_EPISODE + Params.SEPARATOR + getTravelTimeAndFlows());
-            }
         }
 
         //post-simulation processing
@@ -137,6 +133,7 @@ public class Simulation {
         });
 
         driversToProcess.parallelStream().filter((d) -> (!d.hasArrived())).forEach((d) -> {
+//            System.out.println(d.getId() + " " + d.getCurrentEdge().toString());
             d.getCurrentEdge().incrementFlow();
         });
 
@@ -159,7 +156,7 @@ public class Simulation {
 
     public double simulationTravelTime() {
         double avgcost = 0;
-        for (Edge e : graph.edgeSet()) {
+        for (AbstractEdge e : graph.edgeSet()) {
             avgcost += e.getTotalFlow() * e.getCost();
         }
         return (avgcost / drivers.size());
@@ -199,7 +196,7 @@ public class Simulation {
         //print the flow of the used links
         System.out.println("link" + Params.SEPARATOR + "flow" + Params.SEPARATOR + "cost");
         double soma = 0;
-        for (Edge e : graph.edgeSet()) {
+        for (AbstractEdge e : graph.edgeSet()) {
             soma += e.getTotalFlow() * e.getCost();
             System.out.println(e.getName() + Params.SEPARATOR + e.getTotalFlow() + Params.SEPARATOR + e.getCost());
         }
@@ -223,9 +220,9 @@ public class Simulation {
     //calculates links flows;
     private String getFlows() {
         String out = "";
-        List<Edge> keys = new ArrayList<>(graph.edgeSet());
+        List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
         Collections.sort(keys);
-        for (Edge e : keys) {
+        for (AbstractEdge e : keys) {
             out += e.getTotalFlow() + Params.SEPARATOR;
         }
         return out;
@@ -327,9 +324,9 @@ public class Simulation {
         }
 
         if (Params.PRINT_FLOWS) {
-            List<Edge> keys = new ArrayList<>(graph.edgeSet());
+            List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
             Collections.sort(keys);
-            for (Edge e : keys) {
+            for (AbstractEdge e : keys) {
                 output += Params.SEPARATOR + e.getName();
             }
         }

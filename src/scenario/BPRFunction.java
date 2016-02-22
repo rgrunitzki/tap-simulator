@@ -16,7 +16,7 @@ package scenario;
 public class BPRFunction extends AbstractCostFunction {
 
     @Override
-    public double evalCost(Edge edge) {
+    public double evalCost(AbstractEdge edge) {
         return (stringToDouble((String) edge.getParams().get("fftime")) * 
                 (1 + stringToDouble((String) edge.getParams().get("alpha")) * 
                 (float) Math.pow(edge.getTotalFlow() / stringToDouble((String) edge.getParams().get("capacity")), 
@@ -24,7 +24,7 @@ public class BPRFunction extends AbstractCostFunction {
     }
 
     @Override
-    public double evalDesirableCost(Edge edge, double desirableFlow) {
+    public double evalDesirableCost(AbstractEdge edge, double desirableFlow) {
         return (stringToDouble((String) edge.getParams().get("fftime")) * 
                 (1 + stringToDouble((String) edge.getParams().get("alpha")) * 
                 (float) Math.pow(desirableFlow / stringToDouble((String) edge.getParams().get("capacity")), 

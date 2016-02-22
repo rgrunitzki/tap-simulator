@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.FloydWarshallShortestPaths;
-import scenario.Edge;
+import scenario.AbstractEdge;
 import scenario.TAP;
 import simulation.Params;
 
@@ -18,20 +18,20 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class MethodOfSuccessiveAveragesAssignment_no_parallel {
+public class MethodOfSuccessiveAveragesAssignment {
 
     public static void main(String[] args) {
 
+        Params.DEFAULT_EDGE = EdgeMSA.class;
         TAP tap = TAP.OW(MSADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
-        List<Edge> edges = new ArrayList<>(tap.getGraph().edgeSet());
+        List<EdgeMSA> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
-        Edge.MSA = true;
 
         String header = "iteration" + Params.SEPARATOR + "average_tt";
         String results = "";
-        int iterations = 1;
+        int iterations = 1000;
         double phi;
         FloydWarshallShortestPaths fws;
 
@@ -48,7 +48,7 @@ public class MethodOfSuccessiveAveragesAssignment_no_parallel {
 
                 //Generate alterative flow F
                 for (Object e : path.getEdgeList()) {
-                    Edge edge = (Edge) e;
+                    EdgeMSA edge = (EdgeMSA) e;
                     int flow = (tap.getOdpairs().get(odPair).demandSize());
                     edge.incrementTotalFlow(flow);
                 }
@@ -61,7 +61,7 @@ public class MethodOfSuccessiveAveragesAssignment_no_parallel {
             }
 
             //Update current flow MSA
-            for (Edge e : edges) {
+            for (EdgeMSA e : edges) {
                 double flow = (1 - phi) * e.getMsaFlow() + phi * e.getTotalFlow();
                 e.setMsaFlow(flow);
             }
@@ -76,7 +76,7 @@ public class MethodOfSuccessiveAveragesAssignment_no_parallel {
             //Get links' flow
             double cost = 0.0;
 
-            for (Edge e : edges) {
+            for (EdgeMSA e : edges) {
                 header += Params.SEPARATOR + e.getName();
                 //Link Flow
                 results += Params.SEPARATOR + e.getMsaFlow();

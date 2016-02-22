@@ -1,38 +1,33 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package scenario;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author rgrunitzki
  */
-public class Edge extends DefaultWeightedEdge implements Comparable<Edge> {
-
+public abstract class AbstractEdge extends DefaultWeightedEdge implements Comparable<AbstractEdge> {
+    
     private Map<String, Object> params;
 
     private int currentFlow;
 
     private int totalFlow;
 
-    private double msaFlow;
+    private AbstractCostFunction costFunction;
 
-    public static boolean MSA = false;
-
-    private final AbstractCostFunction costFunction;
-
-    public Edge(AbstractCostFunction costFunction) {
+    public AbstractEdge(AbstractCostFunction costFunction) {
         this.params = new HashMap<>();
         this.currentFlow = 0;
         this.totalFlow = 0;
         this.costFunction = costFunction;
-        this.msaFlow = 0.0;
     }
 
     public void setParams(Map<String, Object> params) {
@@ -61,11 +56,7 @@ public class Edge extends DefaultWeightedEdge implements Comparable<Edge> {
 
     @Override
     protected double getWeight() {
-        if (Edge.MSA) {
-            return this.costFunction.evalDesirableCost(this, msaFlow);
-        } else {
-            return this.costFunction.evalCost(this);
-        }
+            return costFunction.evalCost(this);
     }
 
     public synchronized void clearCurrentFlow() {
@@ -107,21 +98,21 @@ public class Edge extends DefaultWeightedEdge implements Comparable<Edge> {
         return costFunction;
     }
 
-    public double getMsaFlow() {
-        return msaFlow;
-    }
-
-    public synchronized void setMsaFlow(double msaFlow) {
-        this.msaFlow = msaFlow;
-    }
+//    public double getMsaFlow() {
+//        return msaFlow;
+//    }
+//
+//    public synchronized void setMsaFlow(double msaFlow) {
+//        this.msaFlow = msaFlow;
+//    }
 
     @Override
-    public int compareTo(Edge o) {
+    public int compareTo(AbstractEdge o) {
         return this.getName().compareTo(o.getName());
     }
 
     public synchronized void  incrementTotalFlow(int flow) {
         this.totalFlow += flow;
     }
-
+    
 }

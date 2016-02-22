@@ -9,15 +9,15 @@ import driver.Driver;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import scenario.Edge;
+import scenario.StandardEdge;
 
 /**
  *
  * @author rgrunitzki
  */
-public class CustomTADriver extends Driver<CustomTADriver, List<Edge>> {
+public class TADriver extends Driver<TADriver, List<StandardEdge>> {
 
-    public CustomTADriver(int id, String origin, String destination, Graph graph) {
+    public TADriver(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
 
@@ -62,18 +62,18 @@ public class CustomTADriver extends Driver<CustomTADriver, List<Edge>> {
     }
 
     @Override
-    public List<Edge> getRoute() {
+    public List<StandardEdge> getRoute() {
         return this.route;
     }
 
-    public void setRoute(List<Edge> route) {
+    public void setRoute(List<StandardEdge> route) {
         this.route = route;
     }
 
     @Override
     public double getTravelTime() {
         double cost = 0;
-        for (Edge e : this.getRoute()) {
+        for (StandardEdge e : this.getRoute()) {
             cost += e.getCost();
         }
         return cost;

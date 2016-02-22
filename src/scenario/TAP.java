@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.Graph;
+import simulation.Params;
 
 /**
  *
@@ -33,7 +34,11 @@ public class TAP {
         this.demandFile = demand;
         this.networkFile = network;
         this.costFunction = costFunction;
-        this.graph = Loader.loadNetwork(networkFile, costFunction);
+        try {
+            this.graph = Loader.loadNetwork(networkFile, Params.DEFAULT_EDGE, costFunction);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.clazz = clazz;
         try {
             this.drivers = Loader.processODMatrix(graph, demandFile, clazz);
@@ -106,7 +111,7 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
-    
+
     public static TAP EMME(Class clazz) {
         String netFile;
         String demandFile;
@@ -142,15 +147,13 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
-    
-    
-    
-    public String getNetworkName(){
-        return  networkFile.getName().split(".net")[0];
+
+    public String getNetworkName() {
+        return networkFile.getName().split(".net")[0];
 //        return name.split(".net")[0];
     }
-    
-     public static TAP ANA(Class clazz) {
+
+    public static TAP ANA(Class clazz) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
@@ -160,7 +163,8 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
-     public static TAP BYPASS(Class clazz) {
+
+    public static TAP BYPASS(Class clazz) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
@@ -170,6 +174,5 @@ public class TAP {
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
-     
-     
+
 }

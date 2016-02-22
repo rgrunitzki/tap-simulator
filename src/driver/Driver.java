@@ -8,14 +8,14 @@ package driver;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.apache.commons.lang3.tuple.Pair;
-import scenario.Edge;
 import org.jgrapht.Graph;
+import scenario.AbstractEdge;
 
 /**
  *
  * @author rgrunitzki
  * @param <T>
- * @param <Route>
+ * @param <T2>
  */
 @SuppressWarnings("rawtypes")
 public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
@@ -28,7 +28,7 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
 
     protected final String destination;
 
-    protected Edge currentEdge;
+    protected AbstractEdge currentEdge;
 
     protected String currentVertex;
 
@@ -78,7 +78,7 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
         return this.getCurrentEdge() == null;
     }
 
-    public Edge getCurrentEdge() {
+    public AbstractEdge getCurrentEdge() {
         return currentEdge;
     }
 
@@ -86,7 +86,7 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
      *
      * @param currentEdge
      */
-    public void setCurrentEdge(Edge currentEdge) {
+    public void setCurrentEdge(AbstractEdge currentEdge) {
         this.currentEdge = currentEdge;
     }
 
@@ -119,5 +119,9 @@ public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
 
     public double getTravelTime() {
         return travelTime;
+    }
+
+    public int getId() {
+        return id;
     }
 }

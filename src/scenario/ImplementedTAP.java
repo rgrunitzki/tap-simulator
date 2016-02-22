@@ -3,22 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package experiments;
+package scenario;
 
 /**
  *
  * @author rgrunitzki
  */
-public enum InformationType {
-
-    Average("Average Information"),
-    Best("Best Information"),
-    Last("Last Information"),
-    None("No Information");
+public enum ImplementedTAP {
+    
+    ANA("ANA"),
+    BYPASS("BYPASS"),
+    BRAESS("BRAESS"),
+    EMME("EMME"),
+    ND("ND"),
+    OW("OW"),
+    SF("SF");
 
     private final String value;
 
-    private InformationType(String value) {
+    private ImplementedTAP(String value) {
         this.value = value;
     }
 

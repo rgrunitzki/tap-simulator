@@ -1,3 +1,4 @@
+package experiments;
 
 import org.apache.commons.cli.ParseException;
 import simulation.Params;
@@ -7,16 +8,19 @@ import simulation.Params;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  *
  * @author rgrunitzki
  */
-public class ArgumentParser {
+public class CommandLineExperiment {
 
     public static void main(String[] args) throws ParseException {
-        String[] args2 = {"-h"};
-
-        Params.parseParams(args2);
-
+        
+        Params.parseParams(args);
+        
+        DefaultExperiment experiment = new DefaultExperiment();
+        experiment.run();
+        
     }
 }

@@ -6,7 +6,6 @@
 package driver.learning;
 
 import driver.Driver;
-import experiments.InformationType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,28 +17,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import scenario.Edge;
+import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
  *
  * @author rgrunitzki
  */
-public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
+public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
-
-    //Armazena os dados utilizados pela extensão jan 2016
-//    static Map<Edge, AditionalData> aditionalData = new ConcurrentHashMap<>();
 
     public static StatefullMDP staticMdp;
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
 
-    public static InformationType INFORMATION_TYPE = InformationType.None;
-
-//    private Edge previousEdge;
-//    private String previousVertex;
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 
     public QLStatefull(int id, String origin, String destination, Graph graph) {
@@ -55,8 +47,8 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
             Map states = new ConcurrentHashMap<>();
             for (String vertex : vertices) {
                 Map actions = new ConcurrentHashMap();
-                Set<Edge> edges = graph.edgesOf(vertex);
-                for (Edge edge : edges) {
+                Set<AbstractEdge> edges = graph.edgesOf(vertex);
+                for (AbstractEdge edge : edges) {
                     if (edge.getSourceVertex().equalsIgnoreCase(vertex)) {
                         actions.put(edge, 0.0);
                     }
@@ -112,7 +104,7 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
 
         double maxQa = 0.0;
         if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
-            Map<Edge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
+            Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }
         qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
@@ -123,7 +115,7 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
     @Override
     public void resetAll() {
         for (String action : this.mdp.mdp.keySet()) {
-            for (Edge e : this.mdp.mdp.get(action).keySet()) {
+            for (AbstractEdge e : this.mdp.mdp.get(action).keySet()) {
                 this.mdp.mdp.get(action).put(e, 0.0);
             }
         }
@@ -135,7 +127,7 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
     }
 
     @Override
-    public List<Edge> getRoute() {
+    public List<AbstractEdge> getRoute() {
         return this.route;
     }
 
@@ -152,7 +144,7 @@ public class QLStatefull extends Driver<QLStatefull, List<Edge>> {
     @Override
     public double getTravelTime() {
         double cost = 0;
-        for (Edge e : this.route) {
+        for (AbstractEdge e : this.route) {
             cost += e.getCost();
         }
         return cost;

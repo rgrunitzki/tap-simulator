@@ -8,13 +8,12 @@ package trafficassignment;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import scenario.Edge;
 
 /**
  *
  * @author rgrunitzki
  */
-public class MSADriver extends driver.Driver<MSADriver, List<Edge>>{
+public class MSADriver extends driver.Driver<MSADriver, List<EdgeMSA>>{
 
     public MSADriver(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
@@ -61,18 +60,18 @@ public class MSADriver extends driver.Driver<MSADriver, List<Edge>>{
     }
 
     @Override
-    public List<Edge> getRoute() {
+    public List<EdgeMSA> getRoute() {
         return this.route;
     }
 
-    public synchronized void setRoute(List<Edge> route) {
+    public synchronized void setRoute(List<EdgeMSA> route) {
         this.route = route;
     }
 
     @Override
     public double getTravelTime() {
         double cost = 0;
-        for (Edge e : this.getRoute()) {
+        for (EdgeMSA e : this.getRoute()) {
             cost += e.getCostFunction().evalDesirableCost(e, e.getMsaFlow());
         }
         return cost;

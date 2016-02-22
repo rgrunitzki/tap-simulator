@@ -6,8 +6,8 @@ package scenario;
  */
 public abstract class AbstractCostFunction {
 
-    public abstract double evalCost(Edge edge);
-    public abstract double evalDesirableCost(Edge edge, double desirableFlow);
+    public abstract double evalCost(AbstractEdge edge);
+    public abstract double evalDesirableCost(AbstractEdge edge, double desirableFlow);
 
     protected Double stringToDouble(String value) {
         if (value.equals("")) {

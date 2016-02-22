@@ -8,7 +8,6 @@ package experiments;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import scenario.TAP;
 import simulation.Params;
 import simulation.Simulation;
 
@@ -16,13 +15,14 @@ import simulation.Simulation;
  *
  * @author rgrunitzki
  */
-public class Experiment {
+public class DefaultExperiment {
 
     private final int runs;
     private final Simulation simulation;
 
-    public Experiment() {
+    public DefaultExperiment() {
         this.runs = Params.REPETITIONS;
+        Params.createTap();
         this.simulation = new Simulation(Params.USED_TAP);
     }
 
@@ -33,22 +33,27 @@ public class Experiment {
             while (run++ <= runs) {
                 simulation.execute();
                 costs.add(simulation.simulationTravelTime());
-                System.out.println("#" + (run - 1) + "\t" + costs.get(run - 2));
+                if (Params.PRINT_AVERAGE_RESULTS) {
+                    System.out.println("#" + (run - 1) + Params.SEPARATOR + costs.get(run - 2));
+                }
                 simulation.reset();
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             simulation.end();
-            if ((runs > 1) && Params.AVERAGE_RESULTS) {
+            if ((runs > 1) && Params.PRINT_AVERAGE_RESULTS) {
                 DescriptiveStatistics st = new DescriptiveStatistics();
-                if (Params.AVERAGE_RESULTS) {
-                    for (double d : costs) {
-                        st.addValue(d);
-                    }
-                    System.out.println("mean\t" + st.getMean() + "\t" + st.getStandardDeviation());
+                for (double d : costs) {
+                    st.addValue(d);
                 }
+                System.out.println("mean: " + st.getMean() + Params.SEED + "stdev: " + st.getStandardDeviation());
             }
         }
+    }
+    
+    public String getTravelTime(){
+        return ""+simulation.simulationTravelTime();
     }
 }

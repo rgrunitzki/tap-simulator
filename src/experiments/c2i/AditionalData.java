@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package experiments;
+package experiments.c2i;
 
-import driver.learning.QLStatefull;
 
 /**
  *
@@ -49,19 +48,19 @@ public class AditionalData {
         return values / cont;
     }
 
-    public Double getValue() {
-        switch (QLStatefull.INFORMATION_TYPE){
-            case Average:
-                return getAverageValue();
-            case Best:
-                return getBestValue();
-            case Last:
-                return getLastValue();
-            case None:
-                return 0.0;
-            default:
-                throw new AssertionError(QLStatefull.INFORMATION_TYPE.name());
-            
-        }
-    }
+//    public Double getValue() {
+//        switch (QLStatefullC2I.INFORMATION_TYPE) {
+//            case Average:
+//                return getAverageValue();
+//            case Best:
+//                return getBestValue();
+//            case Last:
+//                return getLastValue();
+//            case None:
+//                return 0.0;
+//            default:
+//                throw new AssertionError(QLStatefullC2I.INFORMATION_TYPE.name());
+//
+//        }
+//    }
 }

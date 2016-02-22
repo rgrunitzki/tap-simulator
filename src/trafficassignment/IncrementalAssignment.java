@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.FloydWarshallShortestPaths;
-import scenario.Edge;
+import scenario.StandardEdge;
 import scenario.TAP;
 import simulation.Params;
 
@@ -22,7 +22,7 @@ public class IncrementalAssignment {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.OW(CustomTADriver.class);
+        TAP tap = TAP.OW(TADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         String header = "average_tt";
@@ -54,7 +54,7 @@ public class IncrementalAssignment {
                 GraphPath path = fws.getShortestPath(origin, destination);
                 
                 for (Object e : path.getEdgeList()) {
-                    Edge edge = (Edge) e;
+                    StandardEdge edge = (StandardEdge) e;
                     int flow = (int) (tap.getOdpairs().get(odPair).demandSize() * pn[fraction]);
                     edge.incrementTotalFlow(flow);
                 }
@@ -70,7 +70,7 @@ public class IncrementalAssignment {
                 }
 
                 for (int i = init; i <= end; i++) {
-                    CustomTADriver driver = (CustomTADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
+                    TADriver driver = (TADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
                     driver.setRoute(path.getEdgeList());
                 }
 //                System.out.println(init + "\t" + end);
@@ -90,7 +90,7 @@ public class IncrementalAssignment {
                 double odTravelTime = 0.0;
                 double count = 0;
                 for (int i = 0; i <= end; i++) {
-                    CustomTADriver driver = (CustomTADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
+                    TADriver driver = (TADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
                     odTravelTime += driver.getTravelTime();
                     count++;
                 }
@@ -100,11 +100,11 @@ public class IncrementalAssignment {
             }
 
             //print Result
-            List<Edge> edges = new ArrayList<>(tap.getGraph().edgeSet());
+            List<StandardEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
             Collections.sort(edges);
             double cost = 0.0;
 
-            for (Edge e : edges) {
+            for (StandardEdge e : edges) {
                 header += Params.SEPARATOR + e.getName();
                 results += Params.SEPARATOR + e.getTotalFlow();
                 cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();

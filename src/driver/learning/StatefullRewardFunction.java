@@ -6,7 +6,7 @@
 package driver.learning;
 
 import org.jgrapht.Graph;
-import scenario.Edge;
+import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -48,7 +48,7 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
         double soma_gz = 0;
         double gz_zi = 0;
         for (Object edge : graph.edgeSet()) {
-            Edge e = (Edge) edge;
+            AbstractEdge e = (AbstractEdge) edge;
 
             if (e.getTotalFlow() > 0) {
                 soma_gz -= e.getCost() * e.getTotalFlow();

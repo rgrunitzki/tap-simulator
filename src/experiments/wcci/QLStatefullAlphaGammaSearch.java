@@ -1,8 +1,8 @@
-package experiments;
+package experiments.wcci;
 
 import driver.learning.QLStatefull;
-import experiments.Experiment;
 import driver.learning.RewardFunction;
+import experiments.DefaultExperiment;
 import simulation.Params;
 
 /*
@@ -32,8 +32,6 @@ public class QLStatefullAlphaGammaSearch {
         System.out.println("QLStatefull - Alpha and Gamma search");
 
         //improve this
-        Params.PRINT_ALL_EPISODES = true;
-
         Params.PRINT_FLOWS = true;
         Params.PRINT_ALL_OD_PAIR = true;
 
@@ -48,7 +46,7 @@ public class QLStatefullAlphaGammaSearch {
         QLStatefull.ALPHA = alphas[alphaIndex];
         QLStatefull.GAMMA = gammas[gammaIndex];
 
-        Experiment experiment = new Experiment();
+        DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
     }
 

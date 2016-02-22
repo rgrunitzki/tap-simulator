@@ -15,6 +15,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import scenario.StandardEdge;
+import scenario.ImplementedTAP;
 import scenario.TAP;
 
 /**
@@ -24,22 +26,23 @@ import scenario.TAP;
 public class Params {
 
     //Simulation
-    public static int EPISODES = 150;//
+    public static int EPISODES = 1000;//
     public static int STEPS = 100;
     public static int CURRENT_EPISODE = 1;
     public static Class ALGORITHM = QLStatefull.class;
-    public static TAP USED_TAP = TAP.OW(ALGORITHM);//
+    public static TAP USED_TAP = null;// = TAP.OW(ALGORITHM);//
     public static int REPETITIONS = 1;//
 
-    public static boolean PRINT_ALL_EPISODES = false;//
-    public static boolean AVERAGE_RESULTS = false; //not been used
+//    public static boolean PRINT_ALL_EPISODES = false;//
+    public static boolean PRINT_AVERAGE_RESULTS = false; //not been used
 
     public static boolean PRINT_ALL_OD_PAIR = false;//
     public static boolean PRINT_FLOWS = false;//
     public static String OUTPUTS_DIRECTORY = "results";//
     public static boolean PRINT_ON_FILE = false;//
     public static boolean PRINT_ON_TERMINAL = true;//
-
+    public static ImplementedTAP TAP_NAME = ImplementedTAP.OW;
+    public static Class DEFAULT_EDGE = StandardEdge.class;
     //QLStateless
     public static float EPSILON = 1.0f;
     public static float E_DECAY_RATE = 0.99f;//
@@ -53,7 +56,7 @@ public class Params {
     public static void parseParams(String[] args) throws ParseException {
 
         if (args.length == 0) {
-            return;
+            System.exit(1);
         }
 
         Options options = new Options();
@@ -123,34 +126,10 @@ public class Params {
             PRINT_FLOWS = cmdLine.hasOption("output.link-flow");
 
             if (cmdLine.hasOption("tap")) {
+                
+                TAP_NAME = ImplementedTAP.valueOf(cmdLine.getOptionValue("tap"));
 
-                switch (cmdLine.getOptionValue("tap").toUpperCase()) {
-
-                    case "ANA":
-                        USED_TAP = TAP.ANA(ALGORITHM);
-                        break;
-                    case "BYPASS":
-                        USED_TAP = TAP.BYPASS(ALGORITHM);
-                        break;
-                    case "BRAESS":
-                        USED_TAP = TAP.BRAESS(ALGORITHM);
-                        break;
-                    case "EMME":
-                        USED_TAP = TAP.EMME(ALGORITHM);
-                        break;
-                    case "ND":
-                        USED_TAP = TAP.ND(ALGORITHM);
-                        break;
-                    case "OW":
-                        USED_TAP = TAP.OW(ALGORITHM);
-                        break;
-                    case "SF":
-                        USED_TAP = TAP.SF(ALGORITHM);
-                        break;
-                    default:
-                        USED_TAP = TAP.OW(ALGORITHM);
-                        break;
-                }
+                createTap();
             }
 
             if (cmdLine.hasOption("runs")) {
@@ -191,6 +170,36 @@ public class Params {
             PRINT_ON_TERMINAL = cmdLine.hasOption("output.on-terminal");
         }
 
+    }
+
+    public static void createTap() {
+
+        switch (TAP_NAME) {
+            case ANA:
+                USED_TAP = TAP.ANA(ALGORITHM);
+                break;
+            case BYPASS:
+                USED_TAP = TAP.BYPASS(ALGORITHM);
+                break;
+            case BRAESS:
+                USED_TAP = TAP.BRAESS(ALGORITHM);
+                break;
+            case EMME:
+                USED_TAP = TAP.EMME(ALGORITHM);
+                break;
+            case ND:
+                USED_TAP = TAP.ND(ALGORITHM);
+                break;
+            case OW:
+                USED_TAP = TAP.OW(ALGORITHM);
+                break;
+            case SF:
+                USED_TAP = TAP.SF(ALGORITHM);
+                break;
+            default:
+                USED_TAP = TAP.OW(ALGORITHM);
+                break;
+        }
     }
 
 }

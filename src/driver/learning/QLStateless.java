@@ -2,17 +2,16 @@ package driver.learning;
 
 import driver.Driver;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
-import scenario.Edge;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.KShortestPaths;
+import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -69,7 +68,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
     public void beforeEpisode() {
         reset();
         this.route = mdp.getAction(null);
-        this.currentEdge = (Edge) this.route.getEdgeList().get(0);
+        this.currentEdge = (AbstractEdge) this.route.getEdgeList().get(0);
 
         if (!AbstractRewardFunction.rewards.isEmpty()) {
             AbstractRewardFunction.rewards.clear();
@@ -87,7 +86,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
 
     @Override
     public void beforeStep() {
-        this.currentEdge = (Edge) this.route.getEdgeList().get(this.edgeIndex);
+        this.currentEdge = (AbstractEdge) this.route.getEdgeList().get(this.edgeIndex);
         this.edgeIndex++;
     }
 

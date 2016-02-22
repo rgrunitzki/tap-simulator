@@ -5,7 +5,8 @@
  */
 package driver.learning;
 
-import scenario.Edge;
+import scenario.AbstractEdge;
+import scenario.StandardEdge;
 import simulation.Params;
 
 /**
@@ -18,7 +19,7 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
     public Double getStandardReward(QLStateless driver) {
         Double cost = 0.0;
         for (Object edge : driver.getRoute().getEdgeList()) {
-            Edge e = (Edge) edge;
+            AbstractEdge e = (AbstractEdge) edge;
             cost -= e.getCostFunction().evalCost(e);
         }
         return cost;
@@ -28,7 +29,7 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
     public Double getRewardShaping(QLStateless driver) {
         Double cost = 0.0;
         for (Object edge : driver.getRoute().getEdgeList()) {
-            Edge e = (Edge) edge;
+            AbstractEdge e = (AbstractEdge) edge;
             if (e.getTotalFlow() > 0) {
                 cost -= e.getCost() * e.getTotalFlow();
             } else {
@@ -45,7 +46,7 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
         double soma_gz = 0;
         double gz_zi = 0;
         for (Object edge : driver.getRoute().getGraph().edgeSet()) {
-            Edge e = (Edge) edge;
+            AbstractEdge e = (AbstractEdge) edge;
 
             if (e.getTotalFlow() > 0) {
                 soma_gz -= e.getCost() * e.getTotalFlow();

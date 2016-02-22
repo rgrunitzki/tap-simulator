@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.FloydWarshallShortestPaths;
-import scenario.Edge;
+import scenario.StandardEdge;
 import scenario.TAP;
 import simulation.Params;
 
@@ -22,7 +22,7 @@ public class AllOrNothing {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.BRAESS(CustomTADriver.class);
+        TAP tap = TAP.OW(TADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         String header = "average_tt";
@@ -39,7 +39,7 @@ public class AllOrNothing {
             GraphPath path = fws.getShortestPath(origin, destination);
 
             for (Object e : path.getEdgeList()) {
-                Edge edge = (Edge) e;
+                StandardEdge edge = (StandardEdge) e;
                 edge.incrementTotalFlow(tap.getOdpairs().get(odPair).demandSize());
             }
         }
@@ -56,11 +56,11 @@ public class AllOrNothing {
         }
 
         //print Result
-        List<Edge> edges = new ArrayList<>(tap.getGraph().edgeSet());
+        List<StandardEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
         double cost = 0.0;
 
-        for (Edge e : edges) {
+        for (StandardEdge e : edges) {
             header += Params.SEPARATOR + e.getName();
             results += Params.SEPARATOR + e.getTotalFlow();
             cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();

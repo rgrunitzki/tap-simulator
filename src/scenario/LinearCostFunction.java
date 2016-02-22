@@ -16,12 +16,12 @@ package scenario;
 public class LinearCostFunction extends AbstractCostFunction {
 
     @Override
-    public double evalCost(Edge edge) {
+    public double evalCost(AbstractEdge edge) {
         return (stringToDouble((String) edge.getParams().get("fftime")) + (stringToDouble((String) edge.getParams().get("alpha"))) * edge.getTotalFlow());
     }
 
     @Override
-    public double evalDesirableCost(Edge edge, double desirableFlow) {
+    public double evalDesirableCost(AbstractEdge edge, double desirableFlow) {
         return (stringToDouble((String) edge.getParams().get("fftime")) + (stringToDouble((String) edge.getParams().get("alpha"))) * desirableFlow);
     }
 }
