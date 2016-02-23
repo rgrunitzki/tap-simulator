@@ -133,7 +133,6 @@ public class Simulation {
         });
 
         driversToProcess.parallelStream().filter((d) -> (!d.hasArrived())).forEach((d) -> {
-//            System.out.println(d.getId() + " " + d.getCurrentEdge().toString());
             d.getCurrentEdge().incrementFlow();
         });
 

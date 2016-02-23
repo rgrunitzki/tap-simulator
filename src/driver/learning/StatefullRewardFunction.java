@@ -5,6 +5,7 @@
  */
 package driver.learning;
 
+import driver.Driver;
 import org.jgrapht.Graph;
 import scenario.AbstractEdge;
 import simulation.Params;
@@ -13,7 +14,7 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull> {
+public class StatefullRewardFunction extends AbstractRewardFunction<Driver> {
 
     public StatefullRewardFunction(Graph graph) {
         this.graph = graph;
@@ -23,7 +24,7 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
     
 
     @Override
-    public Double getReward(QLStatefull driver) {
+    public Double getReward(Driver driver) {
         switch (Params.REWARD_FUNCTION) {
             case DIFFERENCE_REWARDS:
                 return getDifferenceRewards(driver);
@@ -34,17 +35,20 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
     }
 
     @Override
-    public Double getStandardReward(QLStatefull driver) {
+    public Double getStandardReward(Driver driver) {
         return -driver.getCurrentEdge().getCost();
     }
 
     @Override
-    public Double getRewardShaping(QLStatefull driver) {
+    public Double getRewardShaping(Driver driver) {
         return 0.0;
     }
 
     @Override
-    public Double getDifferenceRewards(QLStatefull driver) {
+    public Double getDifferenceRewards(Driver driver) {
+        //It will not work for QLStatefullC2I
+        QLStatefull ql = (QLStatefull) driver;
+        
         double soma_gz = 0;
         double gz_zi = 0;
         for (Object edge : graph.edgeSet()) {
@@ -56,7 +60,7 @@ public class StatefullRewardFunction extends AbstractRewardFunction<QLStatefull>
                 soma_gz -= e.getCost();
             }
             
-            if (driver.getRoute().contains(e)) {
+            if (ql.getRoute().contains(e)) {
                 if (e.getTotalFlow() > 0) {
                     gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1) * (e.getTotalFlow() - 1);
                 } else {

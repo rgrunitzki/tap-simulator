@@ -6,6 +6,7 @@
 package driver.learning;
 
 import driver.Driver;
+import experiments.c2i.InformationType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,17 +25,18 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
+public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
 //    public static StatefullMDP staticMdp;
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
+    public static InformationType INFORMATION_TYPE = InformationType.None;
 
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 
-    public QLStatefull(int id, String origin, String destination, Graph graph) {
+    public QLStatefullC2I(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
 
@@ -60,13 +62,13 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -136,8 +138,8 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
         list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
-        list.add(Pair.of("alpha", QLStatefull.ALPHA));
-        list.add(Pair.of("gamma", QLStatefull.GAMMA));
+        list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
+        list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));
         return list;
     }
 

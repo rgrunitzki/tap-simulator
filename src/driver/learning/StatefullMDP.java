@@ -17,6 +17,8 @@ import simulation.Params;
  * @author rgrunitzki
  */
 public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
+    
+    public static StatefullMDP staticMdp;
 
     @Override
     public void setValue(AbstractEdge action, Double value) {

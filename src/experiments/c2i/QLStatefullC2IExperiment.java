@@ -1,6 +1,6 @@
 package experiments.c2i;
 
-import driver.learning.QLStatefull;
+import driver.learning.*;
 import driver.learning.RewardFunction;
 import experiments.DefaultExperiment;
 import scenario.ImplementedTAP;
@@ -23,7 +23,8 @@ public class QLStatefullC2IExperiment {
         //Parameters Setting
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
         Params.DEFAULT_EDGE = EdgeC2I.class;
-        Params.ALGORITHM = QLStatefull.class;
+//        Params.ALGORITHM = QLStatefull.class;
+        Params.ALGORITHM = QLStatefullC2I.class;
         
         Params.PRINT_ALL_OD_PAIR = false;
         Params.PRINT_FLOWS = false;
@@ -34,12 +35,12 @@ public class QLStatefullC2IExperiment {
         Params.EPSILON = 0.91f;
         Params.REPETITIONS = 1;
         Params.EPISODES = 100;
-        Params.TAP_NAME = ImplementedTAP.BRAESS;
+        Params.TAP_NAME = ImplementedTAP.OW;
         Params.createTap();
 
-//        QLStatefullC2I.INFORMATION_TYPE = InformationType.None;
-//        QLStatefullC2I.ALPHA = 0.5;
-//        QLStatefullC2I.GAMMA = 0.99;
+        QLStatefullC2I.INFORMATION_TYPE = InformationType.None;
+        QLStatefullC2I.ALPHA = 0.5;
+        QLStatefullC2I.GAMMA = 0.99;
 
         DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
