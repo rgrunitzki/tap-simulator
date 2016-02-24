@@ -51,5 +51,9 @@ public class StatefullC2IMDP extends AbstractMDP<String, AbstractEdge, QValueC2I
     @Override
     public void reset() {
     }
+    
+    private void valueIterator(){
+//        codeHere();
+    }
 
 }
