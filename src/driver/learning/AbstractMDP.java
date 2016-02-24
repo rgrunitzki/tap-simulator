@@ -23,7 +23,7 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
     public AbstractMDP() {
     }
 
-    protected Map<State, Map<Action, Double>> mdp = new ConcurrentHashMap<>();
+    protected Map<State, Map<Action, Value>> mdp = new ConcurrentHashMap<>();
 
     public abstract void setValue(Action action, Value value);
 
@@ -43,7 +43,7 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
         for (State action : mdp.keySet()) {
             other.mdp.put(action, new ConcurrentHashMap<>());
             //add actions to state
-            ((Map<Action, Double>) other.mdp.get(action)).putAll(new ConcurrentHashMap<>(mdp.get(action)));
+            ((Map<Action, Value>) other.mdp.get(action)).putAll(new ConcurrentHashMap<>(mdp.get(action)));
         }
         return other;
     }
@@ -52,4 +52,10 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
         double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
         return epsilon;
     }
+
+    public Map<State, Map<Action, Value>> getMdp() {
+        return mdp;
+    }
+    
+    
 }

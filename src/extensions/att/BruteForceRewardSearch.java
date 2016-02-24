@@ -1,4 +1,4 @@
-package experiments.att;
+package extensions.att;
 
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;

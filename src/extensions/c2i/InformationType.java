@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package experiments.c2i;
+package extensions.c2i;
 
 /**
  *
@@ -11,10 +11,10 @@ package experiments.c2i;
  */
 public enum InformationType {
 
-    Average("Average Information"),
-    Best("Best Information"),
-    Last("Last Information"),
-    None("No Information");
+    Average("avg"),
+    Best("best"),
+    Last("last"),
+    None("none");
 
     private final String value;
 

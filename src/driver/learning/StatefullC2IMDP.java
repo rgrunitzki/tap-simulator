@@ -5,6 +5,7 @@
  */
 package driver.learning;
 
+import extensions.c2i.QValueC2I;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,18 +17,18 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
+public class StatefullC2IMDP extends AbstractMDP<String, AbstractEdge, QValueC2I> {
 
-    public static StatefullMDP staticMdp;
+    public static StatefullC2IMDP staticMdp;
 
     @Override
-    public void setValue(AbstractEdge action, Double value) {
+    public void setValue(AbstractEdge action, QValueC2I value) {
         this.mdp.get(action.getSourceVertex()).put(action, value);
     }
 
     @Override
     public double getValue(AbstractEdge actionKey) {
-        return this.mdp.get(actionKey.getSourceVertex()).get(actionKey);
+        return this.mdp.get(actionKey.getSourceVertex()).get(actionKey).getValue();
     }
 
     @Override
@@ -36,14 +37,14 @@ public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
     @Override
     public AbstractEdge getAction(String key) {
-        Map<AbstractEdge, Double> mdp2 = mdp.get(key);
+        Map<AbstractEdge, QValueC2I> mdp2 = mdp.get(key);
         float random = Params.RANDOM.nextFloat();
         if (random <= getEpsilon()) {
             List l = new ArrayList<>(mdp2.keySet());
             Collections.shuffle(l, Params.RANDOM);
             return (AbstractEdge) l.get(0);
         } else {
-            return Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getKey();
+            return Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue().getValue() > entry2.getValue().getValue() ? 1 : -1).getKey();
         }
     }
 

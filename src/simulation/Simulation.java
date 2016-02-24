@@ -117,7 +117,7 @@ public class Simulation {
             this.cservice.submit(driver);
         });
 
-        driversToProcess.parallelStream().forEach((_item) -> {
+        driversToProcess.parallelStream().forEach((driver) -> {
             try {
                 boolean result = this.cservice.take().isDone();
                 if (!result) {
@@ -133,14 +133,14 @@ public class Simulation {
         });
 
         driversToProcess.parallelStream().filter((d) -> (!d.hasArrived())).forEach((d) -> {
-            d.getCurrentEdge().incrementFlow();
+            d.getCurrentEdge().proccess(d);
         });
 
         //before step processing
         driversToProcess.parallelStream().forEach((driver) -> {
             this.cservice.submit(driver);
         });
-        driversToProcess.parallelStream().forEach((_item) -> {
+        driversToProcess.parallelStream().forEach((driver) -> {
             try {
                 boolean result = this.cservice.take().isDone();
                 if (!result) {

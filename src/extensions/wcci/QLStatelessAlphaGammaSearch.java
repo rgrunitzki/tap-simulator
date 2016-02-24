@@ -1,4 +1,4 @@
-package experiments.wcci;
+package extensions.wcci;
 
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;

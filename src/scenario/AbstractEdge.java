@@ -5,6 +5,7 @@
  */
 package scenario;
 
+import driver.Driver;
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -73,7 +74,9 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
         totalFlow = 0;
     }
 
-    public synchronized void incrementFlow() {
+    public synchronized void proccess(Driver driver) {
+        
+        //increment the flow of drivers on edge
         this.currentFlow++;
         this.totalFlow++;
     }
