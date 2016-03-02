@@ -32,7 +32,8 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
 
-    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
+//    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
+    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionATT(graph);
 
     public QLStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);

@@ -95,7 +95,7 @@ public class Simulation {
     private void runEpisode() {
         int step = 0;
         resetEdgesForEpisode();
-        while ((!runStep()) && (step++ < Params.STEPS));
+        while ((!runStep()) && (step++ < Params.MAX_STEPS));
     }
 
     private boolean runStep() {

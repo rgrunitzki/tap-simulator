@@ -37,7 +37,7 @@ public class QLStatefullAlphaGammaSearch {
 
         Params.EPISODES = 150;
         Params.E_DECAY_RATE = 0.91f;
-        Params.STEPS = 100;
+        Params.MAX_STEPS = 100;
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
 
         double alphas[] = {0.3, 0.5, 0.7, 0.9};

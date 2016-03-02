@@ -27,20 +27,20 @@ public class QLStatefullC2IExperiment {
 
         Params.PRINT_ALL_OD_PAIR = false;
         Params.PRINT_FLOWS = false;
-        Params.PRINT_ON_TERMINAL = true;
-        Params.PRINT_AVERAGE_RESULTS = false;
-        Params.PRINT_ON_FILE = false;
+        Params.PRINT_ON_TERMINAL = false;
+        Params.PRINT_AVERAGE_RESULTS = true;
+        Params.PRINT_ON_FILE = true;
 
         Params.EPISODES = 1000;
-        Params.STEPS = 100;
+        Params.MAX_STEPS = 100;
         Params.E_DECAY_RATE = 0.99f;
-        Params.REPETITIONS = 1;
+        Params.REPETITIONS = 10;
         Params.TAP_NAME = ImplementedTAP.OW;
         QLStatefullC2I.ALPHA = 0.5;
         QLStatefullC2I.GAMMA = 0.99;
         Params.createTap();
 
-        QLStatefullC2I.INFORMATION_TYPE = InformationType.Last;
+        QLStatefullC2I.INFORMATION_TYPE = InformationType.Best;
         DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
     }

@@ -94,23 +94,29 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     @Override
     public void beforeStep() {
 
-        //Communicate to the infrastructure and update the next q-values
-        if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
-            for (AbstractEdge action : mdp.mdp.get(currentVertex).keySet()) {
+        /*
+        
+        This block is used in case the agent update its MDP based on knowledge present on infrastructure.
+        At the current moment it is not been used, but it will be usefull on the future.
+        
+         //Communicate to the infrastructure and update the next q-values
+         if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
+         for (AbstractEdge action : mdp.mdp.get(currentVertex).keySet()) {
 
-                //estimated reward on link
-                Double currentValue = mdp.mdp.get(currentVertex).get(action).getReward();
+         //estimated reward on link
+         Double currentValue = mdp.mdp.get(currentVertex).get(action).getReward();
 
-                EdgeC2I edge = (EdgeC2I) action;
+         EdgeC2I edge = (EdgeC2I) action;
 
-                //if the information present on knowledge base is better, update agent's MDP
-                if (edge.getInformation(action) != null && edge.getInformation(action).getValue() < currentValue) {
-                    //update q-value
-                    mdp.mdp.get(currentVertex).get(action).updateByMessage(edge.getInformation(action));
-                }
-            }
-        }
-
+         //if the information present on knowledge base is better, update agent's MDP
+         if (edge.getInformation(action) != null && edge.getInformation(action).getValue() < currentValue) {
+         //update q-value
+         mdp.mdp.get(currentVertex).get(action).updateByMessage(edge.getInformation(action));
+         }
+         }
+         }
+                
+         */
         //Select the next action
         currentEdge = mdp.getAction(currentVertex);
         //update the travaled route
@@ -129,6 +135,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         double qa = this.mdp.getValue(currentEdge);
         //reward
         double r = this.rewardFunction.getReward(this);
+        
+        double f = this.rewardFunction.getRewardShaping(this);
 
         double maxQa = 0.0;
         if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
@@ -137,7 +145,7 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         }
 
         //update q-value
-        qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
+        qa = (1 - ALPHA) * qa + ALPHA * (r + f + GAMMA * maxQa);
 
         //new qvalue entry
         QValueC2I qvalue = new QValueC2I(qa, r, Params.CURRENT_EPISODE, true);
@@ -194,5 +202,4 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         this.mdp = mdp;
     }
 
-    
 }

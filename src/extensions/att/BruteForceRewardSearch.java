@@ -1,7 +1,8 @@
 package extensions.att;
 
-import driver.learning.QLStateless;
+import driver.learning.QLStatefull;
 import driver.learning.RewardFunction;
+import driver.learning.StatefullRewardFunctionATT;
 import scenario.ImplementedTAP;
 import simulation.Params;
 import simulation.Simulation;
@@ -21,28 +22,41 @@ public class BruteForceRewardSearch {
 
         //Parameters Setting
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
-        Params.ALGORITHM = QLStateless.class;
+        Params.ALGORITHM = QLStatefull.class;
         Params.PRINT_ALL_OD_PAIR = false;
         Params.PRINT_FLOWS = false;
         Params.PRINT_ON_TERMINAL = false;
         Params.PRINT_AVERAGE_RESULTS = false;
-        Params.EPISODES = 150;
-        Params.EPSILON = 0.91f;
+        Params.EPISODES = 100;
+        Params.E_DECAY_RATE = 0.9f;
         Params.REPETITIONS = 1;
-        QLStateless.ALPHA = 0.5f;
-        QLStateless.K = 8;
+        QLStatefull.ALPHA = 0.5f;
+        QLStatefull.GAMMA = 0.99f;
         Params.TAP_NAME = ImplementedTAP.OW;
+        Params.MAX_STEPS = 50;
         Params.createTap();
-        
-        //Experiment Definition
 
+        //Experiment Definition
         Simulation simulation = null;
-        for (float coeficient = 0.1f; coeficient <= 0.9f; coeficient += 0.1f) {
-            simulation = new Simulation(Params.USED_TAP);
-            simulation.execute();
-            System.out.print("coeficient: " + coeficient + "\tresult: " + simulation.getSimulationOutputs());
-            simulation.reset();
-            simulation.end();
+
+        System.out.println("a1 a2 a3 a4 tt");
+        //destination
+        for (StatefullRewardFunctionATT.alpha[0] = -1.0; StatefullRewardFunctionATT.alpha[0] <= 1.0; StatefullRewardFunctionATT.alpha[0] += 0.5) {
+            //uturn?
+            for (StatefullRewardFunctionATT.alpha[1] = -1.0; StatefullRewardFunctionATT.alpha[1] <= 1.0; StatefullRewardFunctionATT.alpha[1] += 0.5) {
+                //travelled
+                //for (StatefullRewardFunctionATT.alpha[2] = -1.0; StatefullRewardFunctionATT.alpha[2] <= 1.0; StatefullRewardFunctionATT.alpha[2] += 1) {
+                    //otherwise
+                    for (StatefullRewardFunctionATT.alpha[3] = -1.0; StatefullRewardFunctionATT.alpha[3] <= 1.0; StatefullRewardFunctionATT.alpha[3] += 0.5) {
+                        simulation = new Simulation(Params.USED_TAP);
+                        simulation.execute();
+                        System.out.format("%.2f %.2f %.2f %.2f %.4f\n", StatefullRewardFunctionATT.alpha[0], StatefullRewardFunctionATT.alpha[1], StatefullRewardFunctionATT.alpha[2], StatefullRewardFunctionATT.alpha[3], Double.parseDouble(simulation.getSimulationOutputs().split(" ")[1]));
+                        simulation.reset();
+                        simulation.end();
+                    }
+                }
+            }
         }
+
     }
-}
+//}

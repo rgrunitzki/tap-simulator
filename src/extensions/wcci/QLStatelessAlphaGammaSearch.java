@@ -25,7 +25,7 @@ public class QLStatelessAlphaGammaSearch {
 
         Params.EPISODES = 1000;
         Params.E_DECAY_RATE = 0.99f;
-        Params.STEPS = 100;
+        Params.MAX_STEPS = 100;
         
         Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
         QLStateless.K = 8;

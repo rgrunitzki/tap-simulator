@@ -27,7 +27,7 @@ public class Params {
 
     //Simulation
     public static int EPISODES = 1000;//
-    public static int STEPS = 100;
+    public static int MAX_STEPS = 100;
     public static int CURRENT_EPISODE = 1;
     public static Class ALGORITHM = QLStatefull.class;
     public static TAP USED_TAP = null;// = TAP.OW(ALGORITHM);//
