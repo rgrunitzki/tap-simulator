@@ -6,9 +6,12 @@
 package driver.learning;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import simulation.Params;
 
 /**
@@ -18,10 +21,17 @@ import simulation.Params;
  * @param <Action>
  * @param <Value>
  */
-public abstract class AbstractMDP<State, Action, Value> implements Serializable, Cloneable {
+public abstract class AbstractMDP<State, Action, Value extends Comparable> implements Serializable, Cloneable {
 
     public AbstractMDP() {
+        try {
+            this.explorationPolicy = (ExplorationPolicy) Params.EXPLORATION_POLICY.getConstructor().newInstance();
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(AbstractMDP.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
+    private ExplorationPolicy explorationPolicy;
 
     protected Map<State, Map<Action, Value>> mdp = new ConcurrentHashMap<>();
 
@@ -31,7 +41,9 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
 
     public abstract void createMDP(List<Action> actions);
 
-    public abstract Action getAction(State key);
+    public Action getAction(Map<Action, Value> mdp) {
+        return (Action) explorationPolicy.getAction(mdp);
+    }
 
     public abstract void reset();
 
@@ -56,6 +68,5 @@ public abstract class AbstractMDP<State, Action, Value> implements Serializable,
     public Map<State, Map<Action, Value>> getMdp() {
         return mdp;
     }
-    
-    
+
 }

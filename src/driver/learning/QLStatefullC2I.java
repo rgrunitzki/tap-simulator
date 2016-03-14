@@ -6,7 +6,6 @@
 package driver.learning;
 
 import driver.Driver;
-import extensions.c2i.EdgeC2I;
 import extensions.c2i.InformationType;
 import extensions.c2i.QValueC2I;
 import java.util.ArrayList;
@@ -34,8 +33,9 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
     public static InformationType INFORMATION_TYPE = InformationType.None;
+    public AbstractEdge previousEdge = null;
 
-    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
+    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionC2I(graph);
 
     public QLStatefullC2I(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
@@ -81,6 +81,7 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     @Override
     public void beforeEpisode() {
+        this.previousEdge = null;
         this.currentVertex = origin;
         this.currentEdge = null;
         this.travelTime = 0;
@@ -96,8 +97,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
         /*
         
-        This block is used in case the agent update its MDP based on knowledge present on infrastructure.
-        At the current moment it is not been used, but it will be usefull on the future.
+         This block is used in case the agent update its MDP based on knowledge present on infrastructure.
+         At the current moment it is not been used, but it will be usefull on the future.
         
          //Communicate to the infrastructure and update the next q-values
          if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
@@ -115,14 +116,22 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
          }
          }
          }
+        
+        
+        
                 
+        
          */
+        //Update last experienced edge;
+        previousEdge = currentEdge;
+
         //Select the next action
-        currentEdge = mdp.getAction(currentVertex);
+        currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
         //update the travaled route
         this.route.add(currentEdge);
         //update the current vertex
         this.currentVertex = currentEdge.getTargetVertex();
+
     }
 
     @Override
@@ -133,10 +142,11 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
         //current q-value
         double qa = this.mdp.getValue(currentEdge);
+
         //reward
-        double r = this.rewardFunction.getReward(this);
-        
-        double f = this.rewardFunction.getRewardShaping(this);
+        double r = this.rewardFunction.getStandardReward(this);
+
+        double f = -this.rewardFunction.getRewardShaping(this);
 
         double maxQa = 0.0;
         if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
@@ -200,6 +210,10 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     public void setMdp(StatefullC2IMDP mdp) {
         this.mdp = mdp;
+    }
+
+    public AbstractEdge getPreviousEdge() {
+        return previousEdge;
     }
 
 }

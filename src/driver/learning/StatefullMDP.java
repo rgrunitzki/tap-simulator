@@ -5,12 +5,8 @@
  */
 package driver.learning;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import scenario.AbstractEdge;
-import simulation.Params;
 
 /**
  *
@@ -32,19 +28,6 @@ public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
     @Override
     public void createMDP(List<AbstractEdge> actions) {
-    }
-
-    @Override
-    public AbstractEdge getAction(String key) {
-        Map<AbstractEdge, Double> mdp2 = mdp.get(key);
-        float random = Params.RANDOM.nextFloat();
-        if (random <= getEpsilon()) {
-            List l = new ArrayList<>(mdp2.keySet());
-            Collections.shuffle(l, Params.RANDOM);
-            return (AbstractEdge) l.get(0);
-        } else {
-            return Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getKey();
-        }
     }
 
     @Override

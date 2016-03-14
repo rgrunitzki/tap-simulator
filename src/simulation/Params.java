@@ -5,9 +5,14 @@
  */
 package simulation;
 
+import driver.learning.EpsilonGreedy;
 import driver.learning.QLStatefull;
+import driver.learning.QLStatefullC2I;
 import driver.learning.QLStateless;
 import driver.learning.RewardFunction;
+import driver.learning.SoftMaxExploration;
+import extensions.c2i.EdgeC2I;
+import extensions.c2i.InformationType;
 import java.util.Random;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -49,7 +54,7 @@ public class Params {
     public static final long SEED = System.currentTimeMillis();
     public static Random RANDOM = new Random();
     public static RewardFunction REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
-
+    public static Class EXPLORATION_POLICY = EpsilonGreedy.class;
     public static String SEPARATOR = " ";//
     public static String COMMENT = "#";//
 
@@ -68,12 +73,14 @@ public class Params {
         options.addOption("c", "output.column-char", false, "character used to separate columns. Default value is < >.");
         options.addOption("C", "output.comment-char", false, "character used to indicate a commented line.");
         options.addOption("d", "output.dir", false, "directory used to print the outputs.");
-        options.addOption("a", "algorithm", true, "algorithm used to solve the traffic assignment problem. Accepted values are <QLStatefull>, <QLStateless>, <AoN>, <InA>, <MSA>.");
+        options.addOption("a", "algorithm", true, "algorithm used to solve the traffic assignment problem. Accepted values are <QLStatefull>, <QLStatefullC2I>, <QLStateless>, <AoN>, <InA>, <MSA>.");
+        options.addOption("i", "info.type", true, "Information type used by QLStatefullC2I. Accepted values are <None>, <Average>, <Best>, <Last>.");
         options.addOption("n", "tap", true, "algorithm used to solve the traffic assignment problem. Accepted values are <ANA>, <BRAESS>, <BYPASS>, <EMME>, <ND>, <OW>, <SF>.");
         options.addOption("h", "help", false, "shows this message");
         options.addOption("d", "output.dir", true, "directory used to print the files. Default value is </results>");
         options.addOption("r", "runs", true, "number of repetitions of the experiment.");
         options.addOption("e", "ql.episodes", true, "number of episodes of each experiment.");
+        options.addOption("E", "exploration.policy", true, "exploration policy. Accepted values are Epsilon-Greedy <EGreedy> (Default), Softmax <Softmax>");
         options.addOption("epsilon", "ql.epsilon", true, "epsilon decay rate parameter of exploration.");
         options.addOption("reward", "ql.reward", true, "Reward function for QLearning-based methods. Avaiable values are Difference Rewards <DR>, Standard Reward <STD>, Reward Shaping <RS>.");
         options.addOption("alpha", "ql.alpha", true, "Alpha parameter of QLStateless and QLStatefull");
@@ -98,6 +105,27 @@ public class Params {
                     case "QLSTATELESS":
                         ALGORITHM = QLStateless.class;
                         break;
+                    case "QLSTATEFULLC2I":
+                        ALGORITHM = QLStatefullC2I.class;
+                        DEFAULT_EDGE = EdgeC2I.class;
+                        break;
+                }
+            }
+            
+            if (cmdLine.hasOption("info.type")) {
+                switch (cmdLine.getOptionValue("info.type").toUpperCase()) {
+                    case "BEST":
+                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Best;
+                        break;
+                    case "LAST":
+                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Last;
+                        break;
+                    case "NONE":
+                        QLStatefullC2I.INFORMATION_TYPE=InformationType.None;
+                        break;
+                    case "AVERAGE":
+                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Average;
+                        break;
                 }
             }
 
@@ -113,6 +141,16 @@ public class Params {
 
                     case "RS":
                         REWARD_FUNCTION = RewardFunction.REWARD_SHAPING;
+                        break;
+                }
+            }
+            if (cmdLine.hasOption("exploration.policy")) {
+                switch (cmdLine.getParsedOptionValue("exploration.policy").toString().toUpperCase()) {
+                    case "EGREEDY":
+                        Params.EXPLORATION_POLICY = EpsilonGreedy.class;
+                        break;
+                    case "SOFTMAX":
+                        Params.EXPLORATION_POLICY = SoftMaxExploration.class;
                         break;
                 }
             }
@@ -146,11 +184,13 @@ public class Params {
 
             if (cmdLine.hasOption("ql.alpha")) {
                 QLStatefull.ALPHA = Double.parseDouble(cmdLine.getParsedOptionValue("ql.alpha").toString());
+                QLStatefullC2I.ALPHA = Double.parseDouble(cmdLine.getParsedOptionValue("ql.alpha").toString());
                 QLStateless.ALPHA = Float.parseFloat(cmdLine.getParsedOptionValue("ql.alpha").toString());
             }
 
             if (cmdLine.hasOption("ql.gamma")) {
                 QLStatefull.GAMMA = Double.parseDouble(cmdLine.getParsedOptionValue("ql.gamma").toString());
+                QLStatefullC2I.GAMMA = Double.parseDouble(cmdLine.getParsedOptionValue("ql.gamma").toString());
             }
 
             if (cmdLine.hasOption("ql.k")) {

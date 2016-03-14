@@ -23,7 +23,7 @@ public class MethodOfSuccessiveAveragesAssignment {
     public static void main(String[] args) {
 
         Params.DEFAULT_EDGE = EdgeMSA.class;
-        TAP tap = TAP.OW(MSADriver.class);
+        TAP tap = TAP.ND(MSADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         List<EdgeMSA> edges = new ArrayList<>(tap.getGraph().edgeSet());

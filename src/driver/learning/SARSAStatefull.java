@@ -7,7 +7,6 @@ package driver.learning;
 
 import driver.Driver;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,18 +23,18 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
+public class SARSAStatefull extends Driver<SARSAStatefull, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
 //    public static StatefullMDP staticMdp;
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
-
+    private AbstractEdge nextEdge = null;
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 //    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionATT(graph);
 
-    public QLStatefull(int id, String origin, String destination, Graph graph) {
+    public SARSAStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
 
@@ -61,13 +60,13 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SARSAStatefull.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SARSAStatefull.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -80,6 +79,7 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public void beforeEpisode() {
         this.currentVertex = origin;
         this.currentEdge = null;
+        this.nextEdge = null;
         this.travelTime = 0;
         this.route = new LinkedList<>();
     }
@@ -90,7 +90,11 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
     @Override
     public void beforeStep() {
-        currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
+        if (nextEdge == null) {
+            currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
+        }else{
+            currentEdge = nextEdge;
+        }
         this.route.add(currentEdge);
         this.currentVertex = currentEdge.getTargetVertex();
     }
@@ -100,17 +104,22 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         this.travelTime += currentEdge.getCost();
 
         //update q-table
-        double qa = this.mdp.getValue(currentEdge);
-        double r = this.rewardFunction.getReward(this);
+        double qa_t0 = this.mdp.getValue(currentEdge);
+        double r_t1 = this.rewardFunction.getReward(this);
 
-        double maxQa = 0.0;
-        if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
-            Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
-            maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
+        double qa_t1 = 0;
+        nextEdge = mdp.getAction(mdp.mdp.get(currentVertex));
+        
+        
+        if (nextEdge.getSourceVertex().equals(destination)) {
+            qa_t1 = 0.0;
+        } else {
+            qa_t1 = mdp.getValue(nextEdge);
         }
-        qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
 
-        this.mdp.setValue(currentEdge, qa);
+        qa_t0 = (1 - ALPHA) * qa_t0 + ALPHA * (r_t1 + GAMMA * qa_t1);
+
+        this.mdp.setValue(currentEdge, qa_t0);
     }
 
     @Override
@@ -138,8 +147,8 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
         list.add(Pair.of("reward", Params.REWARD_FUNCTION.toString()));
         list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
-        list.add(Pair.of("alpha", QLStatefull.ALPHA));
-        list.add(Pair.of("gamma", QLStatefull.GAMMA));
+        list.add(Pair.of("alpha", SARSAStatefull.ALPHA));
+        list.add(Pair.of("gamma", SARSAStatefull.GAMMA));
         return list;
     }
 

@@ -67,7 +67,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
     @Override
     public void beforeEpisode() {
         reset();
-        this.route = mdp.getAction(null);
+        this.route = mdp.getAction(this.mdp.mdp.get(this.origin));
         this.currentEdge = (AbstractEdge) this.route.getEdgeList().get(0);
 
         if (!AbstractRewardFunction.rewards.isEmpty()) {

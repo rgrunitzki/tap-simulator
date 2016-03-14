@@ -7,8 +7,8 @@ package driver.learning;
 
 import driver.Driver;
 import extensions.c2i.EdgeC2I;
+import extensions.c2i.InformationType;
 import org.jgrapht.Graph;
-import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -16,8 +16,6 @@ import simulation.Params;
  * @author rgrunitzki
  */
 public class StatefullRewardFunctionC2I extends AbstractRewardFunction<Driver> {
-
-    public static Double[] alpha = {-1.0, -1.0, -1.0, -1.0};
 
     public StatefullRewardFunctionC2I(Graph graph) {
         this.graph = graph;
@@ -43,8 +41,19 @@ public class StatefullRewardFunctionC2I extends AbstractRewardFunction<Driver> {
 
     @Override
     public Double getRewardShaping(Driver driver) {
-        EdgeC2I edge = (EdgeC2I) driver.getCurrentEdge();
-        return -edge.getInformation(edge).getValue();
+        QLStatefullC2I driverC2I = (QLStatefullC2I) driver;
+        EdgeC2I currentEdge = (EdgeC2I) driverC2I.getCurrentEdge();
+        EdgeC2I previousEdge = (EdgeC2I) driverC2I.getPreviousEdge();
+        if (QLStatefullC2I.INFORMATION_TYPE == InformationType.None || (currentEdge.getInformation(currentEdge) == null) && (previousEdge.getInformation(previousEdge) == null)) {
+            return 0.0;
+        } else {
+//            if (previousEdge != null) {
+//                return QLStatefullC2I.GAMMA * currentEdge.getInformation(currentEdge).getValue() - previousEdge.getInformation(previousEdge).getValue();
+//            } else {
+                return QLStatefullC2I.GAMMA * currentEdge.getInformation(currentEdge).getValue();
+//            }
+
+        }
     }
 
     @Override

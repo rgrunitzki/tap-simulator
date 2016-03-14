@@ -37,4 +37,8 @@
     <edge id="17" from="12" to="6" alpha="0.0025" fftime="7" />
     <edge id="18" from="12" to="8" alpha="0.01" fftime="14" />
     <edge id="19" from="13" to="3" alpha="0.01" fftime="11" />
+    
+    <!--this link were inserted to solve the problem of no links in destinations 2 and 3--> 
+    <edge id="20" from="2" to="11" alpha="0.005" fftime="9" />
+    <edge id="21" from="3" to="11" alpha="0.01" fftime="8" />
 </graph>

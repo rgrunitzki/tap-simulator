@@ -2,7 +2,6 @@ package extensions.att;
 
 import driver.learning.QLStatefull;
 import driver.learning.RewardFunction;
-import driver.learning.StatefullRewardFunctionATT;
 import scenario.ImplementedTAP;
 import simulation.Params;
 import simulation.Simulation;
@@ -19,6 +18,10 @@ import simulation.Simulation;
 public class BruteForceRewardSearch {
 
     public static void main(String[] args) {
+        
+        double alpha1 = Double.parseDouble(args[0]);
+        double alpha2 = Double.parseDouble(args[0]);
+        double alpha3 = Double.parseDouble(args[0]);
 
         //Parameters Setting
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
@@ -41,22 +44,24 @@ public class BruteForceRewardSearch {
 
         System.out.println("a1 a2 a3 a4 tt");
         //destination
-        for (StatefullRewardFunctionATT.alpha[0] = -1.0; StatefullRewardFunctionATT.alpha[0] <= 1.0; StatefullRewardFunctionATT.alpha[0] += 0.5) {
-            //uturn?
-            for (StatefullRewardFunctionATT.alpha[1] = -1.0; StatefullRewardFunctionATT.alpha[1] <= 1.0; StatefullRewardFunctionATT.alpha[1] += 0.5) {
-                //travelled
-                //for (StatefullRewardFunctionATT.alpha[2] = -1.0; StatefullRewardFunctionATT.alpha[2] <= 1.0; StatefullRewardFunctionATT.alpha[2] += 1) {
-                    //otherwise
-                    for (StatefullRewardFunctionATT.alpha[3] = -1.0; StatefullRewardFunctionATT.alpha[3] <= 1.0; StatefullRewardFunctionATT.alpha[3] += 0.5) {
-                        simulation = new Simulation(Params.USED_TAP);
-                        simulation.execute();
-                        System.out.format("%.2f %.2f %.2f %.2f %.4f\n", StatefullRewardFunctionATT.alpha[0], StatefullRewardFunctionATT.alpha[1], StatefullRewardFunctionATT.alpha[2], StatefullRewardFunctionATT.alpha[3], Double.parseDouble(simulation.getSimulationOutputs().split(" ")[1]));
-                        simulation.reset();
-                        simulation.end();
-                    }
-                }
-            }
-        }
-
+//        for (StatefullRewardFunctionATT.alpha[0] = -1.0; StatefullRewardFunctionATT.alpha[0] <= 1.0; StatefullRewardFunctionATT.alpha[0] += 0.5) {
+        //uturn?
+//            for (StatefullRewardFunctionATT.alpha[1] = -1.0; StatefullRewardFunctionATT.alpha[1] <= 1.0; StatefullRewardFunctionATT.alpha[1] += 0.5) {
+        //travelled
+        //for (StatefullRewardFunctionATT.alpha[2] = -1.0; StatefullRewardFunctionATT.alpha[2] <= 1.0; StatefullRewardFunctionATT.alpha[2] += 1) {
+        //otherwise
+//                    for (StatefullRewardFunctionATT.alpha[3] = -1.0; StatefullRewardFunctionATT.alpha[3] <= 1.0; StatefullRewardFunctionATT.alpha[3] += 0.5) {
+        
+        
+        simulation = new Simulation(Params.USED_TAP);
+        simulation.execute();
+//        System.out.format("%.2f %.2f %.2f %.2f %.4f\n", StatefullRewardFunctionATT.alpha[0], StatefullRewardFunctionATT.alpha[1], StatefullRewardFunctionATT.alpha[2], StatefullRewardFunctionATT.alpha[3], Double.parseDouble(simulation.getSimulationOutputs().split(" ")[1]));
+        simulation.reset();
+        simulation.end();
     }
+}
+//            }
+//        }
+
+//    }
 //}

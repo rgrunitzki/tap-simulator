@@ -27,7 +27,7 @@ public class QLStatelessAlphaGammaSearch {
         Params.E_DECAY_RATE = 0.99f;
         Params.MAX_STEPS = 100;
         
-        Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
+        Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
         QLStateless.K = 8;
         QLStateless.ALPHA = 0.9f;
 
@@ -35,7 +35,7 @@ public class QLStatelessAlphaGammaSearch {
 
             QLStateless.ksps = new ConcurrentHashMap<>();
             QLStateless.mdpPerOD = new ConcurrentHashMap<>();
-            Params.USED_TAP = TAP.SF(Params.ALGORITHM);
+            Params.USED_TAP = TAP.ND(Params.ALGORITHM);
 
             for (QLStateless.ALPHA = 0.1f; QLStateless.ALPHA <= 1.0f; QLStateless.ALPHA += 0.1) {
                 System.out.println("K=" + QLStateless.K + "\tAlpha=" + QLStateless.ALPHA);

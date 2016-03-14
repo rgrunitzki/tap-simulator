@@ -11,7 +11,7 @@ import simulation.Params;
  *
  * @author rgrunitzki
  */
-public class QValueC2I {
+public class QValueC2I implements Comparable<QValueC2I>{
 
     private double value;
     private double reward;
@@ -48,5 +48,12 @@ public class QValueC2I {
     public double getReward() {
         return reward;
     }
+
+    @Override
+    public int compareTo(QValueC2I object) {
+        return Double.compare(value, object.value);
+    }
+    
+    
 
 }

@@ -6,7 +6,6 @@
 package extensions.c2i;
 
 import driver.Driver;
-import driver.learning.QLStatefullC2I;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import scenario.AbstractCostFunction;
@@ -41,27 +40,33 @@ public class EdgeC2I extends AbstractEdge {
     public synchronized void proccess(Driver driver) {
         //update flow counters
         super.proccess(driver);
+        this.updateInformation(this, this.getCost());
 
-        if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
+        /** These lines are used to maitain a complete base about the network on each link.
+        
+        
+        
+         if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
 
-            //Runs through the knowledge base of the agent and updates Edge's knowledgeBase
-            QLStatefullC2I d = (QLStatefullC2I) driver;
+         //Runs through the knowledge base of the agent and updates Edge's knowledgeBase
+         QLStatefullC2I d = (QLStatefullC2I) driver;
 
-            //Runs through the states
-            for (String state : d.getMdp().getMdp().keySet()) {
-                //Runs through the action-state pairs
-                for (AbstractEdge action : d.getMdp().getMdp().get(state).keySet()) {
-                    //get the estimated reward
-                    double value = d.getMdp().getMdp().get(state).get(action).getReward();
+         //Runs through the states
+         for (String state : d.getMdp().getMdp().keySet()) {
+         //Runs through the action-state pairs
+         for (AbstractEdge action : d.getMdp().getMdp().get(state).keySet()) {
+         //get the estimated reward
+         double value = d.getMdp().getMdp().get(state).get(action).getReward();
                     
-                    //update the knownledge base
-                    if (value != 0.0) {
-                        this.updateInformation(action, value);
-                    }
-                }
-            }
-        }
+         //update the knownledge base
+         if (value != 0.0) {
+         this.updateInformation(action, value);
+         }
+         }
+         }
+         }
 
+         **/
         //
 //        String output = this.getName() + " -> ";
 //        for (AbstractEdge e : knowledgeBase.keySet()) {
