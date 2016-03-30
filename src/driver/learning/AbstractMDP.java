@@ -31,7 +31,7 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
         }
     }
 
-    private ExplorationPolicy explorationPolicy;
+    protected ExplorationPolicy explorationPolicy;
 
     protected Map<State, Map<Action, Value>> mdp = new ConcurrentHashMap<>();
 

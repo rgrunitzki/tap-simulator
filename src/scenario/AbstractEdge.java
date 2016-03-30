@@ -22,7 +22,7 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
 
     private int totalFlow;
 
-    private AbstractCostFunction costFunction;
+    protected AbstractCostFunction costFunction;
 
     public AbstractEdge(AbstractCostFunction costFunction) {
         this.params = new HashMap<>();
@@ -30,6 +30,10 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
         this.totalFlow = 0;
         this.costFunction = costFunction;
     }
+    
+//    public synchronized void afterEpisode(){}
+//    
+//    public synchronized void beforeEpisode(){}
 
     public void setParams(Map<String, Object> params) {
         this.params = params;
@@ -75,7 +79,6 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
     }
 
     public synchronized void proccess(Driver driver) {
-        
         //increment the flow of drivers on edge
         this.currentFlow++;
         this.totalFlow++;
@@ -100,14 +103,6 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
     public AbstractCostFunction getCostFunction() {
         return costFunction;
     }
-
-//    public double getMsaFlow() {
-//        return msaFlow;
-//    }
-//
-//    public synchronized void setMsaFlow(double msaFlow) {
-//        this.msaFlow = msaFlow;
-//    }
 
     @Override
     public int compareTo(AbstractEdge o) {

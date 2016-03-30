@@ -10,7 +10,6 @@ import static extensions.c2i.InformationType.Average;
 import static extensions.c2i.InformationType.Best;
 import static extensions.c2i.InformationType.Last;
 import static extensions.c2i.InformationType.None;
-import java.util.Random;
 
 /**
  *

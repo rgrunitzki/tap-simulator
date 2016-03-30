@@ -34,15 +34,10 @@ public class StatefullC2IMDP extends AbstractMDP<String, AbstractEdge, QValueC2I
 
     @Override
     public AbstractEdge getAction(Map<AbstractEdge, QValueC2I> mdp) {
-        return super.getAction(mdp); 
+        return super.getAction(mdp);
     }
 
     @Override
     public void reset() {
     }
-    
-    private void valueIterator(){
-//        codeHere();
-    }
-
 }

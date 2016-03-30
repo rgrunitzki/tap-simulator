@@ -21,10 +21,12 @@ public class QLStatefullC2IExperiment {
     public static void main(String[] args) {
 
         //Parameters Setting
-        Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
-        Params.ALGORITHM = SARSAStatefull.class;
+        Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
+        Params.ALGORITHM = QLStatefullC2I.class;
 //        Params.ALGORITHM = QLStatefull.class;
-        Params.ALGORITHM = QLStateless.class;
+//        Params.ALGORITHM = QLStateless.class;
+        Params.DEFAULT_EDGE = EdgeC2I.class;
+//        Params.EXPLORATION_POLICY = C2IEpsilonGreedy.class;
 
         Params.PRINT_ALL_OD_PAIR = false;
         Params.PRINT_FLOWS = false;
@@ -36,16 +38,20 @@ public class QLStatefullC2IExperiment {
         Params.MAX_STEPS = 50;
         Params.E_DECAY_RATE = 0.99f;
         Params.REPETITIONS = 1;
-        Params.TAP_NAME = ImplementedTAP.OW;
+        Params.TAP_NAME = ImplementedTAP.BRAESS;
         
         SARSAStatefull.ALPHA = 0.5f;
         SARSAStatefull.GAMMA = 0.99f;
+
         
-        QLStatefull.ALPHA = 0.2f;
+        QLStatefull.ALPHA = 0.5f;
         QLStatefull.GAMMA = 0.99f;
         
-        QLStateless.K=8;
-        QLStateless.ALPHA = 0.8f;
+        QLStatefullC2I.ALPHA = 0.8f;
+        QLStatefullC2I.GAMMA = 0.99f;
+        
+        QLStateless.K=9;
+        QLStateless.ALPHA = 0.9f;
 
         Params.createTap();
 

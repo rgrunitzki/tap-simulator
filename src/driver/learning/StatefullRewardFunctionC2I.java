@@ -40,24 +40,12 @@ public class StatefullRewardFunctionC2I extends AbstractRewardFunction<Driver> {
     }
 
     @Override
-    public Double getRewardShaping(Driver driver) {
-        QLStatefullC2I driverC2I = (QLStatefullC2I) driver;
-        EdgeC2I currentEdge = (EdgeC2I) driverC2I.getCurrentEdge();
-        EdgeC2I previousEdge = (EdgeC2I) driverC2I.getPreviousEdge();
-        if (QLStatefullC2I.INFORMATION_TYPE == InformationType.None || (currentEdge.getInformation(currentEdge) == null) && (previousEdge.getInformation(previousEdge) == null)) {
-            return 0.0;
-        } else {
-//            if (previousEdge != null) {
-//                return QLStatefullC2I.GAMMA * currentEdge.getInformation(currentEdge).getValue() - previousEdge.getInformation(previousEdge).getValue();
-//            } else {
-                return QLStatefullC2I.GAMMA * currentEdge.getInformation(currentEdge).getValue();
-//            }
-
-        }
+    public Double getDifferenceRewards(Driver driver) {
+        return 0.0;
     }
 
     @Override
-    public Double getDifferenceRewards(Driver driver) {
+    public Double getRewardShaping(Driver driver) {
         return 0.0;
     }
 }

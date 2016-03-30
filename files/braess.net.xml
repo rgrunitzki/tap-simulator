@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <graph>
     <node id="O"/>
-    <node id="P"/>
-    <node id="Q"/>
+    <node id="A"/>
+    <node id="B"/>
     <node id="D"/>
     
-    <edge id="OP" from="O" to="P" operation="+" fftime="50"/>
-    <edge id="PD" from="P" to="D" operation="*" fftime="10"/>
-    <edge id="QP" from="Q" to="P" operation="+" fftime="10"/>
-    <edge id="OQ" from="O" to="Q" operation="*" fftime="10"/>
-    <edge id="QD" from="Q" to="D" operation="+" fftime="50"/>
+    <edge id="OA" from="O" to="A" fftime="0.0" alpha="0.01"/>
+    <edge id="OB" from="O" to="B" fftime="45" alpha="0.0"/>
+    <edge id="AB" from="A" to="B" fftime="0.0" alpha="0.0"/>
+    <edge id="AD" from="A" to="D" fftime="45" alpha="0.0"/>
+    <edge id="BD" from="B" to="D" fftime="0.0" alpha="0.01"/>
+    
 </graph>

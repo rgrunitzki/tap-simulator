@@ -91,9 +91,12 @@ public class Simulation {
         });
     }
 
+    public static int step = 0;
+
     @SuppressWarnings("empty-statement")
     private void runEpisode() {
-        int step = 0;
+        step = 0;
+//        int step = 0;
         resetEdgesForEpisode();
         while ((!runStep()) && (step++ < Params.MAX_STEPS));
     }
@@ -117,7 +120,7 @@ public class Simulation {
             this.cservice.submit(driver);
         });
 
-        driversToProcess.parallelStream().forEach((driver) -> {
+        driversToProcess.stream().forEach((driver) -> {
             try {
                 boolean result = this.cservice.take().isDone();
                 if (!result) {
@@ -126,14 +129,18 @@ public class Simulation {
             } catch (InterruptedException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
+        });        
+        
         //intermediate computation
-        this.graph.edgeSet().parallelStream().forEach((e) -> {
-            e.clearCurrentFlow();
+        this.graph.edgeSet().parallelStream().forEach((edge) -> {
+            edge.clearCurrentFlow();
         });
-
-        driversToProcess.parallelStream().filter((d) -> (!d.hasArrived())).forEach((d) -> {
-            d.getCurrentEdge().proccess(d);
+        
+        driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((driver) -> {
+            if(driver.getCurrentEdge()==null){
+                System.out.println("pau");
+            }
+            driver.getCurrentEdge().proccess(driver);
         });
 
         //before step processing

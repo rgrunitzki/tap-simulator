@@ -136,6 +136,18 @@ public class TAP {
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }
 
+    public static TAP BRAESS_6Trip(Class clazz) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+
+        netFile = "files/braess6.net.xml";
+        demandFile = "files/braess6.od.xml";
+        costFunction = new BraessParadoxCostFunction();
+
+        return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
+    }
+    
     public static TAP BRAESS(Class clazz) {
         String netFile;
         String demandFile;
@@ -143,7 +155,7 @@ public class TAP {
 
         netFile = "files/braess.net.xml";
         demandFile = "files/braess.od.xml";
-        costFunction = new BraessParadoxCostFunction();
+        costFunction = new LinearCostFunction();
 
         return new TAP(new File(demandFile), new File(netFile), costFunction, clazz);
     }

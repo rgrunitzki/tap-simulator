@@ -224,6 +224,9 @@ public class Params {
             case BRAESS:
                 USED_TAP = TAP.BRAESS(ALGORITHM);
                 break;
+            case BRAESS6:
+                USED_TAP = TAP.BRAESS_6Trip(ALGORITHM);
+                break;
             case EMME:
                 USED_TAP = TAP.EMME(ALGORITHM);
                 break;

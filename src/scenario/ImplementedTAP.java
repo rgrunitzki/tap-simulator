@@ -14,6 +14,7 @@ public enum ImplementedTAP {
     ANA("ANA"),
     BYPASS("BYPASS"),
     BRAESS("BRAESS"),
+    BRAESS6("BRAESS6"),
     EMME("EMME"),
     ND("ND"),
     OW("OW"),

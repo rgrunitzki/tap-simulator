@@ -13,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import simulation.Params;
@@ -31,12 +30,12 @@ public class OutputAnaliser {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = Params.OUTPUTS_DIRECTORY + File.separator + "braess";
-        type = AnalysisType.PRINT_MEAN_CONVERGENCE_CURVE;
+        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/DR/ow";
+        //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
+        type = AnalysisType.PRINT_SELECTED_COLUMNS;
 
         walk(experimentsDirectory);
 
-        //generate_summary_files(experimentsDirectory);
     }
 
     public static void walk(String path) throws FileNotFoundException, IOException {
@@ -145,16 +144,21 @@ public class OutputAnaliser {
 
         //read files
         for (int file = 0; file < files.length; file++) {
-            BufferedReader reader = new BufferedReader(new FileReader(files[file]));
-            while ((line = reader.readLine()) != null) {
-                String[] rows = line.trim().split(Params.SEPARATOR);
-                if (!rows[0].contains(Params.COMMENT)) {
-                    for (int column : columnsToPrint) {
-                        selectedContent = rows[column] + Params.SEPARATOR;
+
+            //print only average file
+            if (files[file].getName().contains("mean")) {
+                BufferedReader reader = new BufferedReader(new FileReader(files[file]));
+                while ((line = reader.readLine()) != null) {
+                    String[] rows = line.trim().split(Params.SEPARATOR);
+                    if (!rows[0].contains(Params.COMMENT)) {
+                        for (int column : columnsToPrint) {
+                            selectedContent = rows[column] + Params.SEPARATOR;
+                        }
                     }
                 }
+                System.out.print(files[file].getParent() + Params.SEPARATOR + selectedContent);
             }
-            System.out.println(files[file].getName() + selectedContent);
+
         }
     }
 

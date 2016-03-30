@@ -8,6 +8,8 @@ package extensions.c2i;
 import driver.Driver;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.FloydWarshallShortestPaths;
 import scenario.AbstractCostFunction;
 import scenario.AbstractEdge;
 
@@ -17,17 +19,23 @@ import scenario.AbstractEdge;
  */
 public class EdgeC2I extends AbstractEdge {
 
-    private final Map<AbstractEdge, MessageC2I> knowledgeBase = new ConcurrentHashMap<>();
+    public static FloydWarshallShortestPaths SHORTEST_PATHS;
 
+    public static boolean C2I_WEIGHT = false;
+
+    private final Map<AbstractEdge, MessageC2I> knowledgeBase = new ConcurrentHashMap<>();
+    
+    private MessageC2I knowledgeC2I = new MessageC2I();
+    
     public EdgeC2I(AbstractCostFunction costFunction) {
         super(costFunction);
     }
 
-    public MessageC2I getInformation(AbstractEdge key) {
+    public synchronized MessageC2I getInformation(AbstractEdge key) {
         return knowledgeBase.get(key);
     }
 
-    private void updateInformation(AbstractEdge key, Double value) {
+    private synchronized void updateInformation(AbstractEdge key, Double value) {
 
         if (!knowledgeBase.containsKey(key)) {
             knowledgeBase.put(key, new MessageC2I());
@@ -37,42 +45,37 @@ public class EdgeC2I extends AbstractEdge {
     }
 
     @Override
+    protected synchronized double getWeight() {
+        if (C2I_WEIGHT) {
+            if (this.getInformation(this) == null) {
+                return this.getCostFunction().evalDesirableCost(this, 0);
+            } else {
+                return this.getInformation(this).getValue();
+            }
+        } else {
+            return super.getWeight();
+        }
+    }
+
+    @Override
     public synchronized void proccess(Driver driver) {
         //update flow counters
         super.proccess(driver);
         this.updateInformation(this, this.getCost());
-
-        /** These lines are used to maitain a complete base about the network on each link.
-        
-        
-        
-         if (QLStatefullC2I.INFORMATION_TYPE != InformationType.None) {
-
-         //Runs through the knowledge base of the agent and updates Edge's knowledgeBase
-         QLStatefullC2I d = (QLStatefullC2I) driver;
-
-         //Runs through the states
-         for (String state : d.getMdp().getMdp().keySet()) {
-         //Runs through the action-state pairs
-         for (AbstractEdge action : d.getMdp().getMdp().get(state).keySet()) {
-         //get the estimated reward
-         double value = d.getMdp().getMdp().get(state).get(action).getReward();
-                    
-         //update the knownledge base
-         if (value != 0.0) {
-         this.updateInformation(action, value);
-         }
-         }
-         }
-         }
-
-         **/
-        //
-//        String output = this.getName() + " -> ";
-//        for (AbstractEdge e : knowledgeBase.keySet()) {
-//            output+="("+ e.getName() + "-" + knowledgeBase.get(e).getValue()+")";
-//        }
-//        System.out.println(output);
     }
 
+    public static synchronized void afterEpisode(Graph graph) {
+        if (SHORTEST_PATHS != null) {
+            SHORTEST_PATHS = null;
+        }
+    }
+
+    public static synchronized void beforeEpisode(Graph graph) {
+        if (SHORTEST_PATHS == null) {
+//        if (SHORTEST_PATHS == null && C2IEpsilonGreedy.superExploration()) {
+            EdgeC2I.C2I_WEIGHT = true;
+            SHORTEST_PATHS = new FloydWarshallShortestPaths<>(graph);
+            EdgeC2I.C2I_WEIGHT = false;
+        }
+    }
 }

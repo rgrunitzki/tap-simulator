@@ -22,8 +22,8 @@ public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
     }
 
     @Override
-    public double getValue(AbstractEdge actionKey) {
-        return this.mdp.get(actionKey.getSourceVertex()).get(actionKey);
+    public double getValue(AbstractEdge key) {
+        return this.mdp.get(key.getSourceVertex()).get(key);
     }
 
     @Override
