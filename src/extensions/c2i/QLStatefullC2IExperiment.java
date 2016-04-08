@@ -38,24 +38,24 @@ public class QLStatefullC2IExperiment {
         Params.MAX_STEPS = 50;
         Params.E_DECAY_RATE = 0.99f;
         Params.REPETITIONS = 1;
-        Params.TAP_NAME = ImplementedTAP.BRAESS;
-        
+        Params.TAP_NAME = ImplementedTAP.OW;
+
         SARSAStatefull.ALPHA = 0.5f;
         SARSAStatefull.GAMMA = 0.99f;
 
-        
-        QLStatefull.ALPHA = 0.5f;
+        QLStatefull.ALPHA = 0.2f;
         QLStatefull.GAMMA = 0.99f;
-        
-        QLStatefullC2I.ALPHA = 0.8f;
+
+        QLStatefullC2I.ALPHA = 0.5f;
         QLStatefullC2I.GAMMA = 0.99f;
-        
-        QLStateless.K=9;
-        QLStateless.ALPHA = 0.9f;
+        Params.EPSILON = 0.5f;
+
+        QLStateless.K = 8;
+        QLStateless.ALPHA = 0.1f;
 
         Params.createTap();
 
-        QLStatefullC2I.INFORMATION_TYPE = InformationType.Last;
+        QLStatefullC2I.INFORMATION_TYPE = InformationType.Average;
         DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
 

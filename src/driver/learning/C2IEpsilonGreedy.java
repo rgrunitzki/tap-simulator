@@ -24,7 +24,7 @@ import simulation.Params;
 public class C2IEpsilonGreedy<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value> {
 
     private static double SG_INIT = .02;
-//    private static double SG_END = 1;
+    private static double SG_END = 0.4;
 
     @Override
     public Action getAction(Map<Action, Value> mdp) {

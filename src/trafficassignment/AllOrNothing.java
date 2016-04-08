@@ -22,7 +22,7 @@ public class AllOrNothing {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.ND(TADriver.class);
+        TAP tap = TAP.BRAESS(TADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         String header = "average_tt";

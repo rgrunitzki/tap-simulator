@@ -138,7 +138,7 @@ public class Simulation {
         
         driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((driver) -> {
             if(driver.getCurrentEdge()==null){
-                System.out.println("pau");
+                System.out.println("deu pau");
             }
             driver.getCurrentEdge().proccess(driver);
         });

@@ -25,14 +25,16 @@ public class OutputAnaliser {
 
     public static AnalysisType type;
     public static Integer[] columnsToPrint = {0, 1};
+//    public static String fileToBePrinted = "mean.txt";
+    public static String fileToBePrinted = "stdev.txt";
 
     public static void main(String[] args) throws IOException {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/DR/ow";
+        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/ow/qlstatefullc2i/epsilon-decay_0.99/epsilon_0.5/alpha_0.9/gamma_0.99";
         //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
-        type = AnalysisType.PRINT_SELECTED_COLUMNS;
+        type = AnalysisType.PRINT_MEAN_CONVERGENCE_CURVE;
 
         walk(experimentsDirectory);
 
@@ -146,7 +148,7 @@ public class OutputAnaliser {
         for (int file = 0; file < files.length; file++) {
 
             //print only average file
-            if (files[file].getName().contains("mean")) {
+            if (files[file].getName().contains(fileToBePrinted)) {
                 BufferedReader reader = new BufferedReader(new FileReader(files[file]));
                 while ((line = reader.readLine()) != null) {
                     String[] rows = line.trim().split(Params.SEPARATOR);
@@ -168,7 +170,7 @@ public class OutputAnaliser {
 
         //read files
         for (int file = 0; file < files.length; file++) {
-            if (files[file].getName().equals("mean.txt")) {
+            if (files[file].getName().equals(fileToBePrinted)) {
                 BufferedReader reader = new BufferedReader(new FileReader(files[file]));
                 while ((line = reader.readLine()) != null) {
                     String[] rows = line.trim().split(Params.SEPARATOR);
@@ -188,9 +190,9 @@ public class OutputAnaliser {
 
 enum AnalysisType {
 
-    GENERATE_AVERAGES("Difference Rewards"),
-    PRINT_SELECTED_COLUMNS("Reward Shaping"),
-    PRINT_MEAN_CONVERGENCE_CURVE("Standard Reward");
+    GENERATE_AVERAGES("Generate Averages"),
+    PRINT_SELECTED_COLUMNS("Print selected columns"),
+    PRINT_MEAN_CONVERGENCE_CURVE("Print main convergence curve");
 
     private final String value;
 

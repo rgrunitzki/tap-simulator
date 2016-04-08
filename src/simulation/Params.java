@@ -81,7 +81,8 @@ public class Params {
         options.addOption("r", "runs", true, "number of repetitions of the experiment.");
         options.addOption("e", "ql.episodes", true, "number of episodes of each experiment.");
         options.addOption("E", "exploration.policy", true, "exploration policy. Accepted values are Epsilon-Greedy <EGreedy> (Default), Softmax <Softmax>");
-        options.addOption("epsilon", "ql.epsilon", true, "epsilon decay rate parameter of exploration.");
+        options.addOption("epsilon", "ql.epsilon", true, "initial epsilon parameter of exploration. Default value is <1.0> (corresponds to 100% of initial exploration)");
+        options.addOption("edecay", "ql.epsilon-decay", true, "epsilon decay rate parameter of exploration.");
         options.addOption("reward", "ql.reward", true, "Reward function for QLearning-based methods. Avaiable values are Difference Rewards <DR>, Standard Reward <STD>, Reward Shaping <RS>.");
         options.addOption("alpha", "ql.alpha", true, "Alpha parameter of QLStateless and QLStatefull");
         options.addOption("k", "ql.k", true, "Number of routes used in QLStateless");
@@ -111,20 +112,20 @@ public class Params {
                         break;
                 }
             }
-            
+
             if (cmdLine.hasOption("info.type")) {
                 switch (cmdLine.getOptionValue("info.type").toUpperCase()) {
                     case "BEST":
-                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Best;
+                        QLStatefullC2I.INFORMATION_TYPE = InformationType.Best;
                         break;
                     case "LAST":
-                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Last;
+                        QLStatefullC2I.INFORMATION_TYPE = InformationType.Last;
                         break;
                     case "NONE":
-                        QLStatefullC2I.INFORMATION_TYPE=InformationType.None;
+                        QLStatefullC2I.INFORMATION_TYPE = InformationType.None;
                         break;
                     case "AVERAGE":
-                        QLStatefullC2I.INFORMATION_TYPE=InformationType.Average;
+                        QLStatefullC2I.INFORMATION_TYPE = InformationType.Average;
                         break;
                 }
             }
@@ -164,7 +165,7 @@ public class Params {
             PRINT_FLOWS = cmdLine.hasOption("output.link-flow");
 
             if (cmdLine.hasOption("tap")) {
-                
+
                 TAP_NAME = ImplementedTAP.valueOf(cmdLine.getOptionValue("tap"));
 
                 createTap();
@@ -178,8 +179,12 @@ public class Params {
                 EPISODES = Integer.parseInt(cmdLine.getParsedOptionValue("ql.episodes").toString());
             }
 
+            if (cmdLine.hasOption("ql.epsilon-decay")) {
+                E_DECAY_RATE = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon-decay").toString());
+            }
+
             if (cmdLine.hasOption("ql.epsilon")) {
-                E_DECAY_RATE = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
+                EPSILON = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
             }
 
             if (cmdLine.hasOption("ql.alpha")) {

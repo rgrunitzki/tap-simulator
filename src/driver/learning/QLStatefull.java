@@ -104,7 +104,9 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         double r = this.rewardFunction.getReward(this);
 
         double maxQa = 0.0;
-        if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
+        
+        if (!currentEdge.getTargetVertex().equals(destination)
+                &&!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
             Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }

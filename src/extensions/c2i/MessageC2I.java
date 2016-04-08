@@ -17,15 +17,15 @@ import static extensions.c2i.InformationType.None;
  */
 public class MessageC2I {
 
-    private Double bestInformation = Double.MAX_VALUE;
+    private int bestInformation = Integer.MAX_VALUE;
 
-    private Double lastInformation = 0.0;
+    private int lastInformation = 0;
 
-    private double sumInformation = 0;
+    private int sumInformation = 0;
 
     private int counter = 0;
 
-    public void addValue(Double value) {
+    public void addValue(int value) {
         sumInformation += value;
         counter++;
         lastInformation = value;
@@ -34,19 +34,27 @@ public class MessageC2I {
         }
     }
 
-    public Double getBestInformation() {
-        return bestInformation;
+    public int getBestInformation() {
+        if (bestInformation == Integer.MAX_VALUE) {
+            return 0;
+        } else {
+            return bestInformation;
+        }
     }
 
-    public Double getLastInformation() {
+    public int getLastInformation() {
         return lastInformation;
     }
 
-    public Double getAverageInformation() {
-        return sumInformation / counter;
+    public int getAverageInformation() {
+        if (counter == 0) {
+            return counter;
+        } else {
+            return (int) sumInformation / counter;
+        }
     }
 
-    public Double getValue() {
+    public int getValue() {
         switch (QLStatefullC2I.INFORMATION_TYPE) {
             case Average:
                 return getAverageInformation();
@@ -55,7 +63,7 @@ public class MessageC2I {
             case Last:
                 return getLastInformation();
             case None:
-                return 0.0;
+                return 0;
             default:
                 throw new AssertionError(QLStatefullC2I.INFORMATION_TYPE.name());
 

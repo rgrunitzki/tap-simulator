@@ -25,7 +25,7 @@ public class ImprovedAllOrNothingAssignment {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.BRAESS_6Trip(TADriver.class);
+        TAP tap = TAP.BRAESS(TADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         String header = "average_tt";

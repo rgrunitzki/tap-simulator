@@ -43,10 +43,13 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         super(id, origin, destination, graph);
     }
 
+    public static Map<String, StatefullMDP> initializedMDPPerOD = new ConcurrentHashMap<>();
+
     @Override
     public void beforeSimulation() {
 
-        if (StatefullMDP.staticMdp == null) {
+        if (initializedMDPPerOD.get(origin + "-" + destination) == null) {
+//        if (StatefullMDP.staticMdp == null) {
             Set<String> vertices = graph.vertexSet();
 
             Map states = new ConcurrentHashMap<>();
@@ -55,22 +58,28 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
                 Set<AbstractEdge> edges = graph.edgesOf(vertex);
                 for (AbstractEdge edge : edges) {
                     if (edge.getSourceVertex().equalsIgnoreCase(vertex)) {
-                        Double qvalue = 0.0;// new QValueC2I();
+                        Double qvalue = EdgeC2I.getPath(edge.getTargetVertex(), destination, graph);
                         actions.put(edge, qvalue);
                     }
                 }
                 states.put(vertex, actions);
             }
-            StatefullMDP.staticMdp = new StatefullMDP();
-            StatefullMDP.staticMdp.mdp = states;
+
+            StatefullMDP mdpForOD = new StatefullMDP();
+            mdpForOD.mdp = states;
+            initializedMDPPerOD.put(origin + "-" + destination, mdpForOD);
+
+//            StatefullMDP.staticMdp = new StatefullMDP();
+//            StatefullMDP.staticMdp.mdp = states;
             try {
-                this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
+//                this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
+                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).clone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
-                this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
+                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).clone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -99,46 +108,52 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     @Override
     public void beforeStep() {
+//        /*
 
+         //ESSAS LINHAS FORAM APAGADAS PARA RESPONDER AOS QUESTIONAMENTOS DA ANA
         //Update last experienced edge;
         previousEdge = currentEdge;
         //random number
-        float random = Params.RANDOM.nextFloat();
+        double random = Params.RANDOM.nextDouble();
+        //current epsilon
+        double decay = Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
+         //        double epsilon = 0.5 - Params.CURRENT_EPISODE * 0.001;
 
-        //e-greedy policy
-        if (random <= Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE)) {
+         //e-greedy policy
+        //        if (random <= 0.2 * epsilon) {
+        if (random <= Params.EPSILON * decay) {
 
             //exploration
             List<AbstractEdge> actions = new ArrayList<>(mdp.mdp.get(currentVertex).keySet());
             Collections.shuffle(actions, Params.RANDOM);
             currentEdge = actions.get(0);
         } else {
-//            if (Params.RANDOM.nextDouble()
-//                    <= Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE)) {
-            //gets shortest path according to C2I
+
             GraphPath c2iPath;
             synchronized (EdgeC2I.SHORTEST_PATHS) {
+                EdgeC2I.C2I_WEIGHT = true;
                 c2iPath = EdgeC2I.SHORTEST_PATHS.getShortestPath(currentVertex, destination);
+                EdgeC2I.C2I_WEIGHT = false;
             }
-            String test = c2iPath.toString() + " " + c2iPath.getWeight();
-            if(id==400 && c2iPath.getWeight()!=0.0){
-                System.out.println("diferentão");
+
+            double newQa = EdgeC2I.PATHS_WEIGHT.get(currentVertex + "-" + destination);
+
+            //            if (newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))) {
+            if ((Params.RANDOM.nextDouble() > 0.7)//){
+                    && newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))
+                    && Params.CURRENT_EPISODE < Params.EPISODES / 2) {
+                mdp.mdp.get(currentVertex).put((AbstractEdge) c2iPath.getEdgeList().get(0), newQa);
             }
-            double newQa = bellmanValue(c2iPath.getEdgeList());
-            test += "\t" + mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0));
-            mdp.mdp.get(currentVertex).put((AbstractEdge) c2iPath.getEdgeList().get(0), newQa);
-            test += " | " + mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0));
-            if (id == 400) {
-                System.out.println(test);
-            }
-//            }
+
             //exploitation
             currentEdge = Collections.max(mdp.mdp.get(currentVertex).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).getKey();
+
         }
 
-        //Select the next action
-        //currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
-        //use the C2I information to get the best action
+//         */
+//        //Select the next action
+//        currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
+//        //use the C2I information to get the best action
 //        if (currentEdge == null) {
 //            synchronized (EdgeC2I.SHORTEST_PATHS) {
 //                currentEdge = (AbstractEdge) EdgeC2I.SHORTEST_PATHS.getShortestPath(currentVertex, destination).getEdgeList().get(0);
@@ -149,16 +164,6 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         //update the current vertex
         this.currentVertex = currentEdge.getTargetVertex();
 
-    }
-
-    private double bellmanValue(List<AbstractEdge> path) {
-        double value = -path.get(0).getCost();
-        if (path.size() > 1) {
-            for (int i = 1; i < path.size(); i++) {
-                value -= path.get(i).getCost() * GAMMA;
-            }
-        }
-        return value;
     }
 
     @Override
@@ -174,7 +179,9 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         double r = this.rewardFunction.getStandardReward(this);
 
         double maxQa = 0.0;
-        if (!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
+
+        if (!currentEdge.getTargetVertex().equals(destination)
+                && !this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
             Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }
@@ -212,7 +219,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public List<Pair> getParameters() {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
+        list.add(Pair.of("epsilon-decay", Params.E_DECAY_RATE));
+        list.add(Pair.of("epsilon", Params.EPSILON));
         list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
         list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));
         list.add(Pair.of("information", QLStatefullC2I.INFORMATION_TYPE.toString()));
@@ -243,9 +251,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     @Override
     public AbstractEdge getCurrentEdge() {
         try {
-            return super.getCurrentEdge(); //To change body of generated methods, choose Tools | Templates.
+            return super.getCurrentEdge();
         } catch (Exception e) {
-            System.out.println("deu pau no getCurrentEdge()");
             return null;
         }
     }
