@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
+<!--
+    [1] K. Tumer and D. Wolpert, “Collective intelligence and Braess’ paradox,” in Proceedings of the National Conference on Artificial Intelligence, 2000, pp. 104–109.
+-->
 <graph>
     <node id="O"/>
     <node id="P"/>

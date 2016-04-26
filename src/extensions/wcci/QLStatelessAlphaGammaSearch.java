@@ -14,7 +14,7 @@ import scenario.TAP;
  */
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QLStatelessAlphaGammaSearch {
 

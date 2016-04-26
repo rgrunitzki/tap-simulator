@@ -13,7 +13,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QLStatefullAlphaGammaSearch {
 

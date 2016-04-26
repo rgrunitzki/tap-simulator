@@ -10,7 +10,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless> {
 

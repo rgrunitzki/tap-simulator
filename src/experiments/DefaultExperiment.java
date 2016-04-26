@@ -13,7 +13,7 @@ import simulation.Simulation;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class DefaultExperiment {
 

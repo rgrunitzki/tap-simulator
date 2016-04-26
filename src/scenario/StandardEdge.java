@@ -7,7 +7,7 @@ package scenario;
  */
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StandardEdge extends AbstractEdge{
 

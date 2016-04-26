@@ -1,4 +1,8 @@
 <?xml version="1.0"?>
+<!--
+    link: https://pt.wikipedia.org/wiki/Paradoxo_de_Braess
+    accessed in: 25/04/2016
+-->
 <graph>
     <node id="O"/>
     <node id="A"/>

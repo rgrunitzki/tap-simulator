@@ -13,7 +13,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  * @param <T>
  */
 public abstract class AbstractRewardFunction <T extends Driver>{

@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-
+<!--
+    link: https://pt.wikipedia.org/wiki/Paradoxo_de_Braess
+    accessed in: 25/04/2016
+-->
 <od-matrix>
     <od origin="O" destination="D" trips="4000" />
 </od-matrix>

@@ -10,7 +10,7 @@ import scenario.AbstractEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
 

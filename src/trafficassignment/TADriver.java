@@ -13,7 +13,7 @@ import scenario.StandardEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class TADriver extends Driver<TADriver, List<StandardEdge>> {
 

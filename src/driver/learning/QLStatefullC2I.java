@@ -25,7 +25,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 

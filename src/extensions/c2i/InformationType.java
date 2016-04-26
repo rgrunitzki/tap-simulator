@@ -7,7 +7,7 @@ package extensions.c2i;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public enum InformationType {
 

@@ -9,7 +9,7 @@ import org.apache.commons.cli.ParseException;
  */
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class Main {
 

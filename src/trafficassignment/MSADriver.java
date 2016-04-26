@@ -11,7 +11,7 @@ import org.jgrapht.Graph;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class MSADriver extends driver.Driver<MSADriver, List<EdgeMSA>>{
 

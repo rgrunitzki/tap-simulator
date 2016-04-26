@@ -22,7 +22,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 

@@ -26,7 +26,7 @@ import scenario.TAP;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class Params {
 
@@ -237,9 +237,6 @@ public class Params {
     public static void createTap() {
 
         switch (DEFAULT_TAP) {
-            case ANA:
-                USED_TAP = TAP.ANA(DEFAULT_ALGORITHM);
-                break;
             case BYPASS:
                 USED_TAP = TAP.BYPASS(DEFAULT_ALGORITHM);
                 break;
@@ -247,7 +244,7 @@ public class Params {
                 USED_TAP = TAP.BRAESS(DEFAULT_ALGORITHM);
                 break;
             case BRAESS6:
-                USED_TAP = TAP.BRAESS_6Trip(DEFAULT_ALGORITHM);
+                USED_TAP = TAP.BRAESS_6(DEFAULT_ALGORITHM);
                 break;
             case EMME:
                 USED_TAP = TAP.EMME(DEFAULT_ALGORITHM);

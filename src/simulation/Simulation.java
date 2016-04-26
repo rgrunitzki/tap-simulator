@@ -31,7 +31,7 @@ import scenario.ODPair;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class Simulation {
 

@@ -13,7 +13,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  * @param <State>
  * @param <Action>
  * @param <Value>

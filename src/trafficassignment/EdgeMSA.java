@@ -10,7 +10,7 @@ import scenario.AbstractEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class EdgeMSA extends AbstractEdge{
     

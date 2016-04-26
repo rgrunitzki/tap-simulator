@@ -9,7 +9,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QValueC2I implements Comparable<QValueC2I>{
 

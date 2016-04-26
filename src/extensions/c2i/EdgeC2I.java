@@ -19,7 +19,7 @@ import scenario.AbstractEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class EdgeC2I extends AbstractEdge {
 

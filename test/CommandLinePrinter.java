@@ -7,7 +7,7 @@
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class CommandLinePrinter {
     

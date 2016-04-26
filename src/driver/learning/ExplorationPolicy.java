@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  * @param <State> state type
  * @param <Action> action type
  * @param <Value> pair state-action value type

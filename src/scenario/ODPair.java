@@ -10,23 +10,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents an OD-pair of the TAP. The OD-pair is composed of a collection of
+ * drivers with the same origin-destination restrictions.
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
+ * @param <DriverType> The type of the drivers
  */
-public class ODPair<T> {
+public class ODPair<DriverType> {
 
-    private String name;
+    private final String name;
 
-    private List<T> drivers = new ArrayList<>();
+    private final List<DriverType> drivers = new ArrayList<>();
 
+    /**
+     * Creates an OD pair according to the OD restrictions.
+     *
+     * @param name The description name of the OD pair.
+     */
     public ODPair(String name) {
         this.name = name;
     }
 
-    public void addDriver(T driver) {
+    /**
+     * Adds a Driver to the OD-pair.
+     *
+     * @param driver Driver to be added to the OD-pair
+     */
+    public void addDriver(DriverType driver) {
         drivers.add(driver);
     }
 
+    /**
+     * Returns the average travel cost the drivers of this OD-pair.
+     *
+     * @return average travel cost
+     */
     public double getAverageCost() {
         Double soma = 0.0;
         for (Object driver : drivers) {
@@ -35,23 +53,30 @@ public class ODPair<T> {
         return soma / drivers.size();
     }
 
+    /**
+     * Returns the name of the OD-pair.
+     *
+     * @return OD-pair name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<T> getDrivers() {
+    /**
+     * Returns the list of drivers of this OD-pair.
+     *
+     * @return list of drivers of this OD-pair
+     */
+    public List<DriverType> getDrivers() {
         return drivers;
     }
 
-    public void setDrivers(List<T> drivers) {
-        this.drivers = drivers;
-    }
-    
-    public synchronized int demandSize(){
+    /**
+     * Returns the amount of drivers of this OD-pair
+     *
+     * @return number of drivers
+     */
+    public synchronized int demandSize() {
         return drivers.size();
     }
 

@@ -1,17 +1,17 @@
-/*
- * To change edge license header, choose License Headers in Project Properties.
- * To change edge template file, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change edge license header, choose License Headers in Project Properties.
- * To change edge template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package scenario;
 
 /**
+ * A linear cost function that represents the travel time in minutes. This
+ * function is defined by t=fftime+flow*alpha, where:
+ * <ul>
+ * <li>t = travel time in minutes;
+ * <li>fftime = travel time under free-flow condition;
+ * <li>flow = flow of drivers;
+ * <li>alpha = constant factor.
+ * </ul>
+ * This function is incremented linearly by c for each unit of flow (f).
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class LinearCostFunction extends AbstractCostFunction {
 

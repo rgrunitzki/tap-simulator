@@ -12,7 +12,7 @@ import scenario.AbstractEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StatefullC2IMDP extends AbstractMDP<String, AbstractEdge, QValueC2I> {
 

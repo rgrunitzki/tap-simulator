@@ -14,7 +14,7 @@ import simulation.Params;
  */
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class QLStatefullC2IExperiment {
 

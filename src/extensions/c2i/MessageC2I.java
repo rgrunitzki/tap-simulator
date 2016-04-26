@@ -13,7 +13,7 @@ import static extensions.c2i.InformationType.None;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class MessageC2I {
 

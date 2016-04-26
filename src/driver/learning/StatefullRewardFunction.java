@@ -11,7 +11,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StatefullRewardFunction extends AbstractRewardFunction<Driver> {
 

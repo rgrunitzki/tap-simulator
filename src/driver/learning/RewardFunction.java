@@ -7,7 +7,7 @@ package driver.learning;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public enum RewardFunction {
 

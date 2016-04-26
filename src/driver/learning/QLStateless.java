@@ -16,7 +16,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 @SuppressWarnings("rawtypes")
 public class QLStateless extends Driver<QLStateless, GraphPath> {

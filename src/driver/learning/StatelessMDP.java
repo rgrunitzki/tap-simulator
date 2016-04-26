@@ -11,7 +11,7 @@ import org.jgrapht.GraphPath;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class StatelessMDP extends AbstractMDP<String, GraphPath, Double> {
 
