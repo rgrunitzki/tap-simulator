@@ -138,10 +138,10 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public List<Pair> getParameters() {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("reward", Params.REWARD_FUNCTION.toString()));
-        list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
-        list.add(Pair.of("alpha", QLStatefull.ALPHA));
-        list.add(Pair.of("gamma", QLStatefull.GAMMA));
+       list.add(Pair.of("epsilon", Params.EPSILON_INITIAL));
+        list.add(Pair.of("epsilon-decay", Params.EPSILON_DECAY));
+        list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
+        list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));
         return list;
     }
 

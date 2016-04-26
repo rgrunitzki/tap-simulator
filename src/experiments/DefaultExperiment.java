@@ -34,7 +34,7 @@ public class DefaultExperiment {
                 simulation.execute();
                 costs.add(simulation.simulationTravelTime());
                 if (Params.PRINT_AVERAGE_RESULTS) {
-                    System.out.println("#" + (run - 1) + Params.SEPARATOR + costs.get(run - 2));
+                    System.out.println("#" + (run - 1) + Params.COLUMN_SEPARATOR + costs.get(run - 2));
                 }
                 simulation.reset();
             }
@@ -48,7 +48,7 @@ public class DefaultExperiment {
                 for (double d : costs) {
                     st.addValue(d);
                 }
-                System.out.println("mean: " + st.getMean() + Params.SEED + "stdev: " + st.getStandardDeviation());
+                System.out.println("mean: " + st.getMean() + Params.RAMDON_SEED + "stdev: " + st.getStandardDeviation());
             }
         }
     }

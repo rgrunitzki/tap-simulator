@@ -46,12 +46,12 @@ public class AllOrNothing {
 
         //evaluate cost per OD pair
         for (String odPair : odpairs) {
-            header += Params.SEPARATOR + odPair;
+            header += Params.COLUMN_SEPARATOR + odPair;
             
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
 
-            results += Params.SEPARATOR + fws.getShortestPath(origin, destination).getWeight();
+            results += Params.COLUMN_SEPARATOR + fws.getShortestPath(origin, destination).getWeight();
 
         }
 
@@ -61,8 +61,8 @@ public class AllOrNothing {
         double cost = 0.0;
 
         for (StandardEdge e : edges) {
-            header += Params.SEPARATOR + e.getName();
-            results += Params.SEPARATOR + e.getTotalFlow();
+            header += Params.COLUMN_SEPARATOR + e.getName();
+            results += Params.COLUMN_SEPARATOR + e.getTotalFlow();
             cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();
         }
         System.out.println(header);

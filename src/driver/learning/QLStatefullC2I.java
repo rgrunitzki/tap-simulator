@@ -34,6 +34,7 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     public static double ALPHA = 0.5;
     public static double GAMMA = 0.99;
+    public static double COMMUNICATION_RATE = 0.3;
     public static InformationType INFORMATION_TYPE = InformationType.None;
     public AbstractEdge previousEdge = null;
 
@@ -110,18 +111,18 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public void beforeStep() {
 //        /*
 
-         //ESSAS LINHAS FORAM APAGADAS PARA RESPONDER AOS QUESTIONAMENTOS DA ANA
+        //ESSAS LINHAS FORAM APAGADAS PARA RESPONDER AOS QUESTIONAMENTOS DA ANA
         //Update last experienced edge;
         previousEdge = currentEdge;
         //random number
         double random = Params.RANDOM.nextDouble();
         //current epsilon
-        double decay = Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
+        double decay = Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
          //        double epsilon = 0.5 - Params.CURRENT_EPISODE * 0.001;
 
-         //e-greedy policy
+        //e-greedy policy
         //        if (random <= 0.2 * epsilon) {
-        if (random <= Params.EPSILON * decay) {
+        if (random <= Params.EPSILON_INITIAL * decay) {
 
             //exploration
             List<AbstractEdge> actions = new ArrayList<>(mdp.mdp.get(currentVertex).keySet());
@@ -139,9 +140,9 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
             double newQa = EdgeC2I.PATHS_WEIGHT.get(currentVertex + "-" + destination);
 
             //            if (newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))) {
-            if ((Params.RANDOM.nextDouble() > 0.7)//){
+            if ((COMMUNICATION_RATE > Params.RANDOM.nextDouble())//){
                     && newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))
-                    && Params.CURRENT_EPISODE < Params.EPISODES / 2) {
+                    && Params.CURRENT_EPISODE < Params.MAX_EPISODES / 2) {
                 mdp.mdp.get(currentVertex).put((AbstractEdge) c2iPath.getEdgeList().get(0), newQa);
             }
 
@@ -219,11 +220,12 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public List<Pair> getParameters() {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("epsilon-decay", Params.E_DECAY_RATE));
-        list.add(Pair.of("epsilon", Params.EPSILON));
+        list.add(Pair.of("epsilon", Params.EPSILON_INITIAL));
+        list.add(Pair.of("epsilon-decay", Params.EPSILON_DECAY));
         list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
         list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));
-        list.add(Pair.of("information", QLStatefullC2I.INFORMATION_TYPE.toString()));
+        list.add(Pair.of("communication-rate", QLStatefullC2I.COMMUNICATION_RATE));
+//        list.add(Pair.of("information", QLStatefullC2I.INFORMATION_TYPE.toString()));
         return list;
     }
 

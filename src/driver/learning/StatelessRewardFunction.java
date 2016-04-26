@@ -55,9 +55,9 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
 
             if (driver.getRoute().getEdgeList().contains(e)) {
                 if (e.getTotalFlow() > 0) {
-                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1) * (e.getTotalFlow() - 1);
+                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1*Params.PROPORTION) * (e.getTotalFlow() - 1*Params.PROPORTION);
                 } else {
-                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1);
+                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1*Params.PROPORTION);
                 }
             } else {
                 if (e.getTotalFlow() > 0) {

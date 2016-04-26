@@ -53,12 +53,12 @@ public class C2IEpsilonGreedy<State, Action, Value extends Comparable> extends E
     }
 
     private double getEpsilon() {
-        double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
+        double epsilon = 1 * Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
         return epsilon;
     }
 
     public static boolean superExploration() {
-        return (Params.CURRENT_EPISODE >= Params.EPISODES * SG_INIT);
+        return (Params.CURRENT_EPISODE >= Params.MAX_EPISODES * SG_INIT);
     }
 //        return (Params.CURRENT_EPISODE >= Params.EPISODES * SG_INIT && Params.CURRENT_EPISODE <= Params.EPISODES * SG_END);
 //    }

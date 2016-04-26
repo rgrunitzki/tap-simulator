@@ -125,7 +125,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
 
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("epsilon", Params.E_DECAY_RATE));
+        list.add(Pair.of("epsilon", Params.EPSILON_DECAY));
         list.add(Pair.of("k", QLStateless.K));
         list.add(Pair.of("alpha", QLStateless.ALPHA));
         return list;

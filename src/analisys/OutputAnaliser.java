@@ -25,16 +25,17 @@ public class OutputAnaliser {
 
     public static AnalysisType type;
     public static Integer[] columnsToPrint = {0, 1};
-//    public static String fileToBePrinted = "mean.txt";
     public static String fileToBePrinted = "stdev.txt";
-
+//    public static String fileToBePrinted = "stdev.txt";
+//
     public static void main(String[] args) throws IOException {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/ow/qlstatefullc2i/epsilon-decay_0.99/epsilon_0.5/alpha_0.9/gamma_0.99";
+        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results2";
+//        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/ow/qlstatefull/reward_Standard Reward/epsilon_0.99/alpha_0.9/gamma_0.99";
         //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
-        type = AnalysisType.PRINT_MEAN_CONVERGENCE_CURVE;
+        type = AnalysisType.PRINT_SELECTED_COLUMNS;
 
         walk(experimentsDirectory);
 
@@ -88,8 +89,8 @@ public class OutputAnaliser {
             BufferedReader reader = new BufferedReader(new FileReader(files[file]));
             int lineCounter = 0;
             while ((line = reader.readLine()) != null) {
-                String[] rows = line.trim().split(Params.SEPARATOR);
-                if (!rows[0].contains(Params.COMMENT)) {
+                String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
+                if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
                     if (summary.size() <= lineCounter) {
                         summary.add(new ArrayList<>());
                     }
@@ -123,11 +124,11 @@ public class OutputAnaliser {
         for (int summaryLines = 0; summaryLines < summary.size(); summaryLines++) {
             for (int summaryLineRow = 0; summaryLineRow < summary.get(summaryLines).size(); summaryLineRow++) {
                 if (summaryLineRow == 0) {
-                    mean.write(summaryLines + Params.SEPARATOR);
-                    stdev.write(summaryLines + Params.SEPARATOR);
+                    mean.write(summaryLines + Params.COLUMN_SEPARATOR);
+                    stdev.write(summaryLines + Params.COLUMN_SEPARATOR);
                 } else {
-                    mean.write(summary.get(summaryLines).get(summaryLineRow).getMean() + Params.SEPARATOR);
-                    stdev.write(summary.get(summaryLines).get(summaryLineRow).getStandardDeviation() + Params.SEPARATOR);
+                    mean.write(summary.get(summaryLines).get(summaryLineRow).getMean() + Params.COLUMN_SEPARATOR);
+                    stdev.write(summary.get(summaryLines).get(summaryLineRow).getStandardDeviation() + Params.COLUMN_SEPARATOR);
                 }
             }
             mean.write("\n");
@@ -148,18 +149,18 @@ public class OutputAnaliser {
         for (int file = 0; file < files.length; file++) {
 
             //print only average file
-            if (files[file].getName().contains(fileToBePrinted)) {
+//            if (files[file].getName().contains(fileToBePrinted)) {
                 BufferedReader reader = new BufferedReader(new FileReader(files[file]));
                 while ((line = reader.readLine()) != null) {
-                    String[] rows = line.trim().split(Params.SEPARATOR);
-                    if (!rows[0].contains(Params.COMMENT)) {
+                    String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
+                    if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
                         for (int column : columnsToPrint) {
-                            selectedContent = rows[column] + Params.SEPARATOR;
+                            selectedContent = rows[column] + Params.COLUMN_SEPARATOR;
                         }
                     }
                 }
-                System.out.print(files[file].getParent() + Params.SEPARATOR + selectedContent);
-            }
+                System.out.print(files[file].getParent() + Params.COLUMN_SEPARATOR + selectedContent + "\n");
+//            }
 
         }
     }
@@ -173,10 +174,10 @@ public class OutputAnaliser {
             if (files[file].getName().equals(fileToBePrinted)) {
                 BufferedReader reader = new BufferedReader(new FileReader(files[file]));
                 while ((line = reader.readLine()) != null) {
-                    String[] rows = line.trim().split(Params.SEPARATOR);
-                    if (!rows[0].contains(Params.COMMENT)) {
+                    String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
+                    if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
                         for (int column : columnsToPrint) {
-                            selectedContent += rows[column] + Params.SEPARATOR;
+                            selectedContent += rows[column] + Params.COLUMN_SEPARATOR;
                         }
                         selectedContent += "\n";
                     }

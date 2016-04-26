@@ -1,5 +1,6 @@
 package extensions.c2i;
 
+import driver.Driver;
 import driver.learning.*;
 import driver.learning.RewardFunction;
 import experiments.DefaultExperiment;
@@ -19,43 +20,64 @@ public class QLStatefullC2IExperiment {
 
     //QLStateless on Nguyen and Dupuis 1984
     public static void main(String[] args) {
+        
+        Params.COLUMN_SEPARATOR="\t";
 
-        //Parameters Setting
-        Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
-        Params.ALGORITHM = QLStatefullC2I.class;
-//        Params.ALGORITHM = QLStatefull.class;
-//        Params.ALGORITHM = QLStateless.class;
-        Params.DEFAULT_EDGE = EdgeC2I.class;
-//        Params.EXPLORATION_POLICY = C2IEpsilonGreedy.class;
-
-        Params.PRINT_ALL_OD_PAIR = false;
+        Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = false;
         Params.PRINT_ON_TERMINAL = true;
         Params.PRINT_AVERAGE_RESULTS = false;
         Params.PRINT_ON_FILE = false;
 
-        Params.EPISODES = 1000;
-        Params.MAX_STEPS = 50;
-        Params.E_DECAY_RATE = 0.99f;
+        Params.MAX_EPISODES = 1000;
+        Params.MAX_STEPS = 100;
+        Params.EPSILON_DECAY = 0.99f;
         Params.REPETITIONS = 1;
-        Params.TAP_NAME = ImplementedTAP.OW;
+        Params.DEFAULT_TAP = ImplementedTAP.SF;
+        Params.PROPORTION = 5;
 
-        SARSAStatefull.ALPHA = 0.5f;
-        SARSAStatefull.GAMMA = 0.99f;
+        int type = 3;
+        switch (type) {
+            case 1:
+                //"QLStatefull"
+                Params.EPSILON_INITIAL = 1f;
+                QLStatefull.ALPHA = 0.9f;
+                QLStatefull.GAMMA = 0.99f;
+//                Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
+                Params.DEFAULT_ALGORITHM = QLStatefull.class;
 
-        QLStatefull.ALPHA = 0.2f;
-        QLStatefull.GAMMA = 0.99f;
+                break;
+            case 2:
+                //"QLStatefullC2I"
+                QLStatefullC2I.ALPHA = 0.9f;
+                QLStatefullC2I.GAMMA = 0.99f;
+                QLStatefullC2I.COMMUNICATION_RATE = 0.25f;
+                Params.EPSILON_INITIAL = 0.25f;
+                Params.DEFAULT_ALGORITHM = QLStatefullC2I.class;
+                Params.DEFAULT_EDGE = EdgeC2I.class;
+                QLStatefullC2I.INFORMATION_TYPE = InformationType.Last;
 
-        QLStatefullC2I.ALPHA = 0.5f;
-        QLStatefullC2I.GAMMA = 0.99f;
-        Params.EPSILON = 0.5f;
+                break;
+            case 3:
+                //"QLStateless"
+                QLStateless.K = 9;
+                Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
+                QLStateless.ALPHA = 0.9f;
+                Params.DEFAULT_ALGORITHM = QLStateless.class;
 
-        QLStateless.K = 8;
-        QLStateless.ALPHA = 0.1f;
+                break;
+            case 4:
+                //"SARSAStatefull":
+                SARSAStatefull.ALPHA = 0.5f;
+                SARSAStatefull.GAMMA = 0.99f;
+                Params.DEFAULT_ALGORITHM = SARSAStatefull.class;
+                break;
+            default:
+
+        }
 
         Params.createTap();
 
-        QLStatefullC2I.INFORMATION_TYPE = InformationType.Average;
         DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
 

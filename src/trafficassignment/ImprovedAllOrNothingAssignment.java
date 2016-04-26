@@ -91,7 +91,7 @@ public class ImprovedAllOrNothingAssignment {
 
         //evaluate cost per OD pair
         for (String odPair : odpairs) {
-            header += Params.SEPARATOR + odPair;
+            header += Params.COLUMN_SEPARATOR + odPair;
 
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
@@ -104,7 +104,7 @@ public class ImprovedAllOrNothingAssignment {
             }
             average_tt/=ksps.get(origin+"-"+destination).size();
 
-            results += Params.SEPARATOR + average_tt;
+            results += Params.COLUMN_SEPARATOR + average_tt;
 
         }
 
@@ -114,8 +114,8 @@ public class ImprovedAllOrNothingAssignment {
         double cost = 0.0;
 
         for (StandardEdge e : edges) {
-            header += Params.SEPARATOR + e.getName();
-            results += Params.SEPARATOR + e.getTotalFlow();
+            header += Params.COLUMN_SEPARATOR + e.getName();
+            results += Params.COLUMN_SEPARATOR + e.getTotalFlow();
             cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();
         }
         System.out.println(header);

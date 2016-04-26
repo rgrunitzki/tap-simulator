@@ -9,13 +9,14 @@ import driver.Driver;
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import simulation.Params;
 
 /**
  *
  * @author rgrunitzki
  */
 public abstract class AbstractEdge extends DefaultWeightedEdge implements Comparable<AbstractEdge> {
-    
+
     private Map<String, Object> params;
 
     private int currentFlow;
@@ -30,11 +31,10 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
         this.totalFlow = 0;
         this.costFunction = costFunction;
     }
-    
+
 //    public synchronized void afterEpisode(){}
 //    
 //    public synchronized void beforeEpisode(){}
-
     public void setParams(Map<String, Object> params) {
         this.params = params;
     }
@@ -61,7 +61,7 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
 
     @Override
     protected double getWeight() {
-            return costFunction.evalCost(this);
+        return costFunction.evalCost(this);
     }
 
     public synchronized void clearCurrentFlow() {
@@ -80,8 +80,8 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
 
     public synchronized void proccess(Driver driver) {
         //increment the flow of drivers on edge
-        this.currentFlow++;
-        this.totalFlow++;
+        this.currentFlow += Params.PROPORTION;
+        this.totalFlow += Params.PROPORTION;
     }
 
     public String getName() {
@@ -109,8 +109,8 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
         return this.getName().compareTo(o.getName());
     }
 
-    public synchronized void  incrementTotalFlow(int flow) {
+    public synchronized void incrementTotalFlow(int flow) {
         this.totalFlow += flow;
     }
-    
+
 }

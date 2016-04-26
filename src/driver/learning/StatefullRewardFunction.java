@@ -76,7 +76,7 @@ public class StatefullRewardFunction extends AbstractRewardFunction<Driver> {
 //        return (soma_gz - gz_zi) / Params.USED_TAP.getDrivers().size();
 //
         Double gz = driver.getCurrentEdge().getCost();
-        Double gz_zi = (double) driver.getCurrentEdge().getCostFunction().evalDesirableCost(driver.getCurrentEdge(), driver.getCurrentEdge().getTotalFlow() - 1);
+        Double gz_zi = (double) driver.getCurrentEdge().getCostFunction().evalDesirableCost(driver.getCurrentEdge(), driver.getCurrentEdge().getTotalFlow() - 1*Params.PROPORTION);
 //        System.out.println("gz: " + gz +"\tgz_zi: " + gz_zi +"du(gz-gz_zi): " + (gz-gz_zi));
         return -(gz - gz_zi);
     }

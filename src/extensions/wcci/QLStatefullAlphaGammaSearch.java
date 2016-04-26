@@ -33,10 +33,10 @@ public class QLStatefullAlphaGammaSearch {
 
         //improve this
         Params.PRINT_FLOWS = true;
-        Params.PRINT_ALL_OD_PAIR = true;
+        Params.PRINT_OD_PAIRS_AVG_COST = true;
 
-        Params.EPISODES = 150;
-        Params.E_DECAY_RATE = 0.91f;
+        Params.MAX_EPISODES = 150;
+        Params.EPSILON_DECAY = 0.91f;
         Params.MAX_STEPS = 100;
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
 

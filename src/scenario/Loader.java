@@ -57,9 +57,8 @@ public class Loader {
 
             for (int i = 0; i < list.getLength(); i++) {
                 Element e = (Element) list.item(i);
-                
+
 //                AbstractEdge edge = new AbstractEdge(costFunction);
-                
                 AbstractEdge edge = null;
                 try {
                     edge = (AbstractEdge) edgeClass.getConstructor(edgeClass.getConstructors()[0].getParameterTypes()).newInstance(
@@ -67,7 +66,7 @@ public class Loader {
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 Map<String, Object> params = new HashMap<>();
 
                 for (int j = 0; j < e.getAttributes().getLength(); j++) {
@@ -111,13 +110,12 @@ public class Loader {
                 String destination = (e.getAttribute("destination"));
 
                 //create as many drivers as the number of trips defined
-                int size = (Integer.parseInt(e.getAttribute("trips")));
-                
-                
-                ODPair od = new ODPair<>(origin+"-"+destination);
-                
+                int size = (int) ((Integer.parseInt(e.getAttribute("trips"))) / Params.PROPORTION);
+
+                ODPair od = new ODPair<>(origin + "-" + destination);
+
                 for (int d = size; d > 0; d--) {
-                    
+
                     Object driver = driverClass.getConstructor(driverClass.getConstructors()[0].getParameterTypes()).newInstance(
                             ++countD, origin, destination, graph);
                     drivers.add((T) driver);

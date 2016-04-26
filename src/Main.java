@@ -15,34 +15,31 @@ public class Main {
 
     public static void main(String[] args) throws ParseException {
 
-        Float[] gammas = {0.99f};
-        Float[] alphas = {0.3f, 0.5f, 0.7f, 0.9f};
-        String network = "OW";
-        String rewards[] = {"STD"};
-
-        for (String reward : rewards) {
-            for (int g = 0; g < gammas.length; g++) {
-                for (int a = 0; a < alphas.length; a++) {
-                    System.out.format("java -XX:+UseParallelGC -Xmx8000m -cp tap-simulator.jar experiments.CommandLineExperiment "
-                            + "-n %s "
-                            + "-a QLStatefullC2I "
-                            + "-info.type Last"
-                            + "-alpha %.2f "
-                            + "-gamma %.2f "
-                            + "-reward %s "
-                            + "-E EGreedy "
-                            + "-epsilon 0.5 "
-                            + "-edecay 0.99 "
-                            + "-e 1000 "
-                            + "-r 30 "
-                            + "-d ~/experimentsATT/results "
-                            + "-f "
-                            + "-l "
-                            + "-o\n", network, alphas[a], gammas[g], reward);
-                }
-            }
-        }
-
+//        Float[] epsilonInitial = {0.25f, 0.5f, 0.75f, 1f};
+//        Float[] communicationRate = {0.0f, 0.25f, 0.5f, 0.75f, 1f};
+//        String network = "OW";
+//        String rewards[] = {"STD"};
+//
+//            for (int ep = 0; ep < epsilonInitial.length; ep++) {
+//                for (int cr = 0; cr < communicationRate.length; cr++) {
+//                    System.out.format("java -XX:+UseParallelGC -Xmx8000m -cp tap-simulator.jar experiments.CommandLineExperiment "
+//                            + "-n SF "
+//                            + "-a QLStatefullC2I "
+//                            + "-info.type Last "
+//                            + "-alpha 0.90 "
+//                            + "-gamma 0.99 "
+//                            + "-p 100 "
+//                            + "-c2irate %.2f "
+//                            + "-epsilon %.2f "
+//                            + "-edecay 0.99 "
+//                            + "-e 1000 "
+//                            + "-r 10 "
+//                            + "-d ~/experimentsATT/results "
+//                            + "-f -l -o\n", communicationRate[cr], epsilonInitial[ep]);
+//                }
+//            }
+//            String s = "java -XX:+UseParallelGC -Xmx8000m -cp tap-simulator.jar experiments.CommandLineExperiment -n OW -a QLStatefullC2I -info.type Last -alpha 0.90 -gamma 0.99 -p 100 -c2irate %.2f -epsilon %.2f "
+//                    + "-edecay 0.99 -e 1000 -r 10 -d ~/experimentsATT/results -f -l -o";
         String[] arg = {"-h"};
         CommandLineExperiment.main(arg);
     }

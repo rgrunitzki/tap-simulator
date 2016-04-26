@@ -25,17 +25,17 @@ public class BruteForceRewardSearch {
 
         //Parameters Setting
         Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
-        Params.ALGORITHM = QLStatefull.class;
-        Params.PRINT_ALL_OD_PAIR = false;
+        Params.DEFAULT_ALGORITHM = QLStatefull.class;
+        Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = false;
         Params.PRINT_ON_TERMINAL = false;
         Params.PRINT_AVERAGE_RESULTS = false;
-        Params.EPISODES = 100;
-        Params.E_DECAY_RATE = 0.9f;
+        Params.MAX_EPISODES = 100;
+        Params.EPSILON_DECAY = 0.9f;
         Params.REPETITIONS = 1;
         QLStatefull.ALPHA = 0.5f;
         QLStatefull.GAMMA = 0.99f;
-        Params.TAP_NAME = ImplementedTAP.OW;
+        Params.DEFAULT_TAP = ImplementedTAP.OW;
         Params.MAX_STEPS = 50;
         Params.createTap();
 

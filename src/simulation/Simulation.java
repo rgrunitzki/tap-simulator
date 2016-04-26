@@ -6,6 +6,7 @@
 package simulation;
 
 import driver.Driver;
+import driver.learning.QLStateless;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import scenario.TAP;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import scenario.AbstractEdge;
 import scenario.ODPair;
 
@@ -59,7 +61,7 @@ public class Simulation {
             driver.beforeSimulation();
         });
 
-        for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.EPISODES; Params.CURRENT_EPISODE++) {
+        for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
 
             drivers.parallelStream().forEach((driver) -> {
                 driver.beforeEpisode();
@@ -84,11 +86,14 @@ public class Simulation {
             }
 
         }
+        
+        System.out.println("Quantidade de veículos: " + drivers.size());
 
         //post-simulation processing
         drivers.parallelStream().forEach((driver) -> {
             driver.afterSimulation();
         });
+        
     }
 
     public static int step = 0;
@@ -165,7 +170,7 @@ public class Simulation {
         for (AbstractEdge e : graph.edgeSet()) {
             avgcost += e.getTotalFlow() * e.getCost();
         }
-        return (avgcost / drivers.size());
+        return (avgcost / (drivers.size()*Params.PROPORTION));
     }
 
     private void resetEdgesForEpisode() {
@@ -200,24 +205,24 @@ public class Simulation {
     //print flows in a formated manner
     private void printFlowsOnTerminal() {
         //print the flow of the used links
-        System.out.println("link" + Params.SEPARATOR + "flow" + Params.SEPARATOR + "cost");
+        System.out.println("link" + Params.COLUMN_SEPARATOR + "flow" + Params.COLUMN_SEPARATOR + "cost");
         double soma = 0;
         for (AbstractEdge e : graph.edgeSet()) {
             soma += e.getTotalFlow() * e.getCost();
-            System.out.println(e.getName() + Params.SEPARATOR + e.getTotalFlow() + Params.SEPARATOR + e.getCost());
+            System.out.println(e.getName() + Params.COLUMN_SEPARATOR + e.getTotalFlow() + Params.COLUMN_SEPARATOR + e.getCost());
         }
     }
 
     private String getAverageTravelCosts() {
         String out = String.valueOf(simulationTravelTime()); //Average Cost
 
-        if (Params.PRINT_ALL_OD_PAIR) {
+        if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
             List<String> keys = new ArrayList<>(odpairs.keySet());
             Collections.sort(keys);
 
             for (String key : keys) {
-                out += Params.SEPARATOR + odpairs.get(key).getAverageCost();
+                out += Params.COLUMN_SEPARATOR + odpairs.get(key).getAverageCost();
             }
         }
         return out;
@@ -229,7 +234,7 @@ public class Simulation {
         List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
         Collections.sort(keys);
         for (AbstractEdge e : keys) {
-            out += e.getTotalFlow() + Params.SEPARATOR;
+            out += e.getTotalFlow() + Params.COLUMN_SEPARATOR;
         }
         return out;
     }
@@ -246,9 +251,9 @@ public class Simulation {
         if (Params.CURRENT_EPISODE == 0) {
             output += getExperimentOutputHeader() + "\n";
         }
-        output += Params.CURRENT_EPISODE + Params.SEPARATOR + getAverageTravelCosts();
+        output += Params.CURRENT_EPISODE + Params.COLUMN_SEPARATOR + getAverageTravelCosts();
         if (Params.PRINT_FLOWS) {
-            output += Params.SEPARATOR + getFlows();
+            output += Params.COLUMN_SEPARATOR + getFlows();
         }
 
         return output + "\n";
@@ -283,7 +288,7 @@ public class Simulation {
             Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (Params.CURRENT_EPISODE >= Params.EPISODES - 1) {
+        if (Params.CURRENT_EPISODE >= Params.MAX_EPISODES - 1) {
 
             try {
                 fileWriter.flush();
@@ -295,7 +300,7 @@ public class Simulation {
     }
 
     private String getExperimentPath() {
-        String path = Params.OUTPUTS_DIRECTORY + File.separator + tap.getNetworkName();
+        String path = Params.OUTPUT_DIRECTORY + File.separator + tap.getNetworkName();
 
         for (Object pair : drivers.get(0).getParameters()) {
             Pair p = (Pair) pair;
@@ -317,15 +322,15 @@ public class Simulation {
             output += " " + p.getLeft() + ": " + p.getRight();
         }
 
-        output += "\n" + Params.COMMENT + "episode" + Params.SEPARATOR + "overal_tt";
+        output += "\n" + Params.COMMENT_CHARACTER + "episode" + Params.COLUMN_SEPARATOR + "overal_tt";
 
-        if (Params.PRINT_ALL_OD_PAIR) {
+        if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
             List<String> keys = new ArrayList<>(odpairs.keySet());
             Collections.sort(keys);
 
             for (String key : keys) {
-                output += Params.SEPARATOR + odpairs.get(key).getName();
+                output += Params.COLUMN_SEPARATOR + odpairs.get(key).getName();
             }
         }
 
@@ -333,7 +338,7 @@ public class Simulation {
             List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
             Collections.sort(keys);
             for (AbstractEdge e : keys) {
-                output += Params.SEPARATOR + e.getName();
+                output += Params.COLUMN_SEPARATOR + e.getName();
             }
         }
         return output;

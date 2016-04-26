@@ -31,32 +31,39 @@ import scenario.TAP;
 public class Params {
 
     //Simulation
-    public static int EPISODES = 1000;//
+    public static int MAX_EPISODES = 1000;//
     public static int MAX_STEPS = 100;
     public static int CURRENT_EPISODE = 1;
-    public static Class ALGORITHM = QLStatefull.class;
     public static TAP USED_TAP = null;// = TAP.OW(ALGORITHM);//
     public static int REPETITIONS = 1;//
-
-//    public static boolean PRINT_ALL_EPISODES = false;//
-    public static boolean PRINT_AVERAGE_RESULTS = false; //not been used
-
-    public static boolean PRINT_ALL_OD_PAIR = false;//
-    public static boolean PRINT_FLOWS = false;//
-    public static String OUTPUTS_DIRECTORY = "results";//
-    public static boolean PRINT_ON_FILE = false;//
-    public static boolean PRINT_ON_TERMINAL = true;//
-    public static ImplementedTAP TAP_NAME = ImplementedTAP.OW;
-    public static Class DEFAULT_EDGE = StandardEdge.class;
-    //QLStateless
-    public static float EPSILON = 1.0f;
-    public static float E_DECAY_RATE = 0.99f;//
-    public static final long SEED = System.currentTimeMillis();
+    public static final long RAMDON_SEED = System.currentTimeMillis();
     public static Random RANDOM = new Random();
+
+    /**
+     * Proportion of learning agents per trip. For instance: - value = 1 means
+     * that it will be one learning agent per unit of trip; - value = 100 means
+     * that it will be one learning agent for each 100 trips; All trips will use
+     * the route the agent is learning.
+     */
+    public static int PROPORTION = 1;
+    public static ImplementedTAP DEFAULT_TAP = ImplementedTAP.OW;
+    public static Class DEFAULT_EDGE = StandardEdge.class;
+    //Epsilon-Greedy Parameters
+    public static float EPSILON_INITIAL = 1.0f;
+    public static float EPSILON_DECAY = 0.99f;//
+    //Learning Parameters
     public static RewardFunction REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
     public static Class EXPLORATION_POLICY = EpsilonGreedy.class;
-    public static String SEPARATOR = " ";//
-    public static String COMMENT = "#";//
+    public static Class DEFAULT_ALGORITHM = QLStatefull.class;
+    //Outputs Parameters
+    public static boolean PRINT_AVERAGE_RESULTS = false; //not been used (problems here)
+    public static boolean PRINT_OD_PAIRS_AVG_COST = false;
+    public static boolean PRINT_FLOWS = false;
+    public static boolean PRINT_ON_FILE = false;
+    public static boolean PRINT_ON_TERMINAL = true;
+    public static String OUTPUT_DIRECTORY = "results";
+    public static String COLUMN_SEPARATOR = "";
+    public static String COMMENT_CHARACTER = "#";
 
     public static void parseParams(String[] args) throws ParseException {
 
@@ -78,6 +85,7 @@ public class Params {
         options.addOption("n", "tap", true, "algorithm used to solve the traffic assignment problem. Accepted values are <ANA>, <BRAESS>, <BYPASS>, <EMME>, <ND>, <OW>, <SF>.");
         options.addOption("h", "help", false, "shows this message");
         options.addOption("d", "output.dir", true, "directory used to print the files. Default value is </results>");
+        options.addOption("p", "proportion", true, "proportion of learning agents per trip of od pair. default value is <1> (one trip for each learning agent). Example of accepted valeus are <100> (100 trips per learning agents), <10>, <1000>.");
         options.addOption("r", "runs", true, "number of repetitions of the experiment.");
         options.addOption("e", "ql.episodes", true, "number of episodes of each experiment.");
         options.addOption("E", "exploration.policy", true, "exploration policy. Accepted values are Epsilon-Greedy <EGreedy> (Default), Softmax <Softmax>");
@@ -85,6 +93,7 @@ public class Params {
         options.addOption("edecay", "ql.epsilon-decay", true, "epsilon decay rate parameter of exploration.");
         options.addOption("reward", "ql.reward", true, "Reward function for QLearning-based methods. Avaiable values are Difference Rewards <DR>, Standard Reward <STD>, Reward Shaping <RS>.");
         options.addOption("alpha", "ql.alpha", true, "Alpha parameter of QLStateless and QLStatefull");
+        options.addOption("c2irate", "qlc2i.communication-rate", true, "Probability to get information from infrastructure in QLC2Infrastructure.");
         options.addOption("k", "ql.k", true, "Number of routes used in QLStateless");
         options.addOption("gamma", "ql.gamma", true, "Gamma parameter of QLStatefull");
 
@@ -100,14 +109,14 @@ public class Params {
             if (cmdLine.hasOption("algorithm")) {
                 switch (cmdLine.getOptionValue("algorithm").toUpperCase()) {
                     case "QLSTATEFULL":
-                        ALGORITHM = QLStatefull.class;
+                        DEFAULT_ALGORITHM = QLStatefull.class;
                         break;
 
                     case "QLSTATELESS":
-                        ALGORITHM = QLStateless.class;
+                        DEFAULT_ALGORITHM = QLStateless.class;
                         break;
                     case "QLSTATEFULLC2I":
-                        ALGORITHM = QLStatefullC2I.class;
+                        DEFAULT_ALGORITHM = QLStatefullC2I.class;
                         DEFAULT_EDGE = EdgeC2I.class;
                         break;
                 }
@@ -157,7 +166,7 @@ public class Params {
             }
 
             if (cmdLine.hasOption("output.comment-char")) {
-                SEPARATOR = cmdLine.getOptionValue("output.comment-char");
+                COLUMN_SEPARATOR = cmdLine.getOptionValue("output.comment-char");
             }
 
             PRINT_ON_FILE = cmdLine.hasOption("output.on-file");
@@ -166,7 +175,7 @@ public class Params {
 
             if (cmdLine.hasOption("tap")) {
 
-                TAP_NAME = ImplementedTAP.valueOf(cmdLine.getOptionValue("tap"));
+                DEFAULT_TAP = ImplementedTAP.valueOf(cmdLine.getOptionValue("tap"));
 
                 createTap();
             }
@@ -176,15 +185,15 @@ public class Params {
             }
 
             if (cmdLine.hasOption("ql.episodes")) {
-                EPISODES = Integer.parseInt(cmdLine.getParsedOptionValue("ql.episodes").toString());
+                MAX_EPISODES = Integer.parseInt(cmdLine.getParsedOptionValue("ql.episodes").toString());
             }
 
             if (cmdLine.hasOption("ql.epsilon-decay")) {
-                E_DECAY_RATE = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon-decay").toString());
+                EPSILON_DECAY = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon-decay").toString());
             }
 
             if (cmdLine.hasOption("ql.epsilon")) {
-                EPSILON = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
+                EPSILON_INITIAL = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
             }
 
             if (cmdLine.hasOption("ql.alpha")) {
@@ -202,14 +211,22 @@ public class Params {
                 QLStateless.K = Integer.parseInt(cmdLine.getParsedOptionValue("ql.k").toString());
             }
 
-            PRINT_ALL_OD_PAIR = cmdLine.hasOption("output.od-pairs");
+            if (cmdLine.hasOption("proportion")) {
+                PROPORTION = Integer.parseInt(cmdLine.getParsedOptionValue("proportion").toString());
+            }
+
+            if (cmdLine.hasOption("qlc2i.communication-rate")) {
+                QLStatefullC2I.COMMUNICATION_RATE = Double.parseDouble(cmdLine.getParsedOptionValue("qlc2i.communication-rate").toString());
+            }
+
+            PRINT_OD_PAIRS_AVG_COST = cmdLine.hasOption("output.od-pairs");
 
             if (cmdLine.hasOption("output.dir")) {
-                OUTPUTS_DIRECTORY = cmdLine.getOptionValue("output.dir");
+                OUTPUT_DIRECTORY = cmdLine.getOptionValue("output.dir");
             }
 
             if (cmdLine.hasOption("output.column-char")) {
-                SEPARATOR = cmdLine.getOptionValue("output.column-char");
+                COLUMN_SEPARATOR = cmdLine.getOptionValue("output.column-char");
             }
 
             PRINT_ON_TERMINAL = cmdLine.hasOption("output.on-terminal");
@@ -219,33 +236,33 @@ public class Params {
 
     public static void createTap() {
 
-        switch (TAP_NAME) {
+        switch (DEFAULT_TAP) {
             case ANA:
-                USED_TAP = TAP.ANA(ALGORITHM);
+                USED_TAP = TAP.ANA(DEFAULT_ALGORITHM);
                 break;
             case BYPASS:
-                USED_TAP = TAP.BYPASS(ALGORITHM);
+                USED_TAP = TAP.BYPASS(DEFAULT_ALGORITHM);
                 break;
             case BRAESS:
-                USED_TAP = TAP.BRAESS(ALGORITHM);
+                USED_TAP = TAP.BRAESS(DEFAULT_ALGORITHM);
                 break;
             case BRAESS6:
-                USED_TAP = TAP.BRAESS_6Trip(ALGORITHM);
+                USED_TAP = TAP.BRAESS_6Trip(DEFAULT_ALGORITHM);
                 break;
             case EMME:
-                USED_TAP = TAP.EMME(ALGORITHM);
+                USED_TAP = TAP.EMME(DEFAULT_ALGORITHM);
                 break;
             case ND:
-                USED_TAP = TAP.ND(ALGORITHM);
+                USED_TAP = TAP.ND(DEFAULT_ALGORITHM);
                 break;
             case OW:
-                USED_TAP = TAP.OW(ALGORITHM);
+                USED_TAP = TAP.OW(DEFAULT_ALGORITHM);
                 break;
             case SF:
-                USED_TAP = TAP.SF(ALGORITHM);
+                USED_TAP = TAP.SF(DEFAULT_ALGORITHM);
                 break;
             default:
-                USED_TAP = TAP.OW(ALGORITHM);
+                USED_TAP = TAP.OW(DEFAULT_ALGORITHM);
                 break;
         }
     }

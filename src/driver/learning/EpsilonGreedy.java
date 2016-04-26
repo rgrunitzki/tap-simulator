@@ -39,7 +39,7 @@ public class EpsilonGreedy<State, Action, Value extends Comparable> extends Expl
     public void reset() {}
     
     private double getEpsilon() {
-        double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
+        double epsilon = 1 * Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
         return epsilon;
     }
     

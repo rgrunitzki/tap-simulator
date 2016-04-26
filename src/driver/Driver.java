@@ -11,12 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import scenario.AbstractEdge;
 
-/**
- *
- * @author rgrunitzki
- * @param <T>
- * @param <T2>
- */
+
 @SuppressWarnings("rawtypes")
 public abstract class Driver<T extends Driver, T2> implements Callable<Driver> {
 

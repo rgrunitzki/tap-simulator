@@ -94,8 +94,8 @@ public class IncrementalAssignment {
                     odTravelTime += driver.getTravelTime();
                     count++;
                 }
-                header += Params.SEPARATOR + odPair;
-                results += Params.SEPARATOR + odTravelTime / count;
+                header += Params.COLUMN_SEPARATOR + odPair;
+                results += Params.COLUMN_SEPARATOR + odTravelTime / count;
 
             }
 
@@ -105,8 +105,8 @@ public class IncrementalAssignment {
             double cost = 0.0;
 
             for (StandardEdge e : edges) {
-                header += Params.SEPARATOR + e.getName();
-                results += Params.SEPARATOR + e.getTotalFlow();
+                header += Params.COLUMN_SEPARATOR + e.getName();
+                results += Params.COLUMN_SEPARATOR + e.getTotalFlow();
                 cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();
             }
             if (fraction == 0) {

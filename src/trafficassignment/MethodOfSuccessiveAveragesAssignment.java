@@ -29,7 +29,7 @@ public class MethodOfSuccessiveAveragesAssignment {
         List<EdgeMSA> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
 
-        String header = "iteration" + Params.SEPARATOR + "average_tt";
+        String header = "iteration" + Params.COLUMN_SEPARATOR + "average_tt";
         String results = "";
         int iterations = 1000;
         double phi;
@@ -69,17 +69,17 @@ public class MethodOfSuccessiveAveragesAssignment {
             //Print Result per iteration
             //Evaluate cost per OD pair
             for (String odPair : odpairs) {
-                header += Params.SEPARATOR + odPair;
-                results += Params.SEPARATOR + tap.getOdpairs().get(odPair).getAverageCost();
+                header += Params.COLUMN_SEPARATOR + odPair;
+                results += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(odPair).getAverageCost();
             }
 
             //Get links' flow
             double cost = 0.0;
 
             for (EdgeMSA e : edges) {
-                header += Params.SEPARATOR + e.getName();
+                header += Params.COLUMN_SEPARATOR + e.getName();
                 //Link Flow
-                results += Params.SEPARATOR + e.getMsaFlow();
+                results += Params.COLUMN_SEPARATOR + e.getMsaFlow();
                 //Evaluate average travel time
                 cost += (e.getCostFunction().evalDesirableCost(e, e.getMsaFlow())) * e.getMsaFlow();
 
@@ -95,7 +95,7 @@ public class MethodOfSuccessiveAveragesAssignment {
 //            if (iteration == 0) {
 //                System.out.println(header);
 //            }
-            System.out.println(iteration + Params.SEPARATOR + cost / tap.getDrivers().size() + results);
+            System.out.println(iteration + Params.COLUMN_SEPARATOR + cost / tap.getDrivers().size() + results);
             results = "";
         }
     }

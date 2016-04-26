@@ -61,7 +61,7 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
     }
 
     protected double getEpsilon() {
-        double epsilon = 1 * Math.pow(Params.E_DECAY_RATE, Params.CURRENT_EPISODE);
+        double epsilon = 1 * Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
         return epsilon;
     }
 
