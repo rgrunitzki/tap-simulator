@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulation;
 
 import driver.Driver;
-import driver.learning.QLStateless;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -25,11 +19,12 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import scenario.TAP;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 import scenario.AbstractEdge;
 import scenario.ODPair;
 
 /**
+ * This class represents the core of the simulation. It is responsible for
+ * controlling the whole simulation.
  *
  * @author Ricardo Grunitzki
  */
@@ -39,6 +34,7 @@ public class Simulation {
     private final Graph<String, AbstractEdge> graph;
     private final Map<String, ODPair> odpairs;
     private final TAP tap;
+    private FileWriter fileWriter = null;
 
     //Multi core objects
     //Factory class to create ExecuterServices instances
@@ -46,6 +42,13 @@ public class Simulation {
     //Task executor
     private final CompletionService<Object> cservice = new ExecutorCompletionService<>(eservice);
 
+    private String fileNameToPrint = "";
+
+    /**
+     * Creates and simulation object according to the TAP specifications.
+     *
+     * @param tap traffic assignment problem
+     */
     public Simulation(TAP tap) {
         this.drivers = tap.getDrivers();
         this.graph = tap.getGraph();
@@ -53,8 +56,10 @@ public class Simulation {
         this.tap = tap;
     }
 
-    String fileNameToPrint = "";
-
+    /**
+     * Executes the traffic simulation.
+     *
+     */
     public void execute() {
 
         drivers.parallelStream().forEach((driver) -> {
@@ -86,24 +91,22 @@ public class Simulation {
             }
 
         }
-        
-        System.out.println("Quantidade de veículos: " + drivers.size());
 
         //post-simulation processing
         drivers.parallelStream().forEach((driver) -> {
             driver.afterSimulation();
         });
-        
+
     }
 
-    public static int step = 0;
-
+    /**
+     * Executes an specific episode.
+     */
     @SuppressWarnings("empty-statement")
     private void runEpisode() {
-        step = 0;
-//        int step = 0;
+        Params.CURRENT_STEP = 0;
         resetEdgesForEpisode();
-        while ((!runStep()) && (step++ < Params.MAX_STEPS));
+        while ((!runStep()) && (Params.CURRENT_STEP++ < Params.MAX_STEPS));
     }
 
     private boolean runStep() {
@@ -134,15 +137,15 @@ public class Simulation {
             } catch (InterruptedException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });        
-        
+        });
+
         //intermediate computation
         this.graph.edgeSet().parallelStream().forEach((edge) -> {
             edge.clearCurrentFlow();
         });
-        
+
         driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((driver) -> {
-            if(driver.getCurrentEdge()==null){
+            if (driver.getCurrentEdge() == null) {
                 System.out.println("deu pau");
             }
             driver.getCurrentEdge().proccess(driver);
@@ -165,12 +168,17 @@ public class Simulation {
         return false;
     }
 
-    public double simulationTravelTime() {
+    /**
+     * Returns the average simulation travel cost.
+     *
+     * @return average cost of all drivers
+     */
+    public double averageTravelCost() {
         double avgcost = 0;
         for (AbstractEdge e : graph.edgeSet()) {
             avgcost += e.getTotalFlow() * e.getCost();
         }
-        return (avgcost / (drivers.size()*Params.PROPORTION));
+        return (avgcost / (drivers.size() * Params.PROPORTION));
     }
 
     private void resetEdgesForEpisode() {
@@ -191,6 +199,9 @@ public class Simulation {
         });
     }
 
+    /**
+     *
+     */
     public void reset() {
         this.resetDrivers();
         this.resetEdgesForSimulation();
@@ -198,6 +209,9 @@ public class Simulation {
         this.fileWriter = null;
     }
 
+    /**
+     * Finishes the executor service.
+     */
     public void end() {
         eservice.shutdown();
     }
@@ -214,7 +228,7 @@ public class Simulation {
     }
 
     private String getAverageTravelCosts() {
-        String out = String.valueOf(simulationTravelTime()); //Average Cost
+        String out = String.valueOf(averageTravelCost()); //Average Cost
 
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
@@ -239,13 +253,11 @@ public class Simulation {
         return out;
     }
 
-//    private String getTravelTimeAndFlows() {
-//        String cost = getAverageTravelCosts();
-//        if (Params.PRINT_FLOWS) {
-//            cost += Params.SEPARATOR + getFlows();
-//        }
-//        return cost;
-//    }
+    /**
+     * Returns the outputs of the simulation
+     *
+     * @return
+     */
     public String getSimulationOutputs() {
         String output = "";
         if (Params.CURRENT_EPISODE == 0) {
@@ -258,8 +270,6 @@ public class Simulation {
 
         return output + "\n";
     }
-
-    private FileWriter fileWriter = null;
 
     private void printExperimentResultsOnFile(String directory, String fileName, String content) {
 
@@ -361,7 +371,6 @@ public class Simulation {
             name += "_" + 1;
         }
         name += ".txt";
-        //class+_ow_e0.91_a099_g0.8.txt
         return name;
     }
 

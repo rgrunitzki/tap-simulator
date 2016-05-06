@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package driver.learning;
 
 import java.util.Map;
 
 /**
+ * Exploration policy used by the drivers in their action choice.
  *
  * @author Ricardo Grunitzki
  * @param <State> state type
@@ -16,10 +12,22 @@ import java.util.Map;
  */
 public abstract class ExplorationPolicy<State, Action, Value extends Comparable> {
 
+    /**
+     * Returns the next action.
+     *
+     * @param mdp mdp of the agent
+     * @return next action
+     */
     public abstract Action getAction(Map<Action, Value> mdp);
 
+    /**
+     * Executes the updates needed at each episode.
+     */
     public abstract void episodeUpdate();
 
+    /**
+     * Resets the exploration policy.
+     */
     public abstract void reset();
 
 }

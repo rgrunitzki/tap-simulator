@@ -22,17 +22,28 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import simulation.Params;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
+ * Creates the traffic assignment problem (TAP) according the specifications in
+ * XML files.
  *
  * @author Ricardo Grunitzki
  */
 public class Loader {
 
+    /**
+     * Collection of OD-pairs of the problem.
+     */
+    public static Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
+
+    /**
+     * Creates the Graph object that represents the road network of the TAP.
+     *
+     * @param netFile .net.xml file with the definitions of the road network
+     * @param edgeClass the type of the edge.
+     * @param costFunction the cost function of the edge.
+     * @return Graph object
+     * @throws NoSuchMethodException
+     */
     public static Graph loadNetwork(File netFile, Class edgeClass, AbstractCostFunction costFunction) throws NoSuchMethodException {
 
         Graph<String, AbstractEdge> graph = new DefaultDirectedWeightedGraph<>(Params.DEFAULT_EDGE);
@@ -58,7 +69,6 @@ public class Loader {
             for (int i = 0; i < list.getLength(); i++) {
                 Element e = (Element) list.item(i);
 
-//                AbstractEdge edge = new AbstractEdge(costFunction);
                 AbstractEdge edge = null;
                 try {
                     edge = (AbstractEdge) edgeClass.getConstructor(edgeClass.getConstructors()[0].getParameterTypes()).newInstance(
@@ -86,10 +96,22 @@ public class Loader {
 
     }
 
-    public static Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
-
-    public static <T> List<T> processODMatrix(Graph graph, File demandFile, Class driverClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<T> drivers = new ArrayList<>();
+    /**
+     * Creates the demand of the TAP.
+     *
+     * @param <DriverType> The type of the drivers
+     * @param graph Network graph
+     * @param demandFile File containing the demand definitions
+     * @param driverClass The class of the drivers.
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
+    public static <DriverType> List<DriverType> processODMatrix(Graph graph, File demandFile, Class driverClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        List<DriverType> drivers = new ArrayList<>();
         try {
 
             //objects to manipulate the XML file
@@ -118,7 +140,7 @@ public class Loader {
 
                     Object driver = driverClass.getConstructor(driverClass.getConstructors()[0].getParameterTypes()).newInstance(
                             ++countD, origin, destination, graph);
-                    drivers.add((T) driver);
+                    drivers.add((DriverType) driver);
                     od.addDriver((Driver) driver);
                 }
                 odpairs.put(od.getName(), od);
@@ -127,7 +149,6 @@ public class Loader {
         } catch (IOException | NumberFormatException | ParserConfigurationException | SAXException e) {
             System.err.println("Error on reading XML file!");
         }
-//        printOD(); 
         return drivers;
     }
 }

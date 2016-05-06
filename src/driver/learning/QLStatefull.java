@@ -21,6 +21,7 @@ import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
+ * Implementation of Q-Learning node by node for TAP.
  *
  * @author Ricardo Grunitzki
  */
@@ -28,13 +29,26 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
-//    public static StatefullMDP staticMdp;
+    /**
+     * Learning rate parameter of Q-Learning.
+     */
     public static double ALPHA = 0.5;
+
+    /**
+     * Discount factor parameter of Q-Learning.
+     */
     public static double GAMMA = 0.99;
 
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
-//    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionATT(graph);
 
+    /**
+     * Creates an QLStatefull driver according to its specifications.
+     *
+     * @param id Driver identifier
+     * @param origin Origin node
+     * @param destination Destination node
+     * @param graph Road network
+     */
     public QLStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
@@ -104,9 +118,9 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         double r = this.rewardFunction.getReward(this);
 
         double maxQa = 0.0;
-        
+
         if (!currentEdge.getTargetVertex().equals(destination)
-                &&!this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
+                && !this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
             Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }
@@ -138,7 +152,7 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public List<Pair> getParameters() {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-       list.add(Pair.of("epsilon", Params.EPSILON_INITIAL));
+        list.add(Pair.of("epsilon", Params.EPSILON_INITIAL));
         list.add(Pair.of("epsilon-decay", Params.EPSILON_DECAY));
         list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
         list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));

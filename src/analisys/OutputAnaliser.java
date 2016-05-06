@@ -25,17 +25,18 @@ public class OutputAnaliser {
 
     public static AnalysisType type;
     public static Integer[] columnsToPrint = {0, 1};
-    public static String fileToBePrinted = "stdev.txt";
+    public static String fileToBePrinted = "mean.txt";
 //    public static String fileToBePrinted = "stdev.txt";
 //
+
     public static void main(String[] args) throws IOException {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results2";
-//        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/ow/qlstatefull/reward_Standard Reward/epsilon_0.99/alpha_0.9/gamma_0.99";
+        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/siouxfalls/qlstatefull/epsilon_1.0/epsilon-decay_0.99/alpha_0.9/gamma_0.99";
+//        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/siouxfalls/qlstatefullc2i/epsilon_1.0/epsilon-decay_0.99/alpha_0.9/gamma_0.99/communication-rate_0.5";
         //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
-        type = AnalysisType.PRINT_SELECTED_COLUMNS;
+        type = AnalysisType.PRINT_MEAN_CONVERGENCE_CURVE;
 
         walk(experimentsDirectory);
 
@@ -150,16 +151,17 @@ public class OutputAnaliser {
 
             //print only average file
 //            if (files[file].getName().contains(fileToBePrinted)) {
-                BufferedReader reader = new BufferedReader(new FileReader(files[file]));
-                while ((line = reader.readLine()) != null) {
-                    String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
-                    if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
-                        for (int column : columnsToPrint) {
-                            selectedContent = rows[column] + Params.COLUMN_SEPARATOR;
-                        }
+            BufferedReader reader = new BufferedReader(new FileReader(files[file]));
+            while ((line = reader.readLine()) != null) {
+                String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
+                if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
+                    for (int column : columnsToPrint) {
+                        selectedContent = rows[column] + Params.COLUMN_SEPARATOR;
                     }
                 }
-                System.out.print(files[file].getParent() + Params.COLUMN_SEPARATOR + selectedContent + "\n");
+            }
+            System.out.print(selectedContent + "\n");
+//            System.out.print(files[file].getParent() + Params.COLUMN_SEPARATOR + selectedContent + "\n");
 //            }
 
         }

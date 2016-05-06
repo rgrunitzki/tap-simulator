@@ -10,39 +10,33 @@ package scenario;
  * @author Ricardo Grunitzki
  */
 public enum ImplementedTAP {
-    
+
     /**
-     *
+     * Bypass TAP.
      */
     BYPASS("BYPASS"),
-
     /**
-     *
+     * Braess Paradox TAP.
      */
     BRAESS("BRAESS"),
-
     /**
-     *
+     * Braess Paradox with 6 trips TAP.
      */
     BRAESS6("BRAESS6"),
-
     /**
-     *
+     * EMME TAP.
      */
     EMME("EMME"),
-
     /**
-     *
+     * Nguyen and Dupuis (ND) TAP.
      */
     ND("ND"),
-
     /**
-     *
+     * Ortuzar and Willumsen (OW) TAP.
      */
     OW("OW"),
-
     /**
-     *
+     * Sioux Falls (SF) TAP.
      */
     SF("SF");
 

@@ -12,14 +12,17 @@ import java.util.Map;
 import simulation.Params;
 
 /**
+ * Epsilon-greed policy choice implementation. This policy starts with an
+ * initial exploration rate and is decreased along the episodes by an constant
+ * factor.
  *
  * @author Ricardo Grunitzki
  * @param <State>
  * @param <Action>
  * @param <Value>
  */
-public class EpsilonGreedy<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value>{
-    
+public class EpsilonGreedy<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value> {
+
     @Override
     public Action getAction(Map<Action, Value> mdp) {
         float random = Params.RANDOM.nextFloat();
@@ -33,14 +36,16 @@ public class EpsilonGreedy<State, Action, Value extends Comparable> extends Expl
     }
 
     @Override
-    public void episodeUpdate() {}
+    public void episodeUpdate() {
+    }
 
     @Override
-    public void reset() {}
-    
+    public void reset() {
+    }
+
     private double getEpsilon() {
         double epsilon = 1 * Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
         return epsilon;
     }
-    
+
 }

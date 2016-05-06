@@ -29,7 +29,6 @@ import simulation.Params;
  */
 public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
-//    private StatefullC2IMDP mdp = new StatefullC2IMDP();
     private StatefullMDP mdp = new StatefullMDP();
 
     public static double ALPHA = 0.5;
@@ -38,7 +37,7 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public static InformationType INFORMATION_TYPE = InformationType.None;
     public AbstractEdge previousEdge = null;
 
-    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionC2I(graph);
+    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 
     public QLStatefullC2I(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);

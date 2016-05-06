@@ -20,6 +20,7 @@ import scenario.AbstractEdge;
 import simulation.Params;
 
 /**
+ * Implementation of SARSA node by node for TAP.
  *
  * @author Ricardo Grunitzki
  */
@@ -27,13 +28,27 @@ public class SARSAStatefull extends Driver<SARSAStatefull, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
-//    public static StatefullMDP staticMdp;
+    /**
+     * Learning rate parameter of SARSA algorithm.
+     */
     public static double ALPHA = 0.5;
+
+    /**
+     * Discount rate parameter of SARSA algorithm.
+     */
     public static double GAMMA = 0.99;
+
     private AbstractEdge nextEdge = null;
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
-//    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunctionATT(graph);
 
+    /**
+     * Creates an SARSAStatefull driver according to its specifications.
+     *
+     * @param id Driver identifier
+     * @param origin Origin node
+     * @param destination Destination node
+     * @param graph Road network
+     */
     public SARSAStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
@@ -92,7 +107,7 @@ public class SARSAStatefull extends Driver<SARSAStatefull, List<AbstractEdge>> {
     public void beforeStep() {
         if (nextEdge == null) {
             currentEdge = mdp.getAction(mdp.mdp.get(currentVertex));
-        }else{
+        } else {
             currentEdge = nextEdge;
         }
         this.route.add(currentEdge);
@@ -109,8 +124,7 @@ public class SARSAStatefull extends Driver<SARSAStatefull, List<AbstractEdge>> {
 
         double qa_t1 = 0;
         nextEdge = mdp.getAction(mdp.mdp.get(currentVertex));
-        
-        
+
         if (nextEdge.getSourceVertex().equals(destination)) {
             qa_t1 = 0.0;
         } else {

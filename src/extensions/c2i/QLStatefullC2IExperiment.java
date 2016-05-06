@@ -33,8 +33,8 @@ public class QLStatefullC2IExperiment {
         Params.MAX_STEPS = 100;
         Params.EPSILON_DECAY = 0.99f;
         Params.REPETITIONS = 1;
-        Params.DEFAULT_TAP = ImplementedTAP.SF;
-        Params.PROPORTION = 5;
+        Params.DEFAULT_TAP = ImplementedTAP.OW;
+        Params.PROPORTION = 1;
 
         int type = 3;
         switch (type) {

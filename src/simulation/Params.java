@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulation;
 
 import driver.learning.EpsilonGreedy;
@@ -33,8 +28,9 @@ public class Params {
     //Simulation
     public static int MAX_EPISODES = 1000;//
     public static int MAX_STEPS = 100;
+    public static int CURRENT_STEP = 0;
     public static int CURRENT_EPISODE = 1;
-    public static TAP USED_TAP = null;// = TAP.OW(ALGORITHM);//
+    public static TAP USED_TAP = null;//
     public static int REPETITIONS = 1;//
     public static final long RAMDON_SEED = System.currentTimeMillis();
     public static Random RANDOM = new Random();
@@ -62,7 +58,7 @@ public class Params {
     public static boolean PRINT_ON_FILE = false;
     public static boolean PRINT_ON_TERMINAL = true;
     public static String OUTPUT_DIRECTORY = "results";
-    public static String COLUMN_SEPARATOR = "";
+    public static String COLUMN_SEPARATOR = " ";
     public static String COMMENT_CHARACTER = "#";
 
     public static void parseParams(String[] args) throws ParseException {

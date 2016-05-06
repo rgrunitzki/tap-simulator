@@ -1,19 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package driver.learning;
 
 import java.util.List;
 import scenario.AbstractEdge;
 
 /**
+ * MDP of the drivers that use en-route mechanism.
  *
  * @author Ricardo Grunitzki
  */
 public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
+    /**
+     * Object used support the fast clone of StatefullMDP objects.
+     */
     public static StatefullMDP staticMdp;
 
     @Override

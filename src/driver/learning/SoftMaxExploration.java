@@ -10,6 +10,7 @@ import java.util.Random;
 import simulation.Params;
 
 /**
+ * Implementation of Soft-Max exploration.
  *
  * @author Ricardo Grunitzki
  * @param <State>
@@ -18,6 +19,9 @@ import simulation.Params;
  */
 public class SoftMaxExploration<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value> {
 
+    /**
+     * Tau parameter of softmax exploration.
+     */
     public static double TAU = 10;
 
     @Override
@@ -29,15 +33,15 @@ public class SoftMaxExploration<State, Action, Value extends Comparable> extends
         for (Action action : mdp.keySet()) {
             sum += Math.exp((Double) mdp.get(action) / getTau());
         }
-        values +=sum;
+        values += sum;
         //random value representing the choosed action
         double random = new Random().nextDouble();
-        values+=";\trandom: " + random;
+        values += ";\trandom: " + random;
         //find the action selected through the random value
         double auxCounter = 0;
         for (Action action : mdp.keySet()) {
             auxCounter += Math.exp((Double) mdp.get(action) / getTau()) / sum;
-            values +=";\tqi"+auxCounter;
+            values += ";\tqi" + auxCounter;
             if (random <= auxCounter) {
                 return action;
             }
@@ -58,7 +62,7 @@ public class SoftMaxExploration<State, Action, Value extends Comparable> extends
     }
 
     private double getTau() {
-        double tau = TAU - 0.1*Params.CURRENT_EPISODE;
+        double tau = TAU - 0.1 * Params.CURRENT_EPISODE;
         if (tau < 1.0) {
             return 1;
         } else {

@@ -1,18 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package driver.learning;
 
 /**
+ *
  *
  * @author Ricardo Grunitzki
  */
 public enum RewardFunction {
 
+    /**
+     * Difference Rewards function
+     */
     DIFFERENCE_REWARDS("Difference Rewards"),
+    /**
+     * Reward shaping function
+     */
     REWARD_SHAPING("Reward Shaping"),
+    /**
+     * Default reward function
+     */
     STANDARD_REWARD("Standard Reward");
 
     private final String value;
