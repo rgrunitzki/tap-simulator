@@ -1,16 +1,16 @@
-package driver.learning;
+package driver.learning.exploration;
 
 import java.util.Map;
 
 /**
- * Exploration policy used by the drivers in their action choice.
+ * Exploration strategy used by the drivers in their action choice.
  *
  * @author Ricardo Grunitzki
  * @param <State> state type
  * @param <Action> action type
  * @param <Value> pair state-action value type
  */
-public abstract class ExplorationPolicy<State, Action, Value extends Comparable> {
+public abstract class ExplorationStrategy<State, Action, Value extends Comparable> {
 
     /**
      * Returns the next action.

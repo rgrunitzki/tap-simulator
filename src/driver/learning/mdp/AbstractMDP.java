@@ -1,5 +1,6 @@
-package driver.learning;
+package driver.learning.mdp;
 
+import driver.learning.exploration.ExplorationStrategy;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -26,7 +27,7 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
      */
     public AbstractMDP() {
         try {
-            this.explorationPolicy = (ExplorationPolicy) Params.EXPLORATION_POLICY.getConstructor().newInstance();
+            this.explorationPolicy = (ExplorationStrategy) Params.EXPLORATION_POLICY.getConstructor().newInstance();
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(AbstractMDP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -35,12 +36,17 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
     /**
      * Exploration policy used by the agents.
      */
-    protected ExplorationPolicy explorationPolicy;
+    protected ExplorationStrategy explorationPolicy;
 
     /**
      * Collection of state-action pairs that represents the MDP.
      */
     protected Map<State, Map<Action, Value>> mdp = new ConcurrentHashMap<>();
+
+    /**
+     * Collection of z-values used in Eligibility Traces.
+     */
+    protected Map<State, Map<Action, Value>> zTable = new ConcurrentHashMap<>();
 
     /**
      * Sets a value for an specific state-action pair.
@@ -84,13 +90,26 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
     protected Object clone() throws CloneNotSupportedException {
         AbstractMDP other = (AbstractMDP) super.clone();
         other.mdp = new ConcurrentHashMap<>();
-        //state
-        for (State action : mdp.keySet()) {
-            other.mdp.put(action, new ConcurrentHashMap<>());
+        other.zTable = new ConcurrentHashMap<>();
+        //Q-table
+        for (State state : this.mdp.keySet()) {
+            other.mdp.put(state, new ConcurrentHashMap<>());
             //add actions to state
-            ((Map<Action, Value>) other.mdp.get(action)).putAll(new ConcurrentHashMap<>(mdp.get(action)));
+            ((Map<Action, Value>) other.mdp.get(state)).putAll(new ConcurrentHashMap<>(this.mdp.get(state)));
+        }
+        //Z-table Eligibility Traces
+        if (!this.zTable.isEmpty()) {
+            for (State state : zTable.keySet()) {
+                other.zTable.put(state, new ConcurrentHashMap<>());
+                //add actions to state
+                ((Map<Action, Value>) other.zTable.get(state)).putAll(new ConcurrentHashMap<>(this.zTable.get(state)));
+            }
         }
         return other;
+    }
+
+    public Object getClone() throws CloneNotSupportedException {
+        return this.clone();
     }
 
     /**
@@ -100,6 +119,18 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
      */
     public Map<State, Map<Action, Value>> getMdp() {
         return mdp;
+    }
+
+    public void setMdp(Map<State, Map<Action, Value>> mdp) {
+        this.mdp = mdp;
+    }
+
+    public Map<State, Map<Action, Value>> getzTable() {
+        return zTable;
+    }
+
+    public void setzTable(Map<State, Map<Action, Value>> zTable) {
+        this.zTable = zTable;
     }
 
 }

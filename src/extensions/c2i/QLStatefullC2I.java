@@ -3,9 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package driver.learning;
+package extensions.c2i;
 
 import driver.Driver;
+import driver.learning.reward.AbstractRewardFunction;
+import driver.learning.exploration.EpsilonDecreasing;
+import driver.learning.mdp.StatefullMDP;
+import driver.learning.reward.StatefullRewardFunction;
 import extensions.c2i.EdgeC2I;
 import extensions.c2i.InformationType;
 import java.util.ArrayList;
@@ -20,7 +24,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import scenario.AbstractEdge;
+import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -66,20 +70,20 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
             }
 
             StatefullMDP mdpForOD = new StatefullMDP();
-            mdpForOD.mdp = states;
+            mdpForOD.setMdp(states);
             initializedMDPPerOD.put(origin + "-" + destination, mdpForOD);
 
 //            StatefullMDP.staticMdp = new StatefullMDP();
 //            StatefullMDP.staticMdp.mdp = states;
             try {
 //                this.mdp = (StatefullMDP) StatefullMDP.staticMdp.clone();
-                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).clone();
+                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).getClone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
-                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).clone();
+                this.mdp = (StatefullMDP) initializedMDPPerOD.get(origin + "-" + destination).getClone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(QLStatefullC2I.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -116,15 +120,15 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         //random number
         double random = Params.RANDOM.nextDouble();
         //current epsilon
-        double decay = Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
+        double decay = Math.pow(EpsilonDecreasing.EPSILON_DECAY, Params.CURRENT_EPISODE);
          //        double epsilon = 0.5 - Params.CURRENT_EPISODE * 0.001;
 
         //e-greedy policy
         //        if (random <= 0.2 * epsilon) {
-        if (random <= Params.EPSILON_INITIAL * decay) {
+        if (random <= EpsilonDecreasing.EPSILON_INITIAL * decay) {
 
             //exploration
-            List<AbstractEdge> actions = new ArrayList<>(mdp.mdp.get(currentVertex).keySet());
+            List<AbstractEdge> actions = new ArrayList<>(mdp.getMdp().get(currentVertex).keySet());
             Collections.shuffle(actions, Params.RANDOM);
             currentEdge = actions.get(0);
         } else {
@@ -140,13 +144,13 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
             //            if (newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))) {
             if ((COMMUNICATION_RATE > Params.RANDOM.nextDouble())//){
-                    && newQa > (mdp.mdp.get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))
+                    && newQa > (mdp.getMdp().get(currentVertex).get((AbstractEdge) c2iPath.getEdgeList().get(0)))
                     && Params.CURRENT_EPISODE < Params.MAX_EPISODES / 2) {
-                mdp.mdp.get(currentVertex).put((AbstractEdge) c2iPath.getEdgeList().get(0), newQa);
+                mdp.getMdp().get(currentVertex).put((AbstractEdge) c2iPath.getEdgeList().get(0), newQa);
             }
 
             //exploitation
-            currentEdge = Collections.max(mdp.mdp.get(currentVertex).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).getKey();
+            currentEdge = Collections.max(mdp.getMdp().get(currentVertex).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).getKey();
 
         }
 
@@ -181,8 +185,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         double maxQa = 0.0;
 
         if (!currentEdge.getTargetVertex().equals(destination)
-                && !this.mdp.mdp.get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
-            Map<AbstractEdge, Double> mdp2 = this.mdp.mdp.get(currentEdge.getTargetVertex());
+                && !this.mdp.getMdp().get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
+            Map<AbstractEdge, Double> mdp2 = this.mdp.getMdp().get(currentEdge.getTargetVertex());
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }
 
@@ -198,9 +202,9 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
 
     @Override
     public void resetAll() {
-        for (String action : this.mdp.mdp.keySet()) {
-            for (AbstractEdge e : this.mdp.mdp.get(action).keySet()) {
-                this.mdp.mdp.get(action).put(e, 0.0);
+        for (String action : this.mdp.getMdp().keySet()) {
+            for (AbstractEdge e : this.mdp.getMdp().get(action).keySet()) {
+                this.mdp.getMdp().get(action).put(e, 0.0);
             }
         }
     }
@@ -219,8 +223,8 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
     public List<Pair> getParameters() {
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("epsilon", Params.EPSILON_INITIAL));
-        list.add(Pair.of("epsilon-decay", Params.EPSILON_DECAY));
+        list.add(Pair.of("epsilon", EpsilonDecreasing.EPSILON_INITIAL));
+        list.add(Pair.of("epsilon-decay", EpsilonDecreasing.EPSILON_DECAY));
         list.add(Pair.of("alpha", QLStatefullC2I.ALPHA));
         list.add(Pair.of("gamma", QLStatefullC2I.GAMMA));
         list.add(Pair.of("communication-rate", QLStatefullC2I.COMMUNICATION_RATE));

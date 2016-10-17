@@ -5,7 +5,6 @@
  */
 package extensions.c2i;
 
-import driver.learning.QLStatefullC2I;
 import static extensions.c2i.InformationType.Average;
 import static extensions.c2i.InformationType.Best;
 import static extensions.c2i.InformationType.Last;

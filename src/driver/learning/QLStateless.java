@@ -1,5 +1,9 @@
 package driver.learning;
 
+import driver.learning.mdp.StatelessMDP;
+import driver.learning.reward.AbstractRewardFunction;
+import driver.learning.reward.StatelessRewardFunction;
+import driver.learning.exploration.EpsilonDecreasing;
 import driver.Driver;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.KShortestPaths;
-import scenario.AbstractEdge;
-import simulation.Params;
+import scenario.network.AbstractEdge;
 
 /**
  *
@@ -41,7 +44,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
         //initialize MDP
         if (QLStateless.mdpPerOD.containsKey(this.origin + "-" + this.destination)) {
             try {
-                this.mdp = (StatelessMDP) (QLStateless.mdpPerOD.get(this.origin + "-" + this.destination)).clone();
+                this.mdp = (StatelessMDP) (QLStateless.mdpPerOD.get(this.origin + "-" + this.destination)).getClone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(QLStateless.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -67,7 +70,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
     @Override
     public void beforeEpisode() {
         reset();
-        this.route = mdp.getAction(this.mdp.mdp.get(this.origin));
+        this.route = mdp.getAction(this.mdp.getMdp().get(this.origin));
         this.currentEdge = (AbstractEdge) this.route.getEdgeList().get(0);
 
         if (!AbstractRewardFunction.COMPUTED_REWARDS.isEmpty()) {
@@ -112,7 +115,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
     }
 
     public int getSize() {
-        return this.mdp.mdp.size();
+        return this.mdp.getMdp().size();
     }
 
     @Override
@@ -125,7 +128,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
 
         List<Pair> list = new ArrayList<>();
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
-        list.add(Pair.of("epsilon", Params.EPSILON_DECAY));
+        list.add(Pair.of("epsilon", EpsilonDecreasing.EPSILON_DECAY));
         list.add(Pair.of("k", QLStateless.K));
         list.add(Pair.of("alpha", QLStateless.ALPHA));
         return list;

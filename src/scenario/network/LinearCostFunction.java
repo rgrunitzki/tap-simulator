@@ -1,4 +1,4 @@
-package scenario;
+package scenario.network;
 
 /**
  * A linear cost function that represents the travel time in minutes. This

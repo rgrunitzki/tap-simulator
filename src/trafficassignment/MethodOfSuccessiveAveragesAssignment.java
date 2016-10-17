@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.FloydWarshallShortestPaths;
-import scenario.AbstractEdge;
+import scenario.network.AbstractEdge;
 import scenario.TAP;
 import simulation.Params;
 
@@ -26,7 +26,7 @@ public class MethodOfSuccessiveAveragesAssignment {
         TAP tap = TAP.BRAESS(MSADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
-        List<EdgeMSA> edges = new ArrayList<>(tap.getGraph().edgeSet());
+        List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
 
         String header = "iteration" + Params.COLUMN_SEPARATOR + "average_tt";
@@ -38,7 +38,7 @@ public class MethodOfSuccessiveAveragesAssignment {
         for (int iteration = 0; iteration < iterations; iteration++) {
             phi = 1.0 / (iteration + 1);
             //calculate all-shortest-path
-            fws = new FloydWarshallShortestPaths(tap.getGraph());            
+            fws = new FloydWarshallShortestPaths(tap.getGraph());
 
             //Update edges flow
             for (String odPair : odpairs) {
@@ -61,9 +61,9 @@ public class MethodOfSuccessiveAveragesAssignment {
             }
 
             //Update current flow MSA
-            for (EdgeMSA e : edges) {
-                double flow = (1 - phi) * e.getMsaFlow() + phi * e.getTotalFlow();
-                e.setMsaFlow(flow);
+            for (AbstractEdge e : edges) {
+                double flow = (1 - phi) * ((EdgeMSA) e).getMsaFlow() + phi * ((EdgeMSA) e).getTotalFlow();
+                ((EdgeMSA) e).setMsaFlow(flow);
             }
 
             //Print Result per iteration
@@ -76,12 +76,12 @@ public class MethodOfSuccessiveAveragesAssignment {
             //Get links' flow
             double cost = 0.0;
 
-            for (EdgeMSA e : edges) {
+            for (AbstractEdge e : edges) {
                 header += Params.COLUMN_SEPARATOR + e.getName();
                 //Link Flow
-                results += Params.COLUMN_SEPARATOR + e.getMsaFlow();
+                results += Params.COLUMN_SEPARATOR + ((EdgeMSA) e).getMsaFlow();
                 //Evaluate average travel time
-                cost += (e.getCostFunction().evalDesirableCost(e, e.getMsaFlow())) * e.getMsaFlow();
+                cost += (e.getCostFunction().evalDesirableCost(e, ((EdgeMSA) e).getMsaFlow())) * ((EdgeMSA) e).getMsaFlow();
 
                 e.setTotalFlow(0);
             }

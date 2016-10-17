@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package driver.learning;
+package driver.learning.exploration;
 
 import java.util.Map;
 import java.util.Random;
@@ -17,7 +17,7 @@ import simulation.Params;
  * @param <Action>
  * @param <Value>
  */
-public class SoftMaxExploration<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value> {
+public class SoftMaxExploration<State, Action, Value extends Comparable> extends ExplorationStrategy<State, Action, Value> {
 
     /**
      * Tau parameter of softmax exploration.

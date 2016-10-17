@@ -1,4 +1,6 @@
-package scenario;
+package scenario.network;
+
+import scenario.network.AbstractCostFunction;
 
 /**
  * The standard structure for Edges in the simulator.

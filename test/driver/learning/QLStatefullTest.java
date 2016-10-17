@@ -5,6 +5,7 @@
  */
 package driver.learning;
 
+import driver.learning.exploration.EpsilonDecreasing;
 import experiments.DefaultExperiment;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,11 +57,11 @@ public class QLStatefullTest {
 
         Params.MAX_EPISODES = 150;
         Params.MAX_STEPS = 100;
-        Params.EPSILON_DECAY = 0.91f;
+        EpsilonDecreasing.EPSILON_DECAY = 0.91f;
         Params.DEFAULT_TAP = ImplementedTAP.OW;
 
         //"QLStatefull"
-        Params.EPSILON_INITIAL = 1f;
+        EpsilonDecreasing.EPSILON_INITIAL = 1f;
         QLStatefull.ALPHA = 0.9f;
         QLStatefull.GAMMA = 0.99f;
         Params.DEFAULT_ALGORITHM = QLStatefull.class;

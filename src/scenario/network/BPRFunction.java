@@ -1,4 +1,4 @@
-package scenario;
+package scenario.network;
 
 /**
  * Implementation of the Volume-Delay Function (VDF) proposed by Bureau of
@@ -18,7 +18,7 @@ public class BPRFunction extends AbstractCostFunction {
 
     @Override
     public double evalCost(AbstractEdge edge) {
-        return (stringToDouble((String) edge.getParams().get("<li>"))
+        return (stringToDouble((String) edge.getParams().get("fftime"))
                 * (1 + stringToDouble((String) edge.getParams().get("alpha"))
                 * (float) Math.pow(edge.getTotalFlow() / stringToDouble((String) edge.getParams().get("capacity")),
                         stringToDouble((String) edge.getParams().get("beta")))));

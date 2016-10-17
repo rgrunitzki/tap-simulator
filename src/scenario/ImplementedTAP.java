@@ -38,7 +38,11 @@ public enum ImplementedTAP {
     /**
      * Sioux Falls (SF) TAP.
      */
-    SF("SF");
+    SF("SF"),
+    /**
+     * Scenario defined by Ana LC Bazzan.
+     */
+    TWO_NEIGHBORHOOD("TWO_NEIGHBORHOOD");
 
     private final String value;
 

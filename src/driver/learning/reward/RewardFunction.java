@@ -1,4 +1,4 @@
-package driver.learning;
+package driver.learning.reward;
 
 /**
  *

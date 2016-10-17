@@ -5,6 +5,11 @@
  */
 package scenario;
 
+import scenario.demand.ODPair;
+import scenario.network.BPRFunction;
+import scenario.network.BraessParadoxCostFunction;
+import scenario.network.AbstractCostFunction;
+import scenario.network.LinearCostFunction;
 import driver.Driver;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.Graph;
+import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -92,7 +98,7 @@ public class TAP {
      *
      * @return Graph object
      */
-    public Graph getGraph() {
+    public Graph<String, AbstractEdge> getGraph() {
         return graph;
     }
 
@@ -270,6 +276,23 @@ public class TAP {
         netFile = "files/siouxfalls.net.xml";
         demandFile = "files/siouxfalls.od.xml";
         costFunction = new BPRFunction();
+        return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
+    }
+
+    /**
+     * Returns the Two Neighborhood TAP. This problem is defined by Ana Bazzan
+     * and Bruno Silva for the work with spectral clustering.
+     *
+     * @param driverClass class of the drivers
+     * @return the Neighborhood TAP
+     */
+    public static TAP TWO_NEIGHBORHOOD(Class driverClass) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/two_neighborhood.net.xml";
+        demandFile = "files/two_neighborhood.od.xml";
+        costFunction = new LinearCostFunction();
         return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
     }
 

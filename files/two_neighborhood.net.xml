@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--
+    Network defined by Ana L. C. Bazzan
+    Created in 29/09/2016
+    
+    
+This scenarios uses a linear cost function that represents the 
+travel time (t) in minutes. Thisfunction is defined by t=fftime+flow*alpha, 
+where:
+ 
+ -t = travel time in minutes;
+ -fftime = travel time under free-flow condition;
+ -flow = flow of drivers, given by the simulation;
+ -alpha = constant factor.
+ 
+ This function is incremented linearly by alpha for each unit of flow (f).
+-->
+<graph>
+    <!--Attribute "connector" is a flag identificating if the node conects its 
+neighborhood to another neighborhood.
+    -->
+    <node id="A1" neighborhood="A"/>
+    <node id="A2" neighborhood="A"/>
+    <node id="A3" neighborhood="A"/>
+    <node id="A4" neighborhood="A"/>
+    <node id="A5" neighborhood="A"/>
+    <node id="A6" neighborhood="A"/>
+    <node id="A7" neighborhood="A"/>
+    <node id="A8" neighborhood="A"/>
+    <node id="A9" neighborhood="A"/>
+    
+    <node id="B1" neighborhood="B"/>
+    <node id="B3" neighborhood="B"/>
+    <node id="B4" neighborhood="B"/>
+    <node id="B6" neighborhood="B"/>
+    
+    <edge id="A1A2" from="A1" to="A2" fftime="2" alpha="1.0"/>
+    <edge id="A1A4" from="A1" to="A4" fftime="50" alpha="1.0"/>
+    <edge id="A1A5" from="A1" to="A5" fftime="50" alpha="1.0"/>
+    
+    <edge id="A2A1" from="A2" to="A1" fftime="2" alpha="1.0"/>
+    <edge id="A2A3" from="A2" to="A3" fftime="50" alpha="1.0"/>
+    <edge id="A2A5" from="A2" to="A5" fftime="2" alpha="1.0"/>
+    <edge id="A2A6" from="A2" to="A6" fftime="50" alpha="1.0"/>
+    
+    <edge id="A3A2" from="A3" to="A2" fftime="50" alpha="1.0"/>
+    <edge id="A3A6" from="A3" to="A6" fftime="2" alpha="1.0"/>
+    
+    <edge id="A4A1" from="A4" to="A1" fftime="50" alpha="1.0"/>
+    <edge id="A4A5" from="A4" to="A5" fftime="2" alpha="1.0"/>
+    <edge id="A4A7" from="A4" to="A7" fftime="2" alpha="1.0"/>
+    <edge id="A4A8" from="A4" to="A8" fftime="50" alpha="1.0"/>
+    
+    <edge id="A5A1" from="A5" to="A1" fftime="50" alpha="1.0"/>
+    <edge id="A5A2" from="A5" to="A2" fftime="2" alpha="1.0"/>
+    <edge id="A5A4" from="A5" to="A4" fftime="2" alpha="1.0"/>
+    <edge id="A5A6" from="A5" to="A6" fftime="2" alpha="1.0"/>
+    <edge id="A5A8" from="A5" to="A8" fftime="50" alpha="1.0"/>
+    <edge id="A5A9" from="A5" to="A9" fftime="2" alpha="1.0"/>
+    
+    <edge id="A6A2" from="A6" to="A2" fftime="50" alpha="1.0"/>
+    <edge id="A6A3" from="A6" to="A3" fftime="2" alpha="1.0"/>
+    <edge id="A6A5" from="A6" to="A5" fftime="2" alpha="1.0"/>
+    <edge id="A6A9" from="A6" to="A9" fftime="50" alpha="1.0"/>
+    
+    <edge id="A7A4" from="A7" to="A4" fftime="2" alpha="1.0"/>
+    <edge id="A7A8" from="A7" to="A8" fftime="2" alpha="1.0"/>
+    <edge id="A7B1" from="A7" to="B1" fftime="1" alpha="0.0"/>
+    <edge id="A7B3" from="A7" to="B3" fftime="1" alpha="0.0"/>
+        
+    <edge id="A8A4" from="A8" to="A4" fftime="50" alpha="1.0"/>
+    <edge id="A8A5" from="A8" to="A5" fftime="50" alpha="1.0"/>
+    <edge id="A8A7" from="A8" to="A7" fftime="2" alpha="1.0"/>
+    <edge id="A8A9" from="A8" to="A9" fftime="50" alpha="1.0"/>
+    
+    <edge id="A9A5" from="A9" to="A5" fftime="2" alpha="1.0"/>
+    <edge id="A9A6" from="A9" to="A6" fftime="50" alpha="1.0"/>
+    <edge id="A9A8" from="A9" to="A8" fftime="50" alpha="1.0"/>
+    <edge id="A9B1" from="A9" to="B1" fftime="1" alpha="0.0"/>
+    <edge id="A9B1" from="A9" to="B3" fftime="1" alpha="0.0"/>
+    
+    <edge id="B1B4" from="B1" to="B4" fftime="50" alpha="1.0"/>
+    <edge id="B1B6" from="B1" to="B6" fftime="2" alpha="1.0"/>
+    
+    <edge id="B3B4" from="B3" to="B4" fftime="2" alpha="1.0"/>
+    <edge id="B3B6" from="B3" to="B6" fftime="50" alpha="1.0"/>
+
+    
+</graph>

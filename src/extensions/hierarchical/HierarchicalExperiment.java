@@ -1,7 +1,7 @@
-package extensions.c2i;
+package extensions.hierarchical;
 
+import extensions.c2i.*;
 import driver.learning.exploration.EpsilonDecreasing;
-import driver.Driver;
 import driver.learning.*;
 import driver.learning.reward.RewardFunction;
 import experiments.DefaultExperiment;
@@ -17,12 +17,11 @@ import simulation.Params;
  *
  * @author Ricardo Grunitzki
  */
-public class QLStatefullC2IExperiment {
+public class HierarchicalExperiment {
 
-    //QLStateless on Nguyen and Dupuis 1984
     public static void main(String[] args) {
-        
-        Params.COLUMN_SEPARATOR="\t";
+
+        Params.COLUMN_SEPARATOR = "\t";
 
         Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = false;
@@ -34,11 +33,17 @@ public class QLStatefullC2IExperiment {
         Params.MAX_STEPS = 100;
         EpsilonDecreasing.EPSILON_DECAY = 0.99f;
         Params.REPETITIONS = 1;
-        Params.DEFAULT_TAP = ImplementedTAP.OW;
+        Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD;
         Params.PROPORTION = 1;
 
-        int type = 3;
+        int type = 0;
         switch (type) {
+            case 0:
+                EpsilonDecreasing.EPSILON_INITIAL = 1f;
+                QLStatefull.ALPHA = 0.9f;
+                QLStatefull.GAMMA = 0.99f;
+                Params.DEFAULT_ALGORITHM = QLStatefullHierarchical.class;
+                break;
             case 1:
                 //"QLStatefull"
                 EpsilonDecreasing.EPSILON_INITIAL = 1f;
@@ -82,20 +87,5 @@ public class QLStatefullC2IExperiment {
         DefaultExperiment experiment = new DefaultExperiment();
         experiment.run();
 
-//        Simulation simulation = null;
-//        double alphas[] = {0.3, 0.5, 0.7, 0.9};
-//        double gammas[] = {0.8, 0.9, 0.99};
-//        for (int alpha = 0; alpha < alphas.length; alpha++) {
-//            for (int gamma = 0; gamma < gammas.length; gamma++) {
-//                QLStatefullC2I.ALPHA = alphas[alpha];
-//                QLStatefullC2I.GAMMA = gammas[gamma];
-//                simulation = new Simulation(Params.USED_TAP);
-//                simulation.execute();
-//                System.out.format("%s %s %.2f\n", alphas[alpha], gammas[gamma],
-//                        Double.parseDouble(simulation.getSimulationOutputs().split(" ")[1]));
-//                simulation.reset();
-//                simulation.end();
-//            }
-//        }
     }
 }

@@ -43,7 +43,7 @@ public class DefaultExperiment {
                 simulation.reset();
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             simulation.end();
             if ((runs > 1) && Params.PRINT_AVERAGE_RESULTS) {

@@ -1,4 +1,4 @@
-package scenario;
+package scenario.network;
 
 /**
  * Cost function of Braess Paradox network with 6 trips defined in:

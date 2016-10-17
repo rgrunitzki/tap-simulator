@@ -1,5 +1,6 @@
-package scenario;
+package scenario.network;
 
+import scenario.network.AbstractCostFunction;
 import driver.Driver;
 import java.util.HashMap;
 import java.util.Map;

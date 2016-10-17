@@ -6,7 +6,7 @@
 package extensions.c2i;
 
 import driver.Driver;
-import static driver.learning.QLStatefullC2I.GAMMA;
+import static extensions.c2i.QLStatefullC2I.GAMMA;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.FloydWarshallShortestPaths;
-import scenario.AbstractCostFunction;
-import scenario.AbstractEdge;
+import scenario.network.AbstractCostFunction;
+import scenario.network.AbstractEdge;
 
 /**
  *

@@ -5,6 +5,7 @@
  */
 package driver.learning;
 
+import driver.learning.exploration.EpsilonDecreasing;
 import experiments.DefaultExperiment;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,7 +57,7 @@ public class SARSAStatefullTest {
 
         Params.MAX_EPISODES = 150;
         Params.MAX_STEPS = 100;
-        Params.EPSILON_DECAY = 0.91f;
+        EpsilonDecreasing.EPSILON_DECAY = 0.91f;
         Params.DEFAULT_TAP = ImplementedTAP.OW;
 
         //"SARSAStatefull"

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package driver.learning;
+package driver.learning.exploration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,16 @@ import simulation.Params;
  * @param <Action>
  * @param <Value>
  */
-public class EpsilonGreedy<State, Action, Value extends Comparable> extends ExplorationPolicy<State, Action, Value> {
+public class EpsilonDecreasing<State, Action, Value extends Comparable> extends ExplorationStrategy<State, Action, Value> {
+    
+    /**
+     * Decreasing factor of e-decreasing
+     */
+    public static float EPSILON_DECAY = 0.99F; //
+    /**
+     * Initial exploration of e-decreasing policy
+     */
+    public static float EPSILON_INITIAL = 1.0F;
 
     @Override
     public Action getAction(Map<Action, Value> mdp) {
@@ -44,7 +53,7 @@ public class EpsilonGreedy<State, Action, Value extends Comparable> extends Expl
     }
 
     private double getEpsilon() {
-        double epsilon = 1 * Math.pow(Params.EPSILON_DECAY, Params.CURRENT_EPISODE);
+        double epsilon = 1 * Math.pow(EPSILON_DECAY, Params.CURRENT_EPISODE);
         return epsilon;
     }
 

@@ -9,7 +9,7 @@ import driver.Driver;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import scenario.StandardEdge;
+import scenario.network.StandardEdge;
 
 /**
  *

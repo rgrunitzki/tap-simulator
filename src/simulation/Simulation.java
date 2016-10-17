@@ -1,6 +1,7 @@
 package simulation;
 
 import driver.Driver;
+import extensions.hierarchical.QLStatefullHierarchical;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,9 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import scenario.TAP;
-import org.jgrapht.Graph;
-import scenario.AbstractEdge;
-import scenario.ODPair;
+import scenario.network.AbstractEdge;
 
 /**
  * This class represents the core of the simulation. It is responsible for
@@ -30,9 +30,6 @@ import scenario.ODPair;
  */
 public class Simulation {
 
-    private final List<Driver> drivers;
-    private final Graph<String, AbstractEdge> graph;
-    private final Map<String, ODPair> odpairs;
     private final TAP tap;
     private FileWriter fileWriter = null;
 
@@ -50,9 +47,6 @@ public class Simulation {
      * @param tap traffic assignment problem
      */
     public Simulation(TAP tap) {
-        this.drivers = tap.getDrivers();
-        this.graph = tap.getGraph();
-        this.odpairs = tap.getOdpairs();
         this.tap = tap;
     }
 
@@ -62,19 +56,19 @@ public class Simulation {
      */
     public void execute() {
 
-        drivers.parallelStream().forEach((driver) -> {
+        tap.getDrivers().parallelStream().forEach((driver) -> {
             driver.beforeSimulation();
         });
 
         for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
 
-            drivers.parallelStream().forEach((driver) -> {
+            tap.getDrivers().parallelStream().forEach((driver) -> {
                 driver.beforeEpisode();
             });
 
             runEpisode();
 
-            drivers.parallelStream().forEach((driver) -> {
+            tap.getDrivers().parallelStream().forEach((driver) -> {
                 driver.afterEpisode();
             });
 
@@ -89,11 +83,42 @@ public class Simulation {
                 }
                 this.printExperimentResultsOnFile(getExperimentPath(), fileNameToPrint, results);
             }
+            /*
+             *HERE COMES THE MAGIC 
+             * This code was used to generate results requested by Ana
+             Map<String, Double> values = new ConcurrentHashMap<>();
+             for (String state : QLStatefullHierarchical.VERTICES_PER_NEIGHBORHOOD.get(QLStatefullHierarchical.CURRENT_NEIGHBORHOOD)) {
+             Double value = 0.0;
+             String key = "";
+             for (Driver driver : tap.getDrivers()) {
+             value += ((QLStatefullHierarchical) driver).getExpectedRewardPerState(state).getValue();
+             key = ((QLStatefullHierarchical) driver).getDestination() + "-" + state;
+             //                    if (!values.containsKey(key) || values.get(key) > value) {
+             //                        values.put(key, value);
+             //                    }
+             }
+                
+             values.put(key, value/6);
+             }
 
+             List<String> indexies = new ArrayList<>(values.keySet());
+             Collections.sort(indexies);
+             String header = "";
+             String content = "";
+             if (Params.CURRENT_EPISODE != 0 && indexies.size()== 9) {
+             for (String index : indexies) {
+             header += index + ";";
+             content += String.format("%.2f;", values.get(index)*-1);
+             }
+             System.out.print(content + "\t"+header);
+             }
+             //HERE ENDS THE MAGIC
+            
+             */
         }
 
         //post-simulation processing
-        drivers.parallelStream().forEach((driver) -> {
+        tap.getDrivers().parallelStream().forEach((driver) -> {
             driver.afterSimulation();
         });
 
@@ -113,7 +138,7 @@ public class Simulation {
         boolean finished = true;
         List<Driver> driversToProcess = new LinkedList<>();
 
-        for (Driver d : this.drivers) {
+        for (Driver d : this.tap.getDrivers()) {
             if (!d.hasArrived()) {
                 finished = false;
                 driversToProcess.add(d);
@@ -140,11 +165,11 @@ public class Simulation {
         });
 
         //intermediate computation
-        this.graph.edgeSet().parallelStream().forEach((edge) -> {
+        this.tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
             edge.clearCurrentFlow();
         });
 
-        driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((driver) -> {
+        driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((Driver driver) -> {
             if (driver.getCurrentEdge() == null) {
                 System.out.println("deu pau");
             }
@@ -175,26 +200,26 @@ public class Simulation {
      */
     public double averageTravelCost() {
         double avgcost = 0;
-        for (AbstractEdge e : graph.edgeSet()) {
+        for (AbstractEdge e : tap.getGraph().edgeSet()) {
             avgcost += e.getTotalFlow() * e.getCost();
         }
-        return (avgcost / (drivers.size() * Params.PROPORTION));
+        return (avgcost / (tap.getDrivers().size() * Params.PROPORTION));
     }
 
     private void resetEdgesForEpisode() {
-        this.graph.edgeSet().parallelStream().forEach((e) -> {
+        this.tap.getGraph().edgeSet().parallelStream().forEach((e) -> {
             e.reset();
         });
     }
 
     private void resetEdgesForSimulation() {
-        this.graph.edgeSet().parallelStream().forEach((e) -> {
+        this.tap.getGraph().edgeSet().parallelStream().forEach((e) -> {
             e.resetAll();
         });
     }
 
     private void resetDrivers() {
-        drivers.parallelStream().forEach((driver) -> {
+        tap.getDrivers().parallelStream().forEach((driver) -> {
             driver.resetAll();
         });
     }
@@ -221,7 +246,7 @@ public class Simulation {
         //print the flow of the used links
         System.out.println("link" + Params.COLUMN_SEPARATOR + "flow" + Params.COLUMN_SEPARATOR + "cost");
         double soma = 0;
-        for (AbstractEdge e : graph.edgeSet()) {
+        for (AbstractEdge e : tap.getGraph().edgeSet()) {
             soma += e.getTotalFlow() * e.getCost();
             System.out.println(e.getName() + Params.COLUMN_SEPARATOR + e.getTotalFlow() + Params.COLUMN_SEPARATOR + e.getCost());
         }
@@ -232,11 +257,11 @@ public class Simulation {
 
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
-            List<String> keys = new ArrayList<>(odpairs.keySet());
+            List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
             Collections.sort(keys);
 
             for (String key : keys) {
-                out += Params.COLUMN_SEPARATOR + odpairs.get(key).getAverageCost();
+                out += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(key).getAverageCost();
             }
         }
         return out;
@@ -245,7 +270,7 @@ public class Simulation {
     //calculates links flows;
     private String getFlows() {
         String out = "";
-        List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
+        List<AbstractEdge> keys = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(keys);
         for (AbstractEdge e : keys) {
             out += e.getTotalFlow() + Params.COLUMN_SEPARATOR;
@@ -312,7 +337,7 @@ public class Simulation {
     private String getExperimentPath() {
         String path = Params.OUTPUT_DIRECTORY + File.separator + tap.getNetworkName();
 
-        for (Object pair : drivers.get(0).getParameters()) {
+        for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
             if (p.getRight().equals("")) {
                 path += File.separator + p.getLeft();
@@ -327,7 +352,7 @@ public class Simulation {
         String output = "";
 
         output += "#parameters";
-        for (Object pair : drivers.get(0).getParameters()) {
+        for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
             output += " " + p.getLeft() + ": " + p.getRight();
         }
@@ -336,16 +361,16 @@ public class Simulation {
 
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
-            List<String> keys = new ArrayList<>(odpairs.keySet());
+            List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
             Collections.sort(keys);
 
             for (String key : keys) {
-                output += Params.COLUMN_SEPARATOR + odpairs.get(key).getName();
+                output += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(key).getName();
             }
         }
 
         if (Params.PRINT_FLOWS) {
-            List<AbstractEdge> keys = new ArrayList<>(graph.edgeSet());
+            List<AbstractEdge> keys = new ArrayList<>(tap.getGraph().edgeSet());
             Collections.sort(keys);
             for (AbstractEdge e : keys) {
                 output += Params.COLUMN_SEPARATOR + e.getName();
@@ -358,7 +383,7 @@ public class Simulation {
         String name = tap.getClazz().getSimpleName().toLowerCase()
                 + "_" + tap.getNetworkName();
 
-        for (Object pair : drivers.get(0).getParameters()) {
+        for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
             if (!p.getRight().equals("")) {
                 name += "_" + p.getLeft().toString().charAt(0) + p.getRight();

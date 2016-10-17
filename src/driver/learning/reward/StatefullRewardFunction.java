@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package driver.learning;
+package driver.learning.reward;
 
 import driver.Driver;
 import org.jgrapht.Graph;

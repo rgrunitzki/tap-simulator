@@ -5,8 +5,8 @@
  */
 package trafficassignment;
 
-import scenario.AbstractCostFunction;
-import scenario.AbstractEdge;
+import scenario.network.AbstractCostFunction;
+import scenario.network.AbstractEdge;
 
 /**
  *

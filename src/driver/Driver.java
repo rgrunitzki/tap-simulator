@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import scenario.AbstractEdge;
+import scenario.network.AbstractEdge;
 
 /**
  * The Driver class represents the basic structure of drivers in transportation
@@ -49,7 +49,7 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
     /**
      * The destination of the driver
      */
-    protected final String destination;
+    protected String destination;
 
     /**
      * The current edge of the driver

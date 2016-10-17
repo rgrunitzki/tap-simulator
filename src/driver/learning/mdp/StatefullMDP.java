@@ -1,7 +1,7 @@
-package driver.learning;
+package driver.learning.mdp;
 
 import java.util.List;
-import scenario.AbstractEdge;
+import scenario.network.AbstractEdge;
 
 /**
  * MDP of the drivers that use en-route mechanism.

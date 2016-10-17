@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.FloydWarshallShortestPaths;
 import org.jgrapht.alg.KShortestPaths;
-import scenario.StandardEdge;
+import scenario.network.StandardEdge;
 import scenario.TAP;
+import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
@@ -109,11 +109,11 @@ public class ImprovedAllOrNothingAssignment {
         }
 
         //print Result
-        List<StandardEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
+        List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
         double cost = 0.0;
 
-        for (StandardEdge e : edges) {
+        for (AbstractEdge e : edges) {
             header += Params.COLUMN_SEPARATOR + e.getName();
             results += Params.COLUMN_SEPARATOR + e.getTotalFlow();
             cost += (e.getCost() * e.getTotalFlow()) / tap.getDrivers().size();

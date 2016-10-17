@@ -1,4 +1,4 @@
-package scenario;
+package scenario.network;
 
 /**
  * This object represents the cost function of the edge.

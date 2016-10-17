@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package driver.learning;
+package driver.learning.reward;
 
-import scenario.AbstractEdge;
+import driver.learning.QLStateless;
+import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**

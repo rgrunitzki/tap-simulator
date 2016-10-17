@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package scenario;
+package scenario.demand;
 
 import driver.Driver;
 import java.util.ArrayList;

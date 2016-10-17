@@ -22,13 +22,14 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import scenario.network.AbstractEdge;
+import simulation.Params;
 
 /**
  * Implementation of Q-Learning node by node for TAP.
  *
  * @author Ricardo Grunitzki
  */
-public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
+public class QLambdaStatefull extends Driver<QLambdaStatefull, List<AbstractEdge>> {
 
     private StatefullMDP mdp = new StatefullMDP();
 
@@ -42,6 +43,8 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
      */
     public static double GAMMA = 0.99;
 
+    public static double LAMBDA = 0.9;
+
     private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 
     /**
@@ -52,7 +55,7 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
      * @param destination Destination node
      * @param graph Road network
      */
-    public QLStatefull(int id, String origin, String destination, Graph graph) {
+    public QLambdaStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
     }
 
@@ -61,30 +64,45 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
         if (StatefullMDP.staticMdp == null) {
             Set<String> vertices = graph.vertexSet();
-
-            Map states = new ConcurrentHashMap<>();
+            //Q-table
+            Map states = new ConcurrentHashMap();
+            //Z-table
+            Map zstates = new ConcurrentHashMap();
             for (String vertex : vertices) {
+                //Q-values
                 Map actions = new ConcurrentHashMap();
+                //Z-values
+                Map zactions = new ConcurrentHashMap();
                 Set<AbstractEdge> edges = graph.edgesOf(vertex);
                 for (AbstractEdge edge : edges) {
                     if (edge.getSourceVertex().equalsIgnoreCase(vertex)) {
-                        actions.put(edge, 0.0);
+                        if (edge.getTargetVertex().equalsIgnoreCase(this.destination)) {
+                            actions.put(edge, 0.0);
+                        } else {
+                            actions.put(edge, -Params.RANDOM.nextDouble());
+                        }
+                        zactions.put(edge, 0.);
                     }
                 }
+
                 states.put(vertex, actions);
+                zstates.put(vertex, zactions);
             }
+
             StatefullMDP.staticMdp = new StatefullMDP();
             StatefullMDP.staticMdp.setMdp(states);
+            StatefullMDP.staticMdp.setzTable(zstates);
+
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.getClone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SARSALambdaStatefull.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
                 this.mdp = (StatefullMDP) StatefullMDP.staticMdp.getClone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(QLStatefull.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SARSALambdaStatefull.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -96,9 +114,16 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     @Override
     public void beforeEpisode() {
         this.currentVertex = origin;
+//        this.stepA = true;
         this.currentEdge = null;
         this.travelTime = 0;
         this.route = new LinkedList<>();
+        //Z(s, a) = 0, for all s ∈ S, a ∈ A(s)
+        for (String s : this.mdp.getzTable().keySet()) {
+            for (AbstractEdge a : this.mdp.getzTable().get(s).keySet()) {
+                this.mdp.getzTable().get(s).put(a, 0.);
+            }
+        }
     }
 
     @Override
@@ -109,7 +134,7 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public void beforeStep() {
         currentEdge = mdp.getAction(mdp.getMdp().get(currentVertex));
         this.route.add(currentEdge);
-        this.currentVertex = currentEdge.getTargetVertex();
+//        this.currentVertex = currentEdge.getTargetVertex();
     }
 
     @Override
@@ -119,17 +144,43 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         //update q-table
         double qa = this.mdp.getValue(currentEdge);
         double r = this.rewardFunction.getReward(this);
-
+        //A∗ ←argmaxaQ(S', a) (if A? ties for the max, then A∗ ←A?)
         double maxQa = 0.0;
-
+        AbstractEdge maxA = null;
         if (!currentEdge.getTargetVertex().equals(destination)
                 && !this.mdp.getMdp().get(currentEdge.getTargetVertex()).keySet().isEmpty()) {
             Map<AbstractEdge, Double> mdp2 = this.mdp.getMdp().get(currentEdge.getTargetVertex());
-            maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
+            maxA = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getKey();
+            maxQa = mdp.getValue(maxA);
         }
-        qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
 
-        this.mdp.setValue(currentEdge, qa);
+        //δ ←R+γQ(S',A∗)−Q(S,A)
+        double delta = r + GAMMA * maxQa - qa;
+        //Z(S,A)←Z(S,A)+1
+        this.mdp.getzTable().get(currentVertex).put(currentEdge,
+                this.mdp.getzTable().get(currentVertex).get(currentEdge) + 1);
+
+        //For all s ∈ S, a ∈ A(s):
+        for (String s : this.mdp.getMdp().keySet()) {
+            for (AbstractEdge a : this.mdp.getMdp().get(s).keySet()) {
+                //Q(s, a)←Q(s, a)+αδZ(s, a)
+                this.mdp.setValue(a,
+                        this.mdp.getValue(a)
+                        + QLambdaStatefull.ALPHA * delta * this.mdp.getzTable().get(s).get(a));
+                //If A? = A∗, then Z(s, a)←γλZ(s, a)
+                if (a.equals(maxA)) {
+                    this.mdp.getzTable().get(s).put(a,
+                            QLambdaStatefull.GAMMA * QLambdaStatefull.LAMBDA * this.mdp.getzTable().get(s).get(a));
+                } else {
+                    //else Z(s, a)←0
+                    this.mdp.getzTable().get(s).put(a, 0.);
+                }
+            }
+        }
+        this.currentVertex = this.currentEdge.getTargetVertex();
+
+//        qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
+//        this.mdp.setValue(currentEdge, qa);
     }
 
     @Override
@@ -157,8 +208,9 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         list.add(Pair.of(this.getClass().getSimpleName().toLowerCase(), ""));
         list.add(Pair.of("epsilon", EpsilonDecreasing.EPSILON_INITIAL));
         list.add(Pair.of("epsilon-decay", EpsilonDecreasing.EPSILON_DECAY));
-        list.add(Pair.of("alpha", QLStatefull.ALPHA));
-        list.add(Pair.of("gamma", QLStatefull.GAMMA));
+        list.add(Pair.of("alpha", QLambdaStatefull.ALPHA));
+        list.add(Pair.of("gamma", QLambdaStatefull.GAMMA));
+        list.add(Pair.of("lambda", QLambdaStatefull.LAMBDA));
         return list;
     }
 

@@ -1,11 +1,11 @@
 package simulation;
 
-import driver.learning.EpsilonGreedy;
+import driver.learning.exploration.EpsilonDecreasing;
 import driver.learning.QLStatefull;
-import driver.learning.QLStatefullC2I;
+import extensions.c2i.QLStatefullC2I;
 import driver.learning.QLStateless;
-import driver.learning.RewardFunction;
-import driver.learning.SoftMaxExploration;
+import driver.learning.reward.RewardFunction;
+import driver.learning.exploration.SoftMaxExploration;
 import extensions.c2i.EdgeC2I;
 import extensions.c2i.InformationType;
 import java.util.Random;
@@ -15,7 +15,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import scenario.StandardEdge;
+import scenario.network.StandardEdge;
 import scenario.ImplementedTAP;
 import scenario.TAP;
 
@@ -34,7 +34,6 @@ public class Params {
     public static int REPETITIONS = 1;//
     public static final long RAMDON_SEED = System.currentTimeMillis();
     public static Random RANDOM = new Random();
-
     /**
      * Proportion of learning agents per trip. For instance: - value = 1 means
      * that it will be one learning agent per unit of trip; - value = 100 means
@@ -44,12 +43,9 @@ public class Params {
     public static int PROPORTION = 1;
     public static ImplementedTAP DEFAULT_TAP = ImplementedTAP.OW;
     public static Class DEFAULT_EDGE = StandardEdge.class;
-    //Epsilon-Greedy Parameters
-    public static float EPSILON_INITIAL = 1.0f;
-    public static float EPSILON_DECAY = 0.99f;//
     //Learning Parameters
     public static RewardFunction REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
-    public static Class EXPLORATION_POLICY = EpsilonGreedy.class;
+    public static Class EXPLORATION_POLICY = EpsilonDecreasing.class;
     public static Class DEFAULT_ALGORITHM = QLStatefull.class;
     //Outputs Parameters
     public static boolean PRINT_AVERAGE_RESULTS = false; //not been used (problems here)
@@ -77,19 +73,19 @@ public class Params {
         options.addOption("C", "output.comment-char", false, "character used to indicate a commented line.");
         options.addOption("d", "output.dir", false, "directory used to print the outputs.");
         options.addOption("a", "algorithm", true, "algorithm used to solve the traffic assignment problem. Accepted values are <QLStatefull>, <QLStatefullC2I>, <QLStateless>, <AoN>, <InA>, <MSA>.");
-        options.addOption("i", "info.type", true, "Information type used by QLStatefullC2I. Accepted values are <None>, <Average>, <Best>, <Last>.");
+//        options.addOption("i", "info.type", true, "Information type used by QLStatefullC2I. Accepted values are <None>, <Average>, <Best>, <Last>.");
         options.addOption("n", "tap", true, "algorithm used to solve the traffic assignment problem. Accepted values are <ANA>, <BRAESS>, <BYPASS>, <EMME>, <ND>, <OW>, <SF>.");
         options.addOption("h", "help", false, "shows this message");
         options.addOption("d", "output.dir", true, "directory used to print the files. Default value is </results>");
         options.addOption("p", "proportion", true, "proportion of learning agents per trip of od pair. default value is <1> (one trip for each learning agent). Example of accepted valeus are <100> (100 trips per learning agents), <10>, <1000>.");
         options.addOption("r", "runs", true, "number of repetitions of the experiment.");
         options.addOption("e", "ql.episodes", true, "number of episodes of each experiment.");
-        options.addOption("E", "exploration.policy", true, "exploration policy. Accepted values are Epsilon-Greedy <EGreedy> (Default), Softmax <Softmax>");
+        options.addOption("E", "exploration.strategy", true, "exploration strategy. Accepted values are Epsilon-Decreasing <EGreedy> (Default), Softmax <Softmax>");
         options.addOption("epsilon", "ql.epsilon", true, "initial epsilon parameter of exploration. Default value is <1.0> (corresponds to 100% of initial exploration)");
         options.addOption("edecay", "ql.epsilon-decay", true, "epsilon decay rate parameter of exploration.");
         options.addOption("reward", "ql.reward", true, "Reward function for QLearning-based methods. Avaiable values are Difference Rewards <DR>, Standard Reward <STD>, Reward Shaping <RS>.");
         options.addOption("alpha", "ql.alpha", true, "Alpha parameter of QLStateless and QLStatefull");
-        options.addOption("c2irate", "qlc2i.communication-rate", true, "Probability to get information from infrastructure in QLC2Infrastructure.");
+//        options.addOption("c2irate", "qlc2i.communication-rate", true, "Probability to get information from infrastructure in QLC2Infrastructure.");
         options.addOption("k", "ql.k", true, "Number of routes used in QLStateless");
         options.addOption("gamma", "ql.gamma", true, "Gamma parameter of QLStatefull");
 
@@ -150,10 +146,10 @@ public class Params {
                         break;
                 }
             }
-            if (cmdLine.hasOption("exploration.policy")) {
-                switch (cmdLine.getParsedOptionValue("exploration.policy").toString().toUpperCase()) {
-                    case "EGREEDY":
-                        Params.EXPLORATION_POLICY = EpsilonGreedy.class;
+            if (cmdLine.hasOption("exploration.strategy")) {
+                switch (cmdLine.getParsedOptionValue("exploration.strategy").toString().toUpperCase()) {
+                    case "EDECREASING":
+                        Params.EXPLORATION_POLICY = EpsilonDecreasing.class;
                         break;
                     case "SOFTMAX":
                         Params.EXPLORATION_POLICY = SoftMaxExploration.class;
@@ -185,11 +181,11 @@ public class Params {
             }
 
             if (cmdLine.hasOption("ql.epsilon-decay")) {
-                EPSILON_DECAY = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon-decay").toString());
+                EpsilonDecreasing.EPSILON_DECAY = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon-decay").toString());
             }
 
             if (cmdLine.hasOption("ql.epsilon")) {
-                EPSILON_INITIAL = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
+                EpsilonDecreasing.EPSILON_INITIAL = Float.parseFloat(cmdLine.getParsedOptionValue("ql.epsilon").toString());
             }
 
             if (cmdLine.hasOption("ql.alpha")) {
@@ -254,9 +250,11 @@ public class Params {
             case SF:
                 USED_TAP = TAP.SF(DEFAULT_ALGORITHM);
                 break;
-            default:
-                USED_TAP = TAP.OW(DEFAULT_ALGORITHM);
+            case TWO_NEIGHBORHOOD:
+                USED_TAP = TAP.TWO_NEIGHBORHOOD(DEFAULT_ALGORITHM);
                 break;
+            default:
+                throw new AssertionError(DEFAULT_TAP.name() + " not found.");
         }
     }
 
