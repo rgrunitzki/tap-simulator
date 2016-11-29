@@ -34,26 +34,26 @@ public class DefaultExperiment {
         int run = 1;
         costs = new ArrayList(runs);
         try {
-            while (run++ <= runs) {
-                simulation.execute();
-                costs.add(simulation.averageTravelCost());
-                if (Params.PRINT_AVERAGE_RESULTS) {
-                    System.out.println("#" + (run - 1) + Params.COLUMN_SEPARATOR + costs.get(run - 2));
-                }
-                simulation.reset();
+        while (run++ <= runs) {
+            simulation.execute();
+            costs.add(simulation.averageTravelCost());
+            if (Params.PRINT_AVERAGE_RESULTS) {
+                System.out.println("#" + (run - 1) + Params.COLUMN_SEPARATOR + costs.get(run - 2));
             }
+            simulation.reset();
+        }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            simulation.end();
-            if ((runs > 1) && Params.PRINT_AVERAGE_RESULTS) {
-                DescriptiveStatistics st = new DescriptiveStatistics();
-                for (double d : costs) {
-                    st.addValue(d);
-                }
-                System.out.println("mean: " + st.getMean() + Params.RAMDON_SEED + "stdev: " + st.getStandardDeviation());
+        simulation.end();
+        if ((runs > 1) && Params.PRINT_AVERAGE_RESULTS) {
+            DescriptiveStatistics st = new DescriptiveStatistics();
+            for (double d : costs) {
+                st.addValue(d);
             }
+            System.out.println("mean: " + st.getMean() + Params.RAMDON_SEED + "\tstdev: " + st.getStandardDeviation());
         }
+    }
     }
 
     /**

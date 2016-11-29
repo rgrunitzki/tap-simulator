@@ -1,7 +1,6 @@
 package simulation;
 
 import driver.Driver;
-import extensions.hierarchical.QLStatefullHierarchical;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -10,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,19 +54,36 @@ public class Simulation {
     public void execute() {
 
         tap.getDrivers().parallelStream().forEach((driver) -> {
-            driver.beforeSimulation();
+            try {
+                driver.beforeSimulation();
+            } catch (Exception e) {
+                System.err.println("Error on beforeSimulation()");
+                System.exit(1);
+            }
         });
 
         for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
 
             tap.getDrivers().parallelStream().forEach((driver) -> {
-                driver.beforeEpisode();
+                try {
+                    driver.beforeEpisode();
+                } catch (Exception e) {
+                    System.err.println("Error on driver.beforeEpisode()");
+                    driver.beforeEpisode();
+                    System.exit(1);
+                }
+
             });
 
             runEpisode();
 
             tap.getDrivers().parallelStream().forEach((driver) -> {
-                driver.afterEpisode();
+                try {
+                    driver.afterEpisode();
+                } catch (Exception e) {
+                    System.err.println("Error on driver.afterEpisode()");
+                    return;
+                }
             });
 
             String results = getSimulationOutputs();
@@ -83,43 +97,17 @@ public class Simulation {
                 }
                 this.printExperimentResultsOnFile(getExperimentPath(), fileNameToPrint, results);
             }
-            /*
-             *HERE COMES THE MAGIC 
-             * This code was used to generate results requested by Ana
-             Map<String, Double> values = new ConcurrentHashMap<>();
-             for (String state : QLStatefullHierarchical.VERTICES_PER_NEIGHBORHOOD.get(QLStatefullHierarchical.CURRENT_NEIGHBORHOOD)) {
-             Double value = 0.0;
-             String key = "";
-             for (Driver driver : tap.getDrivers()) {
-             value += ((QLStatefullHierarchical) driver).getExpectedRewardPerState(state).getValue();
-             key = ((QLStatefullHierarchical) driver).getDestination() + "-" + state;
-             //                    if (!values.containsKey(key) || values.get(key) > value) {
-             //                        values.put(key, value);
-             //                    }
-             }
-                
-             values.put(key, value/6);
-             }
 
-             List<String> indexies = new ArrayList<>(values.keySet());
-             Collections.sort(indexies);
-             String header = "";
-             String content = "";
-             if (Params.CURRENT_EPISODE != 0 && indexies.size()== 9) {
-             for (String index : indexies) {
-             header += index + ";";
-             content += String.format("%.2f;", values.get(index)*-1);
-             }
-             System.out.print(content + "\t"+header);
-             }
-             //HERE ENDS THE MAGIC
-            
-             */
         }
 
         //post-simulation processing
         tap.getDrivers().parallelStream().forEach((driver) -> {
-            driver.afterSimulation();
+            try {
+                driver.afterSimulation();
+            } catch (Exception e) {
+                System.err.println("Error on driver.afterSimulation()");
+                return;
+            }
         });
 
     }
@@ -157,7 +145,7 @@ public class Simulation {
             try {
                 boolean result = this.cservice.take().isDone();
                 if (!result) {
-                    System.out.println("step A error");
+                    System.err.println("step A error");
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
@@ -169,9 +157,9 @@ public class Simulation {
             edge.clearCurrentFlow();
         });
 
-        driversToProcess.parallelStream().filter((driver) -> (!driver.hasArrived())).forEach((Driver driver) -> {
+        driversToProcess.stream().filter((driver) -> (!driver.hasArrived())).forEach((Driver driver) -> {
             if (driver.getCurrentEdge() == null) {
-                System.out.println("deu pau");
+                System.err.println("Error on Edge's processing ");
             }
             driver.getCurrentEdge().proccess(driver);
         });
@@ -184,7 +172,7 @@ public class Simulation {
             try {
                 boolean result = this.cservice.take().isDone();
                 if (!result) {
-                    System.out.println("step_b error");
+                    System.err.println("step_b error");
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);

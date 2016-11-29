@@ -4,11 +4,15 @@ import scenario.demand.ODPair;
 import scenario.network.AbstractEdge;
 import scenario.network.AbstractCostFunction;
 import driver.Driver;
+import extensions.hierarchical.QLStatefullHierarchical;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,6 +93,14 @@ public class Loader {
                 }
                 edge.setParams(params);
                 graph.addEdge(e.getAttribute("from"), e.getAttribute("to"), edge);
+            }
+
+            //create terminal nodes
+            list = doc.getElementsByTagName("terminalNodes");
+
+            for (int i = 0; i < list.getLength(); i++) {
+                Element e = (Element) list.item(i);
+                QLStatefullHierarchical.TERMINAL_VERTICES_COPY = Collections.synchronizedSet(new HashSet<String>(Arrays.asList(e.getAttribute("value").split(" "))));
             }
 
         } catch (IOException | NumberFormatException | ParserConfigurationException | SAXException e) {

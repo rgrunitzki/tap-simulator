@@ -295,5 +295,15 @@ public class TAP {
         costFunction = new LinearCostFunction();
         return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
     }
+    
+    public static TAP SYMETRICAL_2NEIGHBORHOOD(Class driverClass) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/simetrical2neighborhood.net.xml";
+        demandFile = "files/simetrical2neighborhood.od.xml";
+        costFunction = new LinearCostFunction();
+        return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
+    }
 
 }

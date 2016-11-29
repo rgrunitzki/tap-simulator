@@ -40,9 +40,13 @@ public enum ImplementedTAP {
      */
     SF("SF"),
     /**
-     * Scenario defined by Ana LC Bazzan.
+     * Scenario defined by Ana L.C. Bazzan.
      */
-    TWO_NEIGHBORHOOD("TWO_NEIGHBORHOOD");
+    TWO_NEIGHBORHOOD("TWO_NEIGHBORHOOD"),
+    /**
+     * Scenario defined by Ana L.C. Bazzan.
+     */
+    SYMMETRICAL_2NEIGHBORHOOD("SYMMETRICAL_2NEIGHBORHOOD");
 
     private final String value;
 

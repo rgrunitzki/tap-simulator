@@ -107,6 +107,10 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
     @Override
     public void beforeStep() {
+        if (currentVertex.equals("B6")) {
+            boolean bol = true;
+        }
+
         currentEdge = mdp.getAction(mdp.getMdp().get(currentVertex));
         this.route.add(currentEdge);
         this.currentVertex = currentEdge.getTargetVertex();

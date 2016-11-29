@@ -253,6 +253,9 @@ public class Params {
             case TWO_NEIGHBORHOOD:
                 USED_TAP = TAP.TWO_NEIGHBORHOOD(DEFAULT_ALGORITHM);
                 break;
+            case SYMMETRICAL_2NEIGHBORHOOD:
+                USED_TAP = TAP.SYMETRICAL_2NEIGHBORHOOD(DEFAULT_ALGORITHM);
+                break;
             default:
                 throw new AssertionError(DEFAULT_TAP.name() + " not found.");
         }
