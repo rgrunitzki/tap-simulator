@@ -24,16 +24,16 @@ public class AllOrNothing {
     public static void main(String[] args) {
 
         TAP tap = TAP.BRAESS(TADriver.class);
-        
+
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         String header = "average_tt";
         String results = "";
 
-        //calculate all-shortest-path
+        //calculate all-shortest-paths
         FloydWarshallShortestPaths fws = new FloydWarshallShortestPaths(tap.getGraph());
 
-        //update the edges cost
+        //update edges cost
         for (String odPair : odpairs) {
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
@@ -49,7 +49,7 @@ public class AllOrNothing {
         //evaluate cost per OD pair
         for (String odPair : odpairs) {
             header += Params.COLUMN_SEPARATOR + odPair;
-            
+
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
 
@@ -57,7 +57,7 @@ public class AllOrNothing {
 
         }
 
-        //print Result
+        //print obtained results
         List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
         double cost = 0.0;

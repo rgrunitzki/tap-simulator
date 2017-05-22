@@ -16,7 +16,7 @@ import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
- *
+ * Implementation of the Incremental Assignment method.
  * @author Ricardo Grunitzki
  */
 public class IncrementalAssignment {
@@ -29,31 +29,31 @@ public class IncrementalAssignment {
         String header = "average_tt";
         String results = "";
 
+        //parameter of incremental assignment algorithm
         double[] pn = {0.4, 0.3, 0.2, 0.1};
-        
+
         FloydWarshallShortestPaths fws = null;
         for (int fraction = 0; fraction < pn.length; fraction++) {
             //calculate all-shortest-path
             fws = new FloydWarshallShortestPaths(tap.getGraph());
-            
-             for (String odPair : odpairs) {
-                 String origin = odPair.split("-")[0];
-                String destination = odPair.split("-")[1];
 
-                GraphPath path = fws.getShortestPath(origin, destination);
-
-                System.out.println(path.getEdgeList().toString()  + ": " + path.getWeight());
-             }
-            
+//            for (String odPair : odpairs) {
+//                String origin = odPair.split("-")[0];
+//                String destination = odPair.split("-")[1];
+//
+//                GraphPath path = fws.getShortestPath(origin, destination);
+//
+//                System.out.println(path.getEdgeList().toString() + ": " + path.getWeight());
+//            }
 
             //update the edges cost
             for (String odPair : odpairs) {
-                
+
                 String origin = odPair.split("-")[0];
                 String destination = odPair.split("-")[1];
 
                 GraphPath path = fws.getShortestPath(origin, destination);
-                
+
                 for (Object e : path.getEdgeList()) {
                     StandardEdge edge = (StandardEdge) e;
                     int flow = (int) (tap.getOdpairs().get(odPair).demandSize() * pn[fraction]);

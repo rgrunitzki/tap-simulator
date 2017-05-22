@@ -18,6 +18,8 @@ import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
+ * Implementation of the improved version of all-or-nothing algorithm. This method was
+ * proposed by Ana L. C. Bazzan.
  *
  * @author Ricardo Grunitzki
  */
@@ -33,7 +35,6 @@ public class ImprovedAllOrNothingAssignment {
 
         int numberShortestPath = 5;
         Map<String, List<List<StandardEdge>>> ksps = new HashMap<>();
-        
 
         //calculate paths
         for (String odPair : odpairs) {
@@ -48,17 +49,17 @@ public class ImprovedAllOrNothingAssignment {
             List<GraphPath> paths = ksp.getPaths(destination);
             //remove the paths of cost greater than spWeight
             paths.removeIf(p -> p.getWeight() != spWeight);
-            
-            if(paths.size()>1){
+
+            if (paths.size() > 1) {
                 System.out.format("%s-%s:\t%s\n", paths.get(0).getStartVertex(), paths.get(0).getEndVertex(), paths.size());
 //                System.out.println(paths.toString());
             }
-            
+
             //transforms GraphPath in List<Edge>
             List<List<StandardEdge>> edges = new ArrayList<>();
             for (GraphPath path : paths) {
                 List<StandardEdge> eds = new ArrayList<>();
-                for (Object e: path.getEdgeList()){
+                for (Object e : path.getEdgeList()) {
                     eds.add((StandardEdge) tap.getGraph().getEdge(((StandardEdge) e).getSourceVertex(), ((StandardEdge) e).getTargetVertex()));
                 }
                 edges.add(eds);
@@ -67,14 +68,14 @@ public class ImprovedAllOrNothingAssignment {
             //store the shortest paths
             ksps.put(origin + "-" + destination, edges);
         }
-        
+
         //allocate flows
         for (String odPair : odpairs) {
-            
+
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
-            
-            List<List<StandardEdge>> paths = ksps.get(origin+"-"+destination);
+
+            List<List<StandardEdge>> paths = ksps.get(origin + "-" + destination);
 
             //update edges flow
             for (List<StandardEdge> path : paths) {
@@ -84,10 +85,6 @@ public class ImprovedAllOrNothingAssignment {
                 }
             }
         }
-        
-        
-        
-        
 
         //evaluate cost per OD pair
         for (String odPair : odpairs) {
@@ -102,7 +99,7 @@ public class ImprovedAllOrNothingAssignment {
                     average_tt += e.getCost();
                 }
             }
-            average_tt/=ksps.get(origin+"-"+destination).size();
+            average_tt /= ksps.get(origin + "-" + destination).size();
 
             results += Params.COLUMN_SEPARATOR + average_tt;
 

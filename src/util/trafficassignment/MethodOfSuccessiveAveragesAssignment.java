@@ -15,6 +15,7 @@ import scenario.TAP;
 import simulation.Params;
 
 /**
+ * Implementation of the method of successive averages.
  *
  * @author Ricardo Grunitzki
  */
@@ -72,7 +73,6 @@ public class MethodOfSuccessiveAveragesAssignment {
 //                header += Params.COLUMN_SEPARATOR + odPair;
 //                results += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(odPair).getAverageCost();
 //            }
-
             //Get links' flow
             double cost = 0.0;
 
