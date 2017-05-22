@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trafficassignment;
+package util.trafficassignment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class MethodOfSuccessiveAveragesAssignment {
     public static void main(String[] args) {
 
         Params.DEFAULT_EDGE = EdgeMSA.class;
-        TAP tap = TAP.TWO_NEIGHBORHOOD(MSADriver.class);
+        TAP tap = TAP.BRAESS(MSADriver.class);
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
         Collections.sort(odpairs);
         List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
@@ -53,25 +53,25 @@ public class MethodOfSuccessiveAveragesAssignment {
                     edge.incrementTotalFlow(flow);
                 }
 
-                //update drivers' route
-                for (int i = 0; i < tap.getOdpairs().get(odPair).getDrivers().size(); i++) {
-                    MSADriver driver = (MSADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
-                    driver.setRoute(path.getEdgeList());
-                }
+//                //update drivers' route
+//                for (int i = 0; i < tap.getOdpairs().get(odPair).getDrivers().size(); i++) {
+//                    MSADriver driver = (MSADriver) tap.getOdpairs().get(odPair).getDrivers().get(i);
+//                    driver.setRoute(path.getEdgeList());
+//                }
             }
 
             //Update current flow MSA
             for (AbstractEdge e : edges) {
-                double flow = (1 - phi) * ((EdgeMSA) e).getMsaFlow() + phi * ((EdgeMSA) e).getTotalFlow();
+                float flow = (float) ((1 - phi) * ((EdgeMSA) e).getMsaFlow() + phi * ((EdgeMSA) e).getTotalFlow());
                 ((EdgeMSA) e).setMsaFlow(flow);
             }
 
             //Print Result per iteration
             //Evaluate cost per OD pair
-            for (String odPair : odpairs) {
-                header += Params.COLUMN_SEPARATOR + odPair;
-                results += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(odPair).getAverageCost();
-            }
+//            for (String odPair : odpairs) {
+//                header += Params.COLUMN_SEPARATOR + odPair;
+//                results += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(odPair).getAverageCost();
+//            }
 
             //Get links' flow
             double cost = 0.0;
@@ -92,9 +92,9 @@ public class MethodOfSuccessiveAveragesAssignment {
 //            }
 //
 //            System.out.println((cost / USED_TAP.getDrivers().size()) + " " + (cost2 / USED_TAP.getDrivers().size()));
-//            if (iteration == 0) {
-//                System.out.println(header);
-//            }
+            if (iteration == 0) {
+                System.out.println(header);
+            }
             System.out.println(iteration + Params.COLUMN_SEPARATOR + cost / tap.getDrivers().size() + results);
             results = "";
         }

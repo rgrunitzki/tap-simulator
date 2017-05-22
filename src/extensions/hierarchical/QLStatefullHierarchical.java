@@ -9,6 +9,8 @@ import driver.learning.reward.AbstractRewardFunction;
 import driver.learning.exploration.EpsilonDecreasing;
 import driver.Driver;
 import static driver.learning.exploration.EpsilonDecreasing.EPSILON_DECAY;
+import driver.learning.stopping.AbstractStopCriterion;
+import driver.learning.stopping.DeltaQStopCriterion;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +38,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Contains the available nodes/states per Neighborhood.
      */
-    public static Map<String, Set<String>> VERTICES_PER_NEIGHBORHOOD = new ConcurrentHashMap<>();
+    private static Map<String, Set<String>> VERTICES_PER_NEIGHBORHOOD = new ConcurrentHashMap<>();
 
     /**
      * List of terminal nodes.
@@ -48,9 +50,11 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Collection of existing neighborhood on network.
      */
-    public static Queue<String> NEIGHBORHOODS_QUEUE = new PriorityBlockingQueue<>();
+    private static Queue<String> NEIGHBORHOODS_QUEUE = new PriorityBlockingQueue<>();
 
-    public static Queue<String> NEIGHBORHOODS_QUEUE_COPY = new PriorityBlockingQueue<>();
+    private static Queue<String> NEIGHBORHOODS_QUEUE_COPY = new PriorityBlockingQueue<>();
+
+    private static AbstractStopCriterion LOW_LEVEL_STOP_CRITERION = new DeltaQStopCriterion();
 
     /**
      * Markov decision process.
@@ -60,7 +64,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Learning rate parameter of Q-Learning.
      */
-    public static double ALPHA = 0.5;
+    public static double ALPHA = 0.9;
 
     /**
      * Discount factor parameter of Q-Learning.
@@ -83,12 +87,12 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Neighborhood in which the agent is situated at current moment.
      */
-    public static String CURRENT_NEIGHBORHOOD = null;
+    private static String CURRENT_NEIGHBORHOOD = null;
 
     /**
      * Flag indicating in which level the agent is learning.
      */
-    static boolean FIRST_LEVEL = true;
+    public static boolean FIRST_LEVEL = true;
     /**
      * Current action/option taken at the second level MDP.
      */
@@ -107,6 +111,8 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
      */
     private String currentSecondaryState = "";
 
+    private static int MAX_EPISODES;
+
     /**
      * Creates an QLStatefull driver according to its specifications.
      *
@@ -121,12 +127,24 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         this.absoluteOrigin = origin;
     }
 
-    @Override
-    public void beforeSimulation() {
+    private static synchronized void updateQueue() {
         if (NEIGHBORHOODS_QUEUE.isEmpty() && !NEIGHBORHOODS_QUEUE_COPY.isEmpty()) {
             NEIGHBORHOODS_QUEUE.addAll(NEIGHBORHOODS_QUEUE_COPY);
         }
+
         TERMINAL_VERTICES = Collections.synchronizedSet(TERMINAL_VERTICES_COPY);
+    }
+
+    private static synchronized void addToQueue(String neighborhood) {
+        if (!NEIGHBORHOODS_QUEUE.contains(neighborhood)) {
+            NEIGHBORHOODS_QUEUE.add(neighborhood);
+            NEIGHBORHOODS_QUEUE_COPY.add(neighborhood);
+        }
+    }
+
+    @Override
+    public synchronized void beforeSimulation() {
+        updateQueue();
         //Low level MDPs
         Map<String, Map<String, Map<AbstractEdge, Double>>> lowLevelMDPs = new ConcurrentHashMap<>();
         /*
@@ -140,12 +158,14 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         for (String node : nodes) {
             //Neighborhood name
             String neighborhood = node.substring(0, 1);
-            if (!VERTICES_PER_NEIGHBORHOOD.containsKey(neighborhood)) {
-                VERTICES_PER_NEIGHBORHOOD.put(neighborhood, new HashSet<>());
-                NEIGHBORHOODS_QUEUE.add(neighborhood);
-                NEIGHBORHOODS_QUEUE_COPY.add(neighborhood);
+
+            synchronized (this) {
+                if (!VERTICES_PER_NEIGHBORHOOD.containsKey(neighborhood)) {
+                    VERTICES_PER_NEIGHBORHOOD.put(neighborhood, new HashSet<>());
+                    addToQueue(neighborhood);
+                }
+                VERTICES_PER_NEIGHBORHOOD.get(neighborhood).add(node);
             }
-            VERTICES_PER_NEIGHBORHOOD.get(neighborhood).add(node);
         }
 
         for (String terminalState : TERMINAL_VERTICES) {
@@ -167,7 +187,6 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             }
             lowLevelMDPs.put(terminalState, states);
         }
-
         this.mdp.setLowLevelMDPs(lowLevelMDPs);
 
     }
@@ -179,17 +198,14 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
 
     @Override
     public synchronized void beforeEpisode() {
+        this.mdp.resetDetaQ();
         //Certifies that the agents will learn first on neighborhood A
         beforeEpisodeMDPsUpdate();
         //In first level MDPs, generates several OD-MATRIX
         if (FIRST_LEVEL) {
-            //random origin (nonterminal vertex) from current neighborhood
-
-            if (CURRENT_NEIGHBORHOOD.equalsIgnoreCase("B")) {
-                boolean bol = true;
-            }
             //random destination (terminal vertex) from the current neighborhood
             this.destination = getRandomDestinationNode();
+            //random origin (nonterminal vertex) from current neighborhood
             this.currentVertex = getRandomOrigin();
 
             //sets the correct MDP
@@ -200,58 +216,8 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         } else {
             //I have to update the second level MDP with the knowledge acquiride in the first level mdps
             if (Params.CURRENT_EPISODE == 1) {
-                /**
-                 * creates a High level MDP
-                 *
-                 * @TODO: implement
-                 */
-                //creates the set of states that connects the states of a neighborhood to the terminal states of the neighborhood
-                Map highLevelMDP = new ConcurrentHashMap<>();
-                for (String neighborhood : VERTICES_PER_NEIGHBORHOOD.keySet()) {
-                    for (String state : VERTICES_PER_NEIGHBORHOOD.get(neighborhood)) {
-                        Map actions = new ConcurrentHashMap();
-                        for (String terminalState : TERMINAL_VERTICES) {
-                            if (!TERMINAL_VERTICES.contains(state)
-                                    && getNeighborhood(state).equalsIgnoreCase(getNeighborhood(terminalState))) {
-                                Entry e = getOptimalPolicyForNeighborhood(state, terminalState);
-                                actions.put(e.getKey(), e.getValue());
-//                                System.out.println(state + "-" + terminalState + "\t" + e);
-                            }
-
-                        }
-                        highLevelMDP.put(state, actions);
-                    }
-                }
-
-                //creates the set of pairs state-actions that connects intermediate states to the other neighborhood
-                for (String state : TERMINAL_VERTICES) {
-                    Map actions = new ConcurrentHashMap();
-                    Set<AbstractEdge> edgs = graph.edgesOf(state);
-                    for (AbstractEdge edge : edgs) {
-                        if (edge.getSourceVertex().equalsIgnoreCase(state)
-                                && !getNeighborhood(edge.getTargetVertex()).equalsIgnoreCase(getNeighborhood(state))) {
-                            List<AbstractEdge> option = new LinkedList<>();
-                            option.add(edge);
-                            //Cost fixed by default in the road network
-                            Double qValue = -edge.getCost();
-                            actions.put(option, qValue);
-                        }
-                    }
-                    highLevelMDP.put(state, actions);
-                }
-
-                this.mdp.setHighLevelMDP(highLevelMDP);
-
-//                //prints mdp
-//                synchronized (this) {
-//                    String output = "";
-//                    for (int i = 1; i <= 7; i++) {
-//                        String state = "A" + i;
-//                        output += ("\n" + id + ") " + state + ": " + this.mdp.highLevelMDP.get(state).toString());
-//                    }
-//                    System.out.println("\n" + output);
-//                }
-//                //
+                //creates a High level MDP
+                createHighLevelMDP();
             }
 
             //sets the fixed origin defined on OD-Matrix
@@ -277,58 +243,51 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         String currentState = initialState;
         Double qValue = 0.0;
         Entry<AbstractEdge, Double> entry;
-        if (id == 1) {
-//            System.out.print("\n"+initialState + "-"+terminalState+ "\t-->\t");
-        }
+        //counter for the discont factor
+        int cont = 0;
+        String lastState = "";
         do {
+            //take the best action
             entry = Collections.max(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
+            //verifies if this action represents  a "turn around"
+//            if(cont>6){
+//                System.out.println(entry.getKey().getTargetVertex());
+//            }
+            if (entry.getKey().getTargetVertex().equalsIgnoreCase(lastState)) {
+                List<Entry<AbstractEdge, Double>> entrs = new ArrayList<>(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet());
+                Collections.sort(entrs, (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
+                entry = entrs.get(1);
+            }
+
             option.add(entry.getKey());
-            qValue += entry.getValue();
+            //update lastVisitedNode
+            lastState = entry.getKey().getSourceVertex();
+            //increments the reward according to the discount factor
+            qValue += entry.getValue() * Math.pow(GAMMA, cont);
             if (!entry.getKey().getTargetVertex().equalsIgnoreCase(terminalState)) {
                 currentState = entry.getKey().getTargetVertex();
             } else {
                 currentState = "";
             }
-            if (id == 1) {
-//                System.out.print(entry.getKey() + " ");
-            }
-
-            if (option.size() > 8) {
-                if (id == 1) {
-//                    System.err.println("option muito grande!, terminalStateOnNeighborhood: " + terminalState);
-//                    System.out.println();
-                }
-//                System.exit(0);
-                break;
+            cont++;
+            //TODO: in the future, this parameter could be changed.
+            if (cont > 6) {
+                System.err.println("Could not find a route in 1st level MDP." + option);
+                System.exit(0);
+//                System.out.println(this.mdp.lowLevelMDPs.get(terminalState));
             }
         } while (!currentState.equalsIgnoreCase(""));
         return new AbstractMap.SimpleEntry(option, qValue);
 
     }
 
-    private Entry<List<AbstractEdge>, Double> generateOption(String initialState, String terminalStateOnNeighborhood) {
-        LinkedList<AbstractEdge> option = new LinkedList<>();
-        String currentState = initialState;
-        Double qValue = 0.0;
-        Entry<AbstractEdge, Double> entry;
-        do {
-
-            LinkedList<Entry<AbstractEdge, Double>> actions = new LinkedList<>(this.mdp.lowLevelMDPs.get(terminalStateOnNeighborhood).get(currentState).entrySet());
-            Collections.sort(actions, (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
-            if (!option.isEmpty() && option.getLast().getSourceVertex().equals(actions.getFirst().getKey().getTargetVertex())) {
-                System.err.println("we have a problem");
-                actions.pollLast();
-                option.add(actions.pollLast().getKey());
-            }
-            option.add(actions.get(0).getKey());
-            System.out.println("action " + option.getLast().getName());
-
-            currentState = option.getLast().getTargetVertex();
-
-        } while (!option.getLast().getTargetVertex().equalsIgnoreCase(terminalStateOnNeighborhood));
-
-        return new AbstractMap.SimpleEntry(option, qValue);
-
+    private Entry<List<AbstractEdge>, Double> getReversePolicyForNeighborhood(Entry<List<AbstractEdge>, Double> entry) {
+        List<AbstractEdge> option = entry.getKey();
+        List<AbstractEdge> reverseOption = new LinkedList<>();
+        for (int i = option.size() - 1; i >= 0; i--) {
+            reverseOption.add((AbstractEdge) graph.getEdge(option.get(i).getTargetVertex(), option.get(i).getSourceVertex()));
+        }
+        return new AbstractMap.SimpleEntry(reverseOption, entry.getValue() * 2);
     }
 
     @Override
@@ -343,7 +302,9 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             if (NEIGHBORHOODS_QUEUE.size() > 0) {
                 //first level
                 FIRST_LEVEL = true;
-                CURRENT_NEIGHBORHOOD = NEIGHBORHOODS_QUEUE.poll();
+
+                setNeighborhood(pullFromNeighborhoodsQueue());
+                //CURRENT_NEIGHBORHOOD = NEIGHBORHOODS_QUEUE.poll();
                 if (Params.PRINT_ON_TERMINAL) {
                     System.out.println("");
                     System.out.println("Learning first level mdp " + CURRENT_NEIGHBORHOOD);
@@ -352,25 +313,28 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             } else if (!CURRENT_NEIGHBORHOOD.equals("Z")) {
                 //second level
                 FIRST_LEVEL = false;
-                CURRENT_NEIGHBORHOOD = "Z";
+                setNeighborhood("Z");
+                //CURRENT_NEIGHBORHOOD = "Z";
                 if (Params.PRINT_ON_TERMINAL) {
                     System.out.println("");
                     System.out.println("Learning sencond level MDP " + CURRENT_NEIGHBORHOOD);
                 }
                 Params.CURRENT_EPISODE = 0;
-                Params.MAX_EPISODES = 50;
-                EpsilonDecreasing.EPSILON_DECAY = 0.5f;
+                //should be uncomented in case of different number of episodes being used
+//                Params.MAX_EPISODES = 150;
+//                EpsilonDecreasing.EPSILON_DECAY = 0.91f;
             } else {
 //                System.out.println("Agent finished ");
             }
         }
     }
 
-    static synchronized void beforeEpisodeMDPsUpdate() {
+    private static synchronized void beforeEpisodeMDPsUpdate() {
         if (CURRENT_NEIGHBORHOOD == null) {
-            CURRENT_NEIGHBORHOOD = NEIGHBORHOODS_QUEUE.poll();
+            setNeighborhood(pullFromNeighborhoodsQueue());
+            //CURRENT_NEIGHBORHOOD = NEIGHBORHOODS_QUEUE.poll();
             if (Params.PRINT_ON_TERMINAL) {
-                System.out.println("Learning neighborhood " + CURRENT_NEIGHBORHOOD);
+                System.out.println("Learning first level mdp " + CURRENT_NEIGHBORHOOD);
             }
         }
     }
@@ -381,43 +345,28 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             currentEdge = mdp.getAction(mdp.getMdp().get(currentVertex));
             this.route.add(currentEdge);
             this.currentVertex = currentEdge.getTargetVertex();
+            this.learningEffort++;
         } else {
 
             //verifies if the agent is performing an action
             if ((secondLevelAction == null || secondLevelAction.size() == secondaryActionInternalIndex)) {
                 //case not, choose a new one using e-decreasing strategy   
-                //I have to implement e-greedy
                 try {
-                    if (currentVertex.equals("B7") || currentVertex.equals("B9")) {
-//                        System.out.println("mdp actions: " + mdp.highLevelMDP.get(currentVertex));
+                    float random = Params.RANDOM.nextFloat();
+                    double epsilon = 1 * Math.pow(EPSILON_DECAY, Params.CURRENT_EPISODE);
+                    if (random <= epsilon) {
+                        List options = new ArrayList<>(mdp.highLevelMDP.get(currentVertex).keySet());
+                        Collections.shuffle(options, Params.RANDOM);
+                        secondLevelAction = (LinkedList<AbstractEdge>) options.get(0);
+                    } else {
+                        secondLevelAction = (LinkedList<AbstractEdge>) Collections.max(mdp.highLevelMDP.get(currentVertex).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).getKey();
                     }
 
-                    //verifies if the agents is choosing an option that leads it to its destination
-                    if (getNeighborhood(absoluteDestination).equals(getNeighborhood(currentVertex))) {
-                        //remove other terminal nodes
-                        for (List<AbstractEdge> opt : mdp.highLevelMDP.get(currentVertex).keySet()) {
-                            if (opt.get(opt.size() - 1).getTargetVertex().equalsIgnoreCase(absoluteDestination)) {
-                                secondLevelAction = (LinkedList< AbstractEdge>) opt;
-                                break;
-                            }
-                        }
-                    } else {
-                        float random = Params.RANDOM.nextFloat();
-                        double epsilon = 1 * Math.pow(EPSILON_DECAY, Params.CURRENT_EPISODE);
-                        if (random <= epsilon) {
-                            List options = new ArrayList<>(mdp.highLevelMDP.get(currentVertex).keySet());
-                            Collections.shuffle(options, Params.RANDOM);
-                            secondLevelAction = (LinkedList<AbstractEdge>) options.get(0);
-                        } else {
-                            secondLevelAction = (LinkedList<AbstractEdge>) Collections.max(mdp.highLevelMDP.get(currentVertex).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).getKey();
-                        }
-                    }
-//                    System.out.println("mdp actions: " + mdp.highLevelMDP.get(currentVertex));
+                    learningEffort++;
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
 
-//                System.out.println("choosed action: " + secondLevelAction);
                 this.currentSecondaryState = secondLevelAction.getFirst().getSourceVertex();
                 secondaryActionInternalIndex = 0;
             }
@@ -435,6 +384,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         if (FIRST_LEVEL) {
             //update q-table
             double qa = this.mdp.getValue(currentEdge);
+            double qa_old = qa;
             double r = this.rewardFunction.getReward(this);
 
             double maxQa = 0.0;
@@ -447,11 +397,14 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
 
             this.mdp.setValue(currentEdge, qa);
+            
+            this.mdp.updateDetalQ(qa - qa_old);
         } else {
             secondaryReward += this.rewardFunction.getReward(this);
             if (secondLevelAction.size() == secondaryActionInternalIndex) {
                 //update qvalue
                 double qa = this.mdp.highLevelMDP.get(this.currentSecondaryState).get(secondLevelAction);
+                double qa_old = qa;
                 double r = secondaryReward;
                 double maxQa = 0.0;
 
@@ -463,14 +416,24 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
                 qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
 
                 this.mdp.highLevelMDP.get(this.currentSecondaryState).put(secondLevelAction, qa);
+                this.mdp.updateDetalQ(qa - qa_old);
                 secondaryReward = 0.0;
             }
 
         }
+//        //THIS PART IS ONLY USED FOR TESTS. MUST BE REMOVED IN THE FUTURE
+//        if (this.id == 1) {
+//            if (Params.CURRENT_EPISODE == 2 && Params.CURRENT_STEP == 0) {
+//                System.out.println("step\tmax_deltaQ");
+//            }
+//            System.out.println(Params.CURRENT_EPISODE + "\t" + this.mdp.getDeltaQ());
+//        }
     }
 
     @Override
     public void resetAll() {
+//        System.out.println(Params.CURRENT_EPISODE + "\t" + Params.CURRENT_STEP + "\t");
+        this.learningEffort = 0;
         this.mdp = new HierarchicalMDP();
         FIRST_LEVEL = true;
         this.currentSecondaryState = "";
@@ -478,18 +441,6 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
         this.secondaryActionInternalIndex = 0;
         this.secondaryReward = 0;
         CURRENT_NEIGHBORHOOD = null;
-        //reset low level mdps
-//        for (String key : mdp.lowLevelMDPs.keySet()) {
-////            System.out.println("MDP: " + key);
-//            for (String state : mdp.lowLevelMDPs.get(key).keySet()) {
-////                System.out.println(mdp.lowLevelMDPs.get(key).get(state).keySet());
-//                for (AbstractEdge action : mdp.lowLevelMDPs.get(key).get(state).keySet()) {
-////                    System.out.println(action);                    
-//                }
-//            }
-//        }
-//        //remove high level mdp
-//        mdp.highLevelMDP = null;
     }
 
     @Override
@@ -616,5 +567,110 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             }
         }
         return vertices;
+    }
+
+    @Override
+    public double getDeltaQ() {
+//        if (FIRST_LEVEL) {
+//            return 50;
+//        } else {
+            return this.mdp.getDeltaQ();
+//        }
+    }
+
+    private void createHighLevelMDP() {
+
+        /**
+         * creates a High level MDP
+         *
+         * @TODO: implement
+         */
+        //MDP object
+        Map highLevelMDP = new ConcurrentHashMap<>();
+        /*
+         *1) *VALIDADO* - creates options from agent's origin to terminal nodes of agent's origin neighborhood
+         */
+        Map acts = new ConcurrentHashMap();
+
+        for (String terminalState : TERMINAL_VERTICES) {
+            if (getNeighborhood(this.absoluteOrigin).equalsIgnoreCase(getNeighborhood(terminalState))) {
+                //creates the option from state to terminalState
+                Entry<List<AbstractEdge>, Double> goingOption = getOptimalPolicyForNeighborhood(this.absoluteOrigin, terminalState);
+                acts.put(goingOption.getKey(), goingOption.getValue());
+
+                //creates the option from terminalState to state
+                Entry outgoingOption = getReversePolicyForNeighborhood(goingOption);
+                //the state of the reverse option
+                String lastState = goingOption.getKey().get(goingOption.getKey().size() - 1).getTargetVertex();
+                Map reverseActions = new ConcurrentHashMap();
+                highLevelMDP.put(lastState, reverseActions);
+                reverseActions.put(outgoingOption.getKey(), outgoingOption.getValue());
+            }
+        }
+        highLevelMDP.put(this.absoluteOrigin, acts);
+        /*
+         *2) - creates the options that connects two neighborhoods
+         */
+        //list of intermediate states
+        List<String> intermediateStates = new ArrayList<>();
+
+        //creates the set of pairs state-actions that connects intermediate states to the other neighborhood
+        for (String state : TERMINAL_VERTICES) {
+            Map actions = new ConcurrentHashMap();
+            Set<AbstractEdge> edgs = graph.edgesOf(state);
+            for (AbstractEdge edge : edgs) {
+                if (edge.getSourceVertex().equalsIgnoreCase(state)
+                        && !getNeighborhood(edge.getTargetVertex()).equalsIgnoreCase(getNeighborhood(state))) {
+                    List<AbstractEdge> option = new LinkedList<>();
+                    option.add(edge);
+                    //update intermediate states list
+                    intermediateStates.add(edge.getTargetVertex());
+                    //Cost fixed by default in the road network
+                    Double qValue = -edge.getCost();
+                    actions.put(option, qValue);
+                }
+            }
+            highLevelMDP.put(state, actions);
+        }
+
+        //states of the neighborhood
+        for (String state : intermediateStates) {
+            Map actions = new ConcurrentHashMap();
+            for (String terminalState : TERMINAL_VERTICES) {
+                if (!TERMINAL_VERTICES.contains(state)
+                        && getNeighborhood(state).equalsIgnoreCase(getNeighborhood(terminalState))) {
+                    //creates the option from state to terminalState
+                    Entry<List<AbstractEdge>, Double> goingOption = getOptimalPolicyForNeighborhood(state, terminalState);
+                    actions.put(goingOption.getKey(), goingOption.getValue());
+
+                    //creates the option from terminalState to state
+                    Entry outgoingOption = getReversePolicyForNeighborhood(goingOption);
+                    Map reverseActions;
+                    //@TODO: AQUI TEM QUE MEXER. ELE ESTÁ CRIANDO OPTIONS DE VOLTA PARA ESTADOS INVÁLIDOS.
+                    String lastState = goingOption.getKey().get(goingOption.getKey().size() - 1).getTargetVertex();
+                    if (TERMINAL_VERTICES.contains(lastState)) {
+                        if (highLevelMDP.containsKey(lastState)) {
+                            reverseActions = (Map) highLevelMDP.get(lastState);
+                        } else {
+                            reverseActions = new ConcurrentHashMap();
+                            highLevelMDP.put(lastState, reverseActions);
+                        }
+                        reverseActions.put(outgoingOption.getKey(), outgoingOption.getValue());
+                    }
+
+                }
+
+            }
+            highLevelMDP.put(state, actions);
+        }
+        this.mdp.setHighLevelMDP(highLevelMDP);
+    }
+
+    private static synchronized void setNeighborhood(String neighborhood) {
+        CURRENT_NEIGHBORHOOD = neighborhood;
+    }
+
+    private static synchronized String pullFromNeighborhoodsQueue() {
+        return NEIGHBORHOODS_QUEUE.poll();
     }
 }

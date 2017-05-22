@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analisys;
+package util.analisys;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,10 +33,10 @@ public class OutputAnaliser {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/siouxfalls/qlstatefull/epsilon_1.0/epsilon-decay_0.99/alpha_0.9/gamma_0.99";
-//        String experimentsDirectory = "/home/gauss/rgrunitzki/experimentsATT/results/siouxfalls/qlstatefullc2i/epsilon_1.0/epsilon-decay_0.99/alpha_0.9/gamma_0.99/communication-rate_0.5";
+        String experimentsDirectory = "/home/gauss/rgrunitzki/Dropbox/Profissional/UFRGS/Submissões/DEVELOPMENT/TRI15/SF Experiments/IQ-Learning";
         //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
-        type = AnalysisType.PRINT_MEAN_CONVERGENCE_CURVE;
+        type = AnalysisType.GENERATE_AVERAGES;
+        Params.COLUMN_SEPARATOR = ";";
 
         walk(experimentsDirectory);
 

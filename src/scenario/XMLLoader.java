@@ -35,7 +35,7 @@ import simulation.Params;
  *
  * @author Ricardo Grunitzki
  */
-public class Loader {
+public class XMLLoader {
 
     /**
      * Collection of OD-pairs of the problem.
@@ -81,7 +81,7 @@ public class Loader {
                     edge = (AbstractEdge) edgeClass.getConstructor(edgeClass.getConstructors()[0].getParameterTypes()).newInstance(
                             costFunction);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(XMLLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Map<String, Object> params = new HashMap<>();
@@ -104,7 +104,7 @@ public class Loader {
             }
 
         } catch (IOException | NumberFormatException | ParserConfigurationException | SAXException e) {
-            System.err.println("Error on reading XML file!");
+            System.err.println("Error on reading network XML file!");
         }
 
         return graph;
@@ -162,7 +162,7 @@ public class Loader {
             }
 
         } catch (IOException | NumberFormatException | ParserConfigurationException | SAXException e) {
-            System.err.println("Error on reading XML file!");
+            System.err.println("Error on reading demand XML file!");
         }
         return drivers;
     }

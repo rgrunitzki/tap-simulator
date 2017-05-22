@@ -110,6 +110,7 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
 
     @Override
     public void resetAll() {
+        this.learningEffort = 0;
         this.reset();
         this.mdp.reset();
     }

@@ -9,10 +9,18 @@
     <node id="B"/>
     <node id="D"/>
     
-    <edge id="OA" from="O" to="A" fftime="0.0" alpha="0.01"/>
+    <edge id="OA" from="O" to="A" fftime="25" alpha="0.1"/>
+    <edge id="OB" from="O" to="B" fftime="66" alpha="0.0"/>
+    <edge id="AB" from="A" to="B" fftime="15" alpha="0.0"/>
+    <edge id="AD" from="A" to="D" fftime="66" alpha="0.0"/>
+    <edge id="BD" from="B" to="D" fftime="25" alpha="0.1"/>
+
+    
+    
+    <!--    <edge id="OA" from="O" to="A" fftime="0.0" alpha="0.01"/>
     <edge id="OB" from="O" to="B" fftime="45" alpha="0.0"/>
     <edge id="AB" from="A" to="B" fftime="0.0" alpha="0.0"/>
     <edge id="AD" from="A" to="D" fftime="45" alpha="0.0"/>
-    <edge id="BD" from="B" to="D" fftime="0.0" alpha="0.01"/>
+    <edge id="BD" from="B" to="D" fftime="0.0" alpha="0.01"/>-->
     
 </graph>

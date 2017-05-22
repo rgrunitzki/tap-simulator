@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trafficassignment;
+package util.trafficassignment;
 
 import driver.Driver;
 import java.util.List;

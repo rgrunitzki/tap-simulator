@@ -9,15 +9,17 @@ import driver.Driver;
 import driver.learning.reward.AbstractRewardFunction;
 import java.util.Set;
 import org.jgrapht.Graph;
-import org.jgrapht.event.GraphEdgeChangeEvent;
 import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
+ * Provides a reward function's object
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class HierarchicalStetefullRewardFunction extends AbstractRewardFunction<Driver> {
+
+    private Graph graph;
 
     /**
      * Creates the reward function object
@@ -27,8 +29,6 @@ public class HierarchicalStetefullRewardFunction extends AbstractRewardFunction<
     public HierarchicalStetefullRewardFunction(Graph graph) {
         this.graph = graph;
     }
-
-    Graph graph;
 
     @Override
     public Double getReward(Driver driver) {
@@ -44,17 +44,18 @@ public class HierarchicalStetefullRewardFunction extends AbstractRewardFunction<
     @Override
     public Double getStandardReward(Driver driver) {
         boolean check = false;
-        
-        if(driver.getCurrentEdge().getTargetVertex().equalsIgnoreCase(driver.getDestination())){
+
+        if (driver.getCurrentEdge().getTargetVertex().equalsIgnoreCase(driver.getDestination())) {
             check = true;
-        }else{
-        Set<AbstractEdge> edges = graph.edgesOf(driver.getCurrentVertex());
-        for (AbstractEdge edge : edges) {
-            if (edge.getSourceVertex().equalsIgnoreCase(driver.getCurrentEdge().getTargetVertex())) {
-                check = true;
+        } else {
+            Set<AbstractEdge> edges = graph.edgesOf(driver.getCurrentVertex());
+            for (AbstractEdge edge : edges) {
+                if (edge.getSourceVertex().equalsIgnoreCase(driver.getCurrentEdge().getTargetVertex())) {
+                    check = true;
+                }
             }
-        }}
-        
+        }
+
         if (check) {
             return -driver.getCurrentEdge().getCost();
         } else {

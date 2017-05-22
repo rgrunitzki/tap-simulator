@@ -78,6 +78,12 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
     protected double travelTime;
 
     /**
+     * The learning effort along the simulation
+     */
+    protected double learningEffort;
+
+   
+    /**
      * <p>
      * Creates a Driver object according to the descriptions of his OD-pair.
      * </p>
@@ -93,6 +99,7 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
         this.destination = destination;
         this.graph = graph;
         this.travelTime = 0;
+        this.learningEffort = 0;
     }
 
     /**
@@ -109,6 +116,7 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
     @Override
     public Driver call() throws Exception {
         if (stepA) {
+//            this.incrementLearningEffort();
             this.beforeStep();
             stepA = false;
         } else {
@@ -155,6 +163,10 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
      */
     public abstract void resetAll();
 
+    protected void incrementLearningEffort() {
+        this.learningEffort++;
+    }
+
     /**
      * Returns a list of parameters of the driver.
      *
@@ -169,6 +181,14 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
      */
     public boolean hasArrived() {
         return this.getCurrentEdge() == null;
+    }
+
+    public double getLearningEffort() {
+        return learningEffort;
+    }
+    
+    public double getDeltaQ(){
+        return 0;
     }
 
     /**

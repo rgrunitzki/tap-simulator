@@ -24,6 +24,10 @@ public enum ImplementedTAP {
      */
     BRAESS6("BRAESS6"),
     /**
+     * Braess Paradox created by Ana L. C. Bazzan in 04/01/201
+     */
+    BRAESSBAZZAN("BRAESS6"),
+    /**
      * EMME TAP.
      */
     EMME("EMME"),
@@ -31,6 +35,10 @@ public enum ImplementedTAP {
      * Nguyen and Dupuis (ND) TAP.
      */
     ND("ND"),
+    /**
+     * Multiobjective Nguyen and Dupuis (ND) TAP.
+     */
+    OW_MULTIOBJECTIVE("ND_MULTIOBJECTIVE"),
     /**
      * Ortuzar and Willumsen (OW) TAP.
      */
@@ -46,7 +54,12 @@ public enum ImplementedTAP {
     /**
      * Scenario defined by Ana L.C. Bazzan.
      */
-    SYMMETRICAL_2NEIGHBORHOOD("SYMMETRICAL_2NEIGHBORHOOD");
+    TWO_NEIGHBORHOOD_MIRRORED("TWO_NEIGHBORHOOD_MIRRORED"),
+    
+    /**
+     * Scenario defined by Ana L.C. Bazzan.
+     */
+    TWO_NEIGHBORHOOD_REPLICATED("TWO_NEIGHBORHOOD_REPLICATED");
 
     private final String value;
 

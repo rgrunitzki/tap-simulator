@@ -1,5 +1,7 @@
 package simulation;
 
+import driver.learning.stopping.AbstractStopCriterion;
+import driver.learning.stopping.NumberOfEpisodesStopCriterion;
 import driver.learning.exploration.EpsilonDecreasing;
 import driver.learning.QLStatefull;
 import extensions.c2i.QLStatefullC2I;
@@ -47,6 +49,11 @@ public class Params {
     public static RewardFunction REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
     public static Class EXPLORATION_POLICY = EpsilonDecreasing.class;
     public static Class DEFAULT_ALGORITHM = QLStatefull.class;
+    public static double RELATIVE_DELTA = 0.01;
+    public static int DELTA_INTERVAL = 3;
+    public static boolean PRINT_DELTA = false;
+    public static boolean PRINT_EFFORT = true;
+    public static AbstractStopCriterion DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
     //Outputs Parameters
     public static boolean PRINT_AVERAGE_RESULTS = false; //not been used (problems here)
     public static boolean PRINT_OD_PAIRS_AVG_COST = false;
@@ -238,11 +245,17 @@ public class Params {
             case BRAESS6:
                 USED_TAP = TAP.BRAESS_6(DEFAULT_ALGORITHM);
                 break;
+            case BRAESSBAZZAN:
+                USED_TAP = TAP.BRAESS_BAZZAN(DEFAULT_ALGORITHM);
+                break;
             case EMME:
                 USED_TAP = TAP.EMME(DEFAULT_ALGORITHM);
                 break;
             case ND:
                 USED_TAP = TAP.ND(DEFAULT_ALGORITHM);
+                break;
+            case OW_MULTIOBJECTIVE:
+                USED_TAP = TAP.OW_MULTIOBJECTIVE(DEFAULT_ALGORITHM);
                 break;
             case OW:
                 USED_TAP = TAP.OW(DEFAULT_ALGORITHM);
@@ -253,8 +266,11 @@ public class Params {
             case TWO_NEIGHBORHOOD:
                 USED_TAP = TAP.TWO_NEIGHBORHOOD(DEFAULT_ALGORITHM);
                 break;
-            case SYMMETRICAL_2NEIGHBORHOOD:
-                USED_TAP = TAP.SYMETRICAL_2NEIGHBORHOOD(DEFAULT_ALGORITHM);
+            case TWO_NEIGHBORHOOD_MIRRORED:
+                USED_TAP = TAP.TWO_NEIGHBORHOOD_MIRRORED(DEFAULT_ALGORITHM);
+                break;
+            case TWO_NEIGHBORHOOD_REPLICATED:
+                USED_TAP = TAP.TWO_NEIGHBORHOOD_REPLICATED(DEFAULT_ALGORITHM);
                 break;
             default:
                 throw new AssertionError(DEFAULT_TAP.name() + " not found.");

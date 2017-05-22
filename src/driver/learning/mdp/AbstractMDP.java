@@ -49,6 +49,11 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
     protected Map<State, Map<Action, Value>> zTable = new ConcurrentHashMap<>();
 
     /**
+     * The maximum variation of the Q_values
+     */
+    private double deltaQ;
+
+    /**
      * Sets a value for an specific state-action pair.
      *
      * @param action state-action pair
@@ -112,6 +117,16 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
         return this.clone();
     }
 
+    public void updateDetalQ(double qvalue) {
+        if (this.deltaQ > qvalue) {
+            this.deltaQ = qvalue;
+        }
+    }
+
+    public void resetDetaQ() {
+        this.deltaQ = 0.0;
+    }
+
     /**
      * Returns the MDP of the driver.
      *
@@ -131,6 +146,10 @@ public abstract class AbstractMDP<State, Action, Value extends Comparable> imple
 
     public void setzTable(Map<State, Map<Action, Value>> zTable) {
         this.zTable = zTable;
+    }
+
+    public double getDeltaQ() {
+        return deltaQ;
     }
 
 }

@@ -99,18 +99,17 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
         this.currentEdge = null;
         this.travelTime = 0;
         this.route = new LinkedList<>();
+        this.mdp.resetDetaQ();
     }
 
     @Override
     public void afterEpisode() {
+        this.learningEffort += this.route.size();
     }
 
     @Override
     public void beforeStep() {
-        if (currentVertex.equals("B6")) {
-            boolean bol = true;
-        }
-
+        
         currentEdge = mdp.getAction(mdp.getMdp().get(currentVertex));
         this.route.add(currentEdge);
         this.currentVertex = currentEdge.getTargetVertex();
@@ -132,12 +131,13 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
             maxQa = Collections.max(mdp2.entrySet(), (entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).getValue();
         }
         qa = (1 - ALPHA) * qa + ALPHA * (r + GAMMA * maxQa);
-
         this.mdp.setValue(currentEdge, qa);
+
     }
 
     @Override
     public void resetAll() {
+        this.learningEffort = 0;
         for (String action : this.mdp.getMdp().keySet()) {
             for (AbstractEdge e : this.mdp.getMdp().get(action).keySet()) {
                 this.mdp.getMdp().get(action).put(e, 0.0);
@@ -173,6 +173,11 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
             cost += e.getCost();
         }
         return cost;
+    }
+
+    @Override
+    public double getDeltaQ() {
+        return this.mdp.getDeltaQ();
     }
 
 }

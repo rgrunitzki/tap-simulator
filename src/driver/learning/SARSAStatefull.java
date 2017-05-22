@@ -9,7 +9,6 @@ import driver.learning.mdp.StatefullMDP;
 import driver.learning.reward.StatefullRewardFunction;
 import driver.learning.reward.AbstractRewardFunction;
 import driver.learning.exploration.EpsilonDecreasing;
-import extensions.c2i.QLStatefullC2I;
 import driver.Driver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -154,6 +153,7 @@ public class SARSAStatefull extends Driver<SARSAStatefull, List<AbstractEdge>> {
 
     @Override
     public void resetAll() {
+        this.learningEffort = 0;
         for (String action : this.mdp.getMdp().keySet()) {
             for (AbstractEdge e : this.mdp.getMdp().get(action).keySet()) {
                 this.mdp.getMdp().get(action).put(e, 0.0);

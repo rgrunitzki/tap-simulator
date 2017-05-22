@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trafficassignment;
+package util.trafficassignment;
 
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;

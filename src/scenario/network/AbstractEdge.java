@@ -1,6 +1,5 @@
 package scenario.network;
 
-import scenario.network.AbstractCostFunction;
 import driver.Driver;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +13,11 @@ import simulation.Params;
  */
 public abstract class AbstractEdge extends DefaultWeightedEdge implements Comparable<AbstractEdge> {
 
-    private Map<String, Object> params;
+    protected Map<String, Object> params;
 
-    private int currentFlow;
+    protected int currentFlow;
 
-    private int totalFlow;
+    protected int totalFlow;
 
     /**
      * The cost function of the edge.
@@ -35,6 +34,42 @@ public abstract class AbstractEdge extends DefaultWeightedEdge implements Compar
         this.currentFlow = 0;
         this.totalFlow = 0;
         this.costFunction = costFunction;
+    }
+
+    /**
+     * This method is performed before the simulation starts. The
+     * {@link AbstractEdge} provide no behavior. However, it is important for
+     * the implementation learning behavior on extensions.
+     */
+    public void beforeSimulation() {
+
+    }
+
+    /**
+     * This method is performed after the simulation starts. The
+     * {@link AbstractEdge} provide no behavior. However, it is important for
+     * the implementation learning behavior on extensions.
+     */
+    public void afterSimulation() {
+
+    }
+
+    /**
+     * This method is performed after each episode. The {@link AbstractEdge}
+     * provide no behavior. However, it is important for the implementation
+     * learning behavior on extensions.
+     */
+    public void afterEpisode() {
+
+    }
+
+    /**
+     * This method is performed before each episode. The {@link AbstractEdge}
+     * provide no behavior. However, it is important for the implementation
+     * learning behavior on extensions.
+     */
+    public void beforeEpisode() {
+
     }
 
     /**

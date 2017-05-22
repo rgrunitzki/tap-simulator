@@ -12,14 +12,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import scenario.network.AbstractEdge;
 
 /**
+ * Hierarchical implementation of an Markov Decision Process (MDP).
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class HierarchicalMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
-    //Low level MDPs
+    /**
+     * Low level MDPs
+     */
     protected Map<String, Map<String, Map<AbstractEdge, Double>>> lowLevelMDPs = new ConcurrentHashMap<>();
-    //High level MDP
+    /**
+     * High level MDP
+     */
     protected Map<String, Map<List<AbstractEdge>, Double>> highLevelMDP = new ConcurrentHashMap<>();
 
     /**
@@ -29,6 +34,7 @@ public class HierarchicalMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
     @Override
     public void setValue(AbstractEdge action, Double value) {
+        this.updateDetalQ(value - this.mdp.get(action.getSourceVertex()).get(action));
         this.mdp.get(action.getSourceVertex()).put(action, value);
     }
 
@@ -45,14 +51,29 @@ public class HierarchicalMDP extends AbstractMDP<String, AbstractEdge, Double> {
     public void reset() {
     }
 
+    /**
+     * Sets the current low level MDP.
+     *
+     * @param lowLevelMDPs
+     */
     public void setLowLevelMDPs(Map lowLevelMDPs) {
         this.lowLevelMDPs = lowLevelMDPs;
     }
 
+    /**
+     * Sets the high level MDP.
+     *
+     * @param highLevelMDP
+     */
     public void setHighLevelMDP(Map<String, Map<List<AbstractEdge>, Double>> highLevelMDP) {
         this.highLevelMDP = highLevelMDP;
     }
 
+    /**
+     * Sets the current MDP.
+     *
+     * @param mdp
+     */
     public void setMDP(Map mdp) {
         this.mdp = mdp;
     }

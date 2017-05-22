@@ -17,6 +17,8 @@ public class StatefullMDP extends AbstractMDP<String, AbstractEdge, Double> {
 
     @Override
     public void setValue(AbstractEdge action, Double value) {
+        this.updateDetalQ(value - this.mdp.get(action.getSourceVertex()).get(action));
+
         this.mdp.get(action.getSourceVertex()).put(action, value);
     }
 

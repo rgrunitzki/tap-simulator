@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+    Created by Ana L. C. Bazzan. 04/01/2017
+    function BraessG (f) m*f+n
+
+-->
+<graph>
+    <node id="s"/>
+    <node id="v1"/>
+    <node id="w1"/>
+    <node id="t"/>
+    
+    <edge id="s-v1" from="s" to="v1" m="0.00238095238095" n="0.0"/>
+    <edge id="s-w1" from="s" to="w1" m="0.0" n="10.0" />
+    <edge id="v1-w1" from="v1" to="w1" m="0.0" n="0.0" />
+    <edge id="v1-t" from="v1" to="t" m="0.0" n="10.0"/>
+    <edge id="w1-t" from="w1" to="t" m="0.00238095238095" n="0.0" />
+</graph>

@@ -185,6 +185,7 @@ public class QLambdaStatefull extends Driver<QLambdaStatefull, List<AbstractEdge
 
     @Override
     public void resetAll() {
+        this.learningEffort = 0;
         for (String action : this.mdp.getMdp().keySet()) {
             for (AbstractEdge e : this.mdp.getMdp().get(action).keySet()) {
                 this.mdp.getMdp().get(action).put(e, 0.0);

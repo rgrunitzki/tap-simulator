@@ -1,9 +1,8 @@
-package extensions.hierarchical;
+package extensions.coadaptation;
 
 import driver.learning.exploration.EpsilonDecreasing;
 import driver.learning.*;
 import driver.learning.reward.RewardFunction;
-import driver.learning.stopping.*;
 import experiments.DefaultExperiment;
 import scenario.ImplementedTAP;
 import simulation.Params;
@@ -17,7 +16,7 @@ import simulation.Params;
  *
  * @author Ricardo Grunitzki
  */
-public class HierarchicalExperiment {
+public class CoadaptationExperiment {
 
     public static void main(String[] args) {
 
@@ -25,43 +24,36 @@ public class HierarchicalExperiment {
 
         Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = true;
-        Params.PRINT_ON_TERMINAL = false;//
+        Params.PRINT_ON_TERMINAL = false;
         Params.PRINT_AVERAGE_RESULTS = true;
         Params.PRINT_ON_FILE = false;
-        Params.RELATIVE_DELTA = 0.01;
-        Params.DELTA_INTERVAL = 3;
-        Params.PRINT_DELTA = true;
+        Params.RELATIVE_DELTA = -0.01;
+        Params.PRINT_DELTA = false;
         Params.MAX_EPISODES = 1000;
         Params.MAX_STEPS = 100;
         EpsilonDecreasing.EPSILON_DECAY = 0.99f;
         EpsilonDecreasing.EPSILON_INITIAL = 1f;
-        Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
-//        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
-//        Params.DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
-        Params.REPETITIONS = 1;
-        Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
-//        Params.DEFAULT_TAP = ImplementedTAP.OW;
+        Params.REPETITIONS = 10;
+        Params.DEFAULT_TAP = ImplementedTAP.OW;
+//        Params.DEFAULT_EDGE = LearnerEdge.class;
         Params.PROPORTION = 1;
-        int type = 0;
+
+        int type = 2;
         switch (type) {
-            case 0:
-                QLStatefullHierarchical.ALPHA = 0.5f;
-                QLStatefullHierarchical.GAMMA = 0.99f;
-                Params.DEFAULT_ALGORITHM = QLStatefullHierarchical.class;
-                break;
             case 1:
                 //"QLStatefull"
 //                Params.MAX_EPISODES = 150;
                 QLStatefull.ALPHA = 0.5f;
                 QLStatefull.GAMMA = 0.99f;
+//                Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
                 Params.DEFAULT_ALGORITHM = QLStatefull.class;
 
                 break;
             case 2:
                 //"QLStateless"
-                QLStateless.K = 3;
-                Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
-                QLStateless.ALPHA = 0.9f;
+                QLStateless.K = 10;
+                Params.REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
+                QLStateless.ALPHA = 0.1f;
                 Params.DEFAULT_ALGORITHM = QLStateless.class;
 
                 break;

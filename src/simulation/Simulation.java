@@ -1,6 +1,10 @@
 package simulation;
 
 import driver.Driver;
+import driver.learning.stopping.AbstractStopCriterion;
+import extensions.coadaptation.LearnerEdge;
+import extensions.coadaptation.MultiObjectiveLinearCostFunction;
+import extensions.hierarchical.QLStatefullHierarchical;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -38,6 +42,8 @@ public class Simulation {
 
     private String fileNameToPrint = "";
 
+    private AbstractStopCriterion stopCriterion = Params.DEFAULT_STOP_CRITERION;
+
     /**
      * Creates and simulation object according to the TAP specifications.
      *
@@ -53,17 +59,34 @@ public class Simulation {
      */
     public void execute() {
 
+        //process drivers before simulation starting
         tap.getDrivers().parallelStream().forEach((driver) -> {
             try {
                 driver.beforeSimulation();
             } catch (Exception e) {
-                System.err.println("Error on beforeSimulation()");
+                System.err.println("Error on  driver.beforeSimulation()");
                 System.exit(1);
             }
         });
 
-        for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
+        //process links before simulation starting
+        tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
+            try {
+                edge.beforeSimulation();
+            } catch (Exception e) {
+                System.err.println("Error on edge.beforeSimulation()");
+                System.exit(1);
+            }
+        });
 
+        Params.CURRENT_EPISODE = 0;
+
+        while (!stopCriterion.stop(this)) {
+
+            //}
+            //episode's looping
+            //for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
+            //process drivers at the begining of the current episode
             tap.getDrivers().parallelStream().forEach((driver) -> {
                 try {
                     driver.beforeEpisode();
@@ -75,22 +98,46 @@ public class Simulation {
 
             });
 
+            //process edges at the begining of the current episode
+            tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
+                try {
+                    edge.beforeEpisode();
+                } catch (Exception e) {
+                    System.err.println("Error on edge.beforeEpisode()");
+                    System.exit(1);
+                }
+            });
+
+            //runs the current episode
             runEpisode();
 
+            //process drivers at the end of the current episode
             tap.getDrivers().parallelStream().forEach((driver) -> {
                 try {
                     driver.afterEpisode();
                 } catch (Exception e) {
                     System.err.println("Error on driver.afterEpisode()");
-                    return;
+                    System.exit(1);
                 }
             });
 
+            //process drivers at the end of the current episode
+            tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
+                try {
+                    edge.afterEpisode();
+                } catch (Exception e) {
+                    System.err.println("Error on edge.afterEpisode();");
+                    System.exit(1);
+                }
+
+            });
+
+            //mannage outputs
             String results = getSimulationOutputs();
             if (Params.PRINT_ON_TERMINAL) {
                 System.out.print(results);
             }
-
+            //prints outputs on file
             if (Params.PRINT_ON_FILE) {
                 if (fileNameToPrint.equals("")) {
                     fileNameToPrint = getExperimentFileName();
@@ -98,15 +145,36 @@ public class Simulation {
                 this.printExperimentResultsOnFile(getExperimentPath(), fileNameToPrint, results);
             }
 
+            Params.CURRENT_EPISODE++;
+
+            //TESTS FOR QL-H
+            System.out.print(Params.CURRENT_EPISODE + "\t" + averageTravelCost() + "\t" + stopCriterion.stoppingValue(this));
+            for (Driver d : tap.getDrivers()) {
+                if (d instanceof QLStatefullHierarchical) {
+                    System.out.print("\t" + ((QLStatefullHierarchical) d).getDeltaQ());
+                }
+            }
+            System.out.println("");
+            //ends here
         }
 
-        //post-simulation processing
+        //proccess drivers at the end of the simulation
         tap.getDrivers().parallelStream().forEach((driver) -> {
             try {
                 driver.afterSimulation();
             } catch (Exception e) {
                 System.err.println("Error on driver.afterSimulation()");
                 return;
+            }
+        });
+
+        //process edges at the end of the simulation
+        tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
+            try {
+                edge.afterSimulation();
+            } catch (Exception e) {
+                System.err.println("Error on edge.afterSimulation()");
+                System.exit(1);
             }
         });
 
@@ -194,6 +262,19 @@ public class Simulation {
         return (avgcost / (tap.getDrivers().size() * Params.PROPORTION));
     }
 
+    /**
+     * Returns the average learning effort.
+     *
+     * @return average learning effort of all drivers
+     */
+    public double getLearningEffort() {
+        double learningEffort = 0;
+        for (Driver d : tap.getDrivers()) {
+            learningEffort += d.getLearningEffort();
+        }
+        return learningEffort / tap.getDrivers().size();
+    }
+
     private void resetEdgesForEpisode() {
         this.tap.getGraph().edgeSet().parallelStream().forEach((e) -> {
             e.reset();
@@ -229,17 +310,6 @@ public class Simulation {
         eservice.shutdown();
     }
 
-    //print flows in a formated manner
-    private void printFlowsOnTerminal() {
-        //print the flow of the used links
-        System.out.println("link" + Params.COLUMN_SEPARATOR + "flow" + Params.COLUMN_SEPARATOR + "cost");
-        double soma = 0;
-        for (AbstractEdge e : tap.getGraph().edgeSet()) {
-            soma += e.getTotalFlow() * e.getCost();
-            System.out.println(e.getName() + Params.COLUMN_SEPARATOR + e.getTotalFlow() + Params.COLUMN_SEPARATOR + e.getCost());
-        }
-    }
-
     private String getAverageTravelCosts() {
         String out = String.valueOf(averageTravelCost()); //Average Cost
 
@@ -255,7 +325,11 @@ public class Simulation {
         return out;
     }
 
-    //calculates links flows;
+    /**
+     * calculates links flows.
+     *
+     * @return
+     */
     private String getFlows() {
         String out = "";
         List<AbstractEdge> keys = new ArrayList<>(tap.getGraph().edgeSet());
@@ -276,7 +350,20 @@ public class Simulation {
         if (Params.CURRENT_EPISODE == 0) {
             output += getExperimentOutputHeader() + "\n";
         }
-        output += Params.CURRENT_EPISODE + Params.COLUMN_SEPARATOR + getAverageTravelCosts();
+        //episode
+        output += Params.CURRENT_EPISODE;
+        //overal travel time
+        output += Params.COLUMN_SEPARATOR + getAverageTravelCosts();
+        if (Params.DEFAULT_EDGE == LearnerEdge.class) {
+            output += Params.COLUMN_SEPARATOR + this.getOnlyTravelCost();
+            output += Params.COLUMN_SEPARATOR + this.getOnlyMonetaryCost();
+        }
+        if (Params.PRINT_EFFORT) {
+            output += Params.COLUMN_SEPARATOR + getLearningEffort();
+        }
+        if (Params.PRINT_DELTA) {
+            output += Params.COLUMN_SEPARATOR + this.stopCriterion.stoppingValue(this);
+        }
         if (Params.PRINT_FLOWS) {
             output += Params.COLUMN_SEPARATOR + getFlows();
         }
@@ -345,7 +432,23 @@ public class Simulation {
             output += " " + p.getLeft() + ": " + p.getRight();
         }
 
-        output += "\n" + Params.COMMENT_CHARACTER + "episode" + Params.COLUMN_SEPARATOR + "overal_tt";
+        //episode label
+        output += "\n" + Params.COMMENT_CHARACTER + "episode";
+        //overal travel time label
+        output += Params.COLUMN_SEPARATOR + "overal_tt";
+
+        //@TODO: this is temporary
+        if (Params.DEFAULT_EDGE == LearnerEdge.class) {
+            output += Params.COLUMN_SEPARATOR + "f1";
+            output += Params.COLUMN_SEPARATOR + "f2";
+        }
+
+        if (Params.PRINT_EFFORT) {
+            output += Params.COLUMN_SEPARATOR + "effort";
+        }
+        if (Params.PRINT_DELTA) {
+            output += Params.COLUMN_SEPARATOR + "delta";
+        }
 
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
 
@@ -385,6 +488,40 @@ public class Simulation {
         }
         name += ".txt";
         return name;
+    }
+
+    //@TODO: devo excluir no futuro
+    private double getOnlyTravelCost() {
+        double cost = 0.;
+        for (AbstractEdge edge : this.tap.getGraph().edgeSet()) {
+            LearnerEdge le = ((LearnerEdge) edge);
+            MultiObjectiveLinearCostFunction cf = (MultiObjectiveLinearCostFunction) ((LearnerEdge) edge).getCostFunction();
+            cost += cf.getTravelCost(edge, le.getTotalFlow()) * le.getTotalFlow();
+        }
+        return cost / tap.getDrivers().size();
+    }
+
+    //@TODO: devo excluir no futuro
+    private double getOnlyMonetaryCost() {
+        double cost = 0.;
+        for (AbstractEdge edge : this.tap.getGraph().edgeSet()) {
+            LearnerEdge le = ((LearnerEdge) edge);
+            MultiObjectiveLinearCostFunction cf = (MultiObjectiveLinearCostFunction) ((LearnerEdge) edge).getCostFunction();
+            cost += cf.getMonetaryCost(edge, le.getTotalFlow()) * le.getTotalFlow();
+        }
+        return cost / tap.getDrivers().size();
+    }
+
+    public TAP getTap() {
+        return tap;
+    }
+
+    public AbstractStopCriterion getStopCriterion() {
+        return stopCriterion;
+    }
+
+    public void setStopCriterion(AbstractStopCriterion stopCriterion) {
+        this.stopCriterion = stopCriterion;
     }
 
 }

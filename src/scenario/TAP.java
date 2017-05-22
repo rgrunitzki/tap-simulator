@@ -11,6 +11,7 @@ import scenario.network.BraessParadoxCostFunction;
 import scenario.network.AbstractCostFunction;
 import scenario.network.LinearCostFunction;
 import driver.Driver;
+import extensions.coadaptation.MultiObjectiveLinearCostFunction;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.Graph;
 import scenario.network.AbstractEdge;
+import scenario.network.BraessBazzanCostFunction;
 import simulation.Params;
 
 /**
@@ -29,8 +31,8 @@ import simulation.Params;
  */
 public class TAP {
 
-    private final File demandFile;
-    private final File networkFile;
+    private File demandFile;
+    private File networkFile;
     private AbstractCostFunction costFunction;
     private List<Driver> drivers;
     private Graph graph;
@@ -61,18 +63,25 @@ public class TAP {
         this.networkFile = network;
         this.costFunction = costFunction;
         try {
-            this.graph = Loader.loadNetwork(networkFile, Params.DEFAULT_EDGE, costFunction);
+            this.graph = XMLLoader.loadNetwork(networkFile, Params.DEFAULT_EDGE, costFunction);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.driverClass = clazz;
         try {
-            this.drivers = Loader.processODMatrix(graph, demandFile, clazz);
-            this.odPairs = Loader.odpairs;
+            this.drivers = XMLLoader.processODMatrix(graph, demandFile, clazz);
+            this.odPairs = XMLLoader.odpairs;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public TAP(Graph graph, AbstractCostFunction costFunction, List<Driver> drivers, Map<String, ODPair> odPairs) {
+        this.graph = graph;
+        this.costFunction = costFunction;
+        this.drivers = drivers;
+        this.odPairs = odPairs;
     }
 
     /**
@@ -172,6 +181,17 @@ public class TAP {
         return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
     }
 
+    public static TAP BRAESS_BAZZAN(Class driverClass) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/tests/braessBazzan.net.xml";
+        demandFile = "files/tests/braessBazzan.od.xml";
+        costFunction = new BraessBazzanCostFunction();
+
+        return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
+    }
+
     /**
      * Returns the Bypass TAP. This problem is defined in:
      * <ul>
@@ -237,6 +257,29 @@ public class TAP {
     }
 
     /**
+     * Returns the multi-objective version of Ortuzar and Willumsen (OW) TAP.
+     * This problem is defined in:
+     * <ul>
+     * <li>J. Ortúzar and L. G. Willumsen. Modelling Transport. John Wiley &
+     * Sons, 3rd edition, 2001.
+     * <li>Example 10.1
+     * <li>accessed in: 02/10/2016
+     * </ul>
+     *
+     * @param driverClass class of the drivers
+     * @return the OW TAP
+     */
+    public static TAP OW_MULTIOBJECTIVE(Class driverClass) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/ow.net.xml";
+        demandFile = "files/ow.od.xml";
+        costFunction = new MultiObjectiveLinearCostFunction();
+        return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
+    }
+
+    /**
      * Returns the Ortuzar and Willumsen (OW) TAP. This problem is defined in:
      * <ul>
      * <li>J. Ortúzar and L. G. Willumsen. Modelling Transport. John Wiley &
@@ -270,6 +313,16 @@ public class TAP {
      * @return the SF TAP
      */
     public static TAP SF(Class driverClass) {
+//        String netFile;
+//        String demandFile;
+//        AbstractCostFunction costFunction = null;
+//        netFile = "files/SF.net";
+//        demandFile = "files/SF.net";
+//
+//        NewCSVLoader loader = new NewCSVLoader();
+//        return loader.createTAP(new File(demandFile), new File(netFile), null, null, costFunction);
+
+//xml way
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
@@ -295,13 +348,23 @@ public class TAP {
         costFunction = new LinearCostFunction();
         return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
     }
-    
-    public static TAP SYMETRICAL_2NEIGHBORHOOD(Class driverClass) {
+
+    public static TAP TWO_NEIGHBORHOOD_MIRRORED(Class driverClass) {
         String netFile;
         String demandFile;
         AbstractCostFunction costFunction;
-        netFile = "files/simetrical2neighborhood.net.xml";
-        demandFile = "files/simetrical2neighborhood.od.xml";
+        netFile = "files/two_neighborhood_mirrored.net.xml";
+        demandFile = "files/two_neighborhood_mirrored.od.xml";
+        costFunction = new LinearCostFunction();
+        return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
+    }
+
+    public static TAP TWO_NEIGHBORHOOD_REPLICATED(Class driverClass) {
+        String netFile;
+        String demandFile;
+        AbstractCostFunction costFunction;
+        netFile = "files/two_neighborhood_replicated.net.xml";
+        demandFile = "files/two_neighborhood_replicated.od.xml";
         costFunction = new LinearCostFunction();
         return new TAP(new File(demandFile), new File(netFile), costFunction, driverClass);
     }
