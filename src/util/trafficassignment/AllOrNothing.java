@@ -16,6 +16,12 @@ import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
+ * Implements the All-or-Nothing algorithm described in Chapter 10.3 of Ortúzar
+ * and Willumsen (2011).
+ *
+ * Ortúzar, J. D. D., & Willumsen, L. G. (2011). Modelling Transport. Modelling
+ * Transport. Chichester, UK: John Wiley & Sons, Ltd.
+ * https://doi.org/10.1002/9781119993308
  *
  * @author Ricardo Grunitzki
  */
@@ -23,10 +29,17 @@ public class AllOrNothing {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.BRAESS(TADriver.class);
+        //define a traffic assignment problem
+        TAP tap = TAP.BRAESS(TADriver.class);//Braess paradox
 
+        //another examples of TAP
+        //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
+        //TAP tap = TAP.SF(TADriver.class); //Sioux Falls scenario
+        //List of origin-destination (OD) pairs
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
+        //sort the list of OD-pairs
         Collections.sort(odpairs);
+
         String header = "average_tt";
         String results = "";
 
@@ -35,24 +48,25 @@ public class AllOrNothing {
 
         //update edges cost
         for (String odPair : odpairs) {
+            //origin node
             String origin = odPair.split("-")[0];
+            //destination node
             String destination = odPair.split("-")[1];
-
+            //shortest path for the OD-pair
             GraphPath path = fws.getShortestPath(origin, destination);
 
+            //increment the flow of the edges of the shortest path
             for (Object e : path.getEdgeList()) {
                 StandardEdge edge = (StandardEdge) e;
                 edge.incrementTotalFlow(tap.getOdpairs().get(odPair).demandSize());
             }
         }
 
-        //evaluate cost per OD pair
+        //evaluate cost per OD-pair
         for (String odPair : odpairs) {
             header += Params.COLUMN_SEPARATOR + odPair;
-
             String origin = odPair.split("-")[0];
             String destination = odPair.split("-")[1];
-
             results += Params.COLUMN_SEPARATOR + fws.getShortestPath(origin, destination).getWeight();
 
         }

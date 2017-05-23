@@ -16,15 +16,28 @@ import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
- * Implementation of the Incremental Assignment method.
+ * Implements the Incremental Assignment method described in Chapter 10.5.3 of
+ * Ortúzar and Willumsen (2011).
+ *
+ * Ortúzar, J. D. D., & Willumsen, L. G. (2011). Modelling Transport. Modelling
+ * Transport. Chichester, UK: John Wiley & Sons, Ltd.
+ * https://doi.org/10.1002/9781119993308
+ *
  * @author Ricardo Grunitzki
  */
 public class IncrementalAssignment {
 
     public static void main(String[] args) {
 
-        TAP tap = TAP.BRAESS(TADriver.class);
+        //define a traffic assignment problem
+        TAP tap = TAP.BRAESS(TADriver.class);//Braess paradox
+
+        //another examples of TAP
+        //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
+        //TAP tap = TAP.SF(TADriver.class); //Sioux Falls scenario
+        //List of origin-destination (OD) pairs
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
+        //sort the list of OD-pairs
         Collections.sort(odpairs);
         String header = "average_tt";
         String results = "";
@@ -45,7 +58,6 @@ public class IncrementalAssignment {
 //
 //                System.out.println(path.getEdgeList().toString() + ": " + path.getWeight());
 //            }
-
             //update the edges cost
             for (String odPair : odpairs) {
 
@@ -77,7 +89,7 @@ public class IncrementalAssignment {
 //                System.out.println(init + "\t" + end);
             }
 
-            //evaluate cost per OD pair
+            //evaluate cost per OD-pair
             for (String odPair : odpairs) {
                 int odSize = tap.getOdpairs().get(odPair).demandSize();
                 int init = 0;
@@ -100,7 +112,7 @@ public class IncrementalAssignment {
 
             }
 
-            //print Result
+            //print the obtained results
             List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
             Collections.sort(edges);
             double cost = 0.0;
@@ -118,7 +130,7 @@ public class IncrementalAssignment {
         }
     }
 
-    public static double demandSize(double[] demandFraction, int index) {
+    private static double demandSize(double[] demandFraction, int index) {
         if (index == 0) {
             return demandFraction[index];
         } else {

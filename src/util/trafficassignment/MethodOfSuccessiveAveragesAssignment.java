@@ -15,7 +15,12 @@ import scenario.TAP;
 import simulation.Params;
 
 /**
- * Implementation of the method of successive averages.
+ * Implements the Method of successive averages described in Chapter 10.5.4 of
+ * Ortúzar and Willumsen (2011).
+ *
+ * Ortúzar, J. D. D., & Willumsen, L. G. (2011). Modelling Transport. Modelling
+ * Transport. Chichester, UK: John Wiley & Sons, Ltd.
+ * https://doi.org/10.1002/9781119993308
  *
  * @author Ricardo Grunitzki
  */
@@ -24,9 +29,18 @@ public class MethodOfSuccessiveAveragesAssignment {
     public static void main(String[] args) {
 
         Params.DEFAULT_EDGE = EdgeMSA.class;
-        TAP tap = TAP.BRAESS(MSADriver.class);
+
+        //define a traffic assignment problem
+        TAP tap = TAP.BRAESS(TADriver.class);//Braess paradox
+
+        //another examples of TAP
+        //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
+        //TAP tap = TAP.SF(TADriver.class); //Sioux Falls scenario
+        //List of origin-destination (OD) pairs
         List<String> odpairs = new ArrayList<>(tap.getOdpairs().keySet());
+        //sort the list of OD-pairs
         Collections.sort(odpairs);
+
         List<AbstractEdge> edges = new ArrayList<>(tap.getGraph().edgeSet());
         Collections.sort(edges);
 
