@@ -32,7 +32,7 @@ public class IncrementalAssignment {
         //define a traffic assignment problem
         TAP tap = TAP.BRAESS(TADriver.class);//Braess paradox
 
-        //another examples of TAP
+        //other examples of TAP
         //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
         //TAP tap = TAP.SF(TADriver.class); //Sioux Falls scenario
         //List of origin-destination (OD) pairs
