@@ -15,11 +15,11 @@ public class BraessBazzanCostFunction extends AbstractCostFunction {
 
     @Override
     public double evalCost(AbstractEdge edge) {
-        return stringToDouble((String) edge.getParams().get("m")) * edge.getTotalFlow() + stringToDouble((String) edge.getParams().get("n"));
+        return stringToDouble((String) edge.getParams().get("alpha")) * edge.getTotalFlow() + stringToDouble((String) edge.getParams().get("ffttime"));
     }
 
     @Override
     public double evalDesirableCost(AbstractEdge edge, double desirableFlow) {
-        return stringToDouble((String) edge.getParams().get("m")) * desirableFlow + stringToDouble((String) edge.getParams().get("n"));
+        return stringToDouble((String) edge.getParams().get("alpha")) * desirableFlow + stringToDouble((String) edge.getParams().get("ffttime"));
     }
 }

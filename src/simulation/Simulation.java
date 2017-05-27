@@ -4,7 +4,6 @@ import driver.Driver;
 import driver.learning.stopping.AbstractStopCriterion;
 import extensions.coadaptation.LearnerEdge;
 import extensions.coadaptation.MultiObjectiveLinearCostFunction;
-import extensions.hierarchical.QLStatefullHierarchical;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -31,18 +30,31 @@ import scenario.network.AbstractEdge;
  */
 public class Simulation {
 
+    /**
+     * Traffic assignment problem.
+     */
     private final TAP tap;
+
+    /**
+     * Object used for printing outputs in text files.
+     */
     private FileWriter fileWriter = null;
 
-    //Multi core objects
-    //Factory class to create ExecuterServices instances
+    /**
+     * Factory class to create ExecuterServices instances
+     */
     private final ExecutorService eservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    //Task executor
+    /**
+     * Task executor
+     */
     private final CompletionService<Object> cservice = new ExecutorCompletionService<>(eservice);
 
     private String fileNameToPrint = "";
 
-    private AbstractStopCriterion stopCriterion = Params.DEFAULT_STOP_CRITERION;
+    /**
+     * Stopping criteria for the Reinforcement Learning algorithm.
+     */
+    public static final AbstractStopCriterion stopCriterion = Params.DEFAULT_STOP_CRITERION;
 
     /**
      * Creates and simulation object according to the TAP specifications.
@@ -50,12 +62,12 @@ public class Simulation {
      * @param tap traffic assignment problem
      */
     public Simulation(TAP tap) {
+        Simulation.stopCriterion.setSimulation(this);
         this.tap = tap;
     }
 
     /**
      * Executes the traffic simulation.
-     *
      */
     public void execute() {
 
@@ -81,9 +93,8 @@ public class Simulation {
 
         Params.CURRENT_EPISODE = 0;
 
-        while (!stopCriterion.stop(this)) {
+        while (!stopCriterion.stop()) {
 
-            //}
             //episode's looping
             //for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
             //process drivers at the begining of the current episode
@@ -146,16 +157,6 @@ public class Simulation {
             }
 
             Params.CURRENT_EPISODE++;
-
-            //TESTS FOR QL-H
-            System.out.print(Params.CURRENT_EPISODE + "\t" + averageTravelCost() + "\t" + stopCriterion.stoppingValue(this));
-            for (Driver d : tap.getDrivers()) {
-                if (d instanceof QLStatefullHierarchical) {
-                    System.out.print("\t" + ((QLStatefullHierarchical) d).getDeltaQ());
-                }
-            }
-            System.out.println("");
-            //ends here
         }
 
         //proccess drivers at the end of the simulation
@@ -294,7 +295,7 @@ public class Simulation {
     }
 
     /**
-     *
+     * Resets the simulation
      */
     public void reset() {
         this.resetDrivers();
@@ -343,7 +344,7 @@ public class Simulation {
     /**
      * Returns the outputs of the simulation
      *
-     * @return
+     * @return a String with outputs
      */
     public String getSimulationOutputs() {
         String output = "";
@@ -362,7 +363,7 @@ public class Simulation {
             output += Params.COLUMN_SEPARATOR + getLearningEffort();
         }
         if (Params.PRINT_DELTA) {
-            output += Params.COLUMN_SEPARATOR + this.stopCriterion.stoppingValue(this);
+            output += Params.COLUMN_SEPARATOR + Simulation.stopCriterion.stoppingValue();
         }
         if (Params.PRINT_FLOWS) {
             output += Params.COLUMN_SEPARATOR + getFlows();
@@ -518,10 +519,6 @@ public class Simulation {
 
     public AbstractStopCriterion getStopCriterion() {
         return stopCriterion;
-    }
-
-    public void setStopCriterion(AbstractStopCriterion stopCriterion) {
-        this.stopCriterion = stopCriterion;
     }
 
 }

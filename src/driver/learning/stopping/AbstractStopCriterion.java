@@ -9,11 +9,33 @@ import simulation.Simulation;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public abstract class AbstractStopCriterion {
 
-    public abstract boolean stop(Simulation simulation);
-    
-    public abstract double stoppingValue(Simulation simulation);
+    protected Simulation simulation;
+    private boolean constraint = false;
+
+    public abstract boolean stop();
+
+    public abstract boolean stop(Double relativeDelta);
+
+    public abstract double stoppingValue();
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
+    public boolean isConstraint() {
+        return constraint;
+    }
+
+    public void setConstraint(boolean constraint) {
+        this.constraint = constraint;
+    }
+
+    public void reset() {
+        this.constraint = false;
+    }
+
 }

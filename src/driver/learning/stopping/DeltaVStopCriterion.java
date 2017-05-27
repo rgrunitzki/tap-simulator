@@ -5,9 +5,7 @@
  */
 package driver.learning.stopping;
 
-import extensions.hierarchical.QLStatefullHierarchical;
 import simulation.Params;
-import simulation.Simulation;
 import util.math.DynamicList;
 
 /**
@@ -23,20 +21,21 @@ public class DeltaVStopCriterion extends AbstractStopCriterion {
     private final DynamicList dynamicList = new DynamicList(Params.DELTA_INTERVAL);
 
     @Override
-    public boolean stop(Simulation simulation) {
-        if (simulation.getTap().getDrivers().get(0) instanceof QLStatefullHierarchical
-                && QLStatefullHierarchical.FIRST_LEVEL) {
-            return Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
-        }
-
+    public boolean stop() {
         return (dynamicList.check(Params.RELATIVE_DELTA, simulation.averageTravelCost())
-                //        return (stoppingValue(simulation) <= Params.DELTA 
                 && Params.CURRENT_EPISODE > 1)
                 || Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
     }
 
     @Override
-    public double stoppingValue(Simulation simulation) {
+    public boolean stop(Double relativeDelta) {
+        return (dynamicList.check(relativeDelta, simulation.averageTravelCost())
+                && Params.CURRENT_EPISODE > 1)
+                || Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
+    }
+
+    @Override
+    public double stoppingValue() {
         if (this.currentEpisode != Params.CURRENT_EPISODE) {
             //gets current travel time
             double currentTravelCost = simulation.averageTravelCost();

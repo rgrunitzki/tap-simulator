@@ -6,41 +6,52 @@
 package driver.learning.stopping;
 
 import driver.Driver;
-import extensions.hierarchical.QLStatefullHierarchical;
 import simulation.Params;
-import simulation.Simulation;
+import util.math.DynamicList;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki
  */
 public class DeltaQStopCriterion extends AbstractStopCriterion {
 
-    @Override
-    public boolean stop(Simulation simulation) {
-        if (simulation.getTap().getDrivers().get(0) instanceof QLStatefullHierarchical
-                && QLStatefullHierarchical.FIRST_LEVEL) {
-            return Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
-        }
+    private final DynamicList dynamicList = new DynamicList(Params.DELTA_INTERVAL);
 
-        return (stoppingValue(simulation) <= Params.RELATIVE_DELTA && Params.CURRENT_EPISODE > 0)
+    @Override
+    public boolean stop() {
+        boolean value
+                = !isConstraint()
+                //                && (stoppingValue() <= Params.RELATIVE_DELTA && Params.CURRENT_EPISODE > 0)
+                && (dynamicList.check(Params.RELATIVE_DELTA, simulation.averageTravelCost()) && Params.CURRENT_EPISODE > 0)
                 || Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
+        return value;
     }
 
     @Override
-    public double stoppingValue(Simulation simulation) {
+    public boolean stop(Double relativeDelta) {
+        boolean value = (dynamicList.check(relativeDelta, simulation.averageTravelCost()) && Params.CURRENT_EPISODE > 0);
+        return value;
+    }
+
+    @Override
+    public double stoppingValue() {
         double maxDetaQ = simulation.getTap().getDrivers().get(0).getDeltaQ();
         for (Driver d : simulation.getTap().getDrivers()) {
             if (d.getDeltaQ() < maxDetaQ) {
                 maxDetaQ = d.getDeltaQ();
             }
         }
-        return relativeValue(Math.abs(maxDetaQ), simulation.averageTravelCost());
-//        return Math.abs(maxDetaQ);
+        //delta value
+        double relativeDeltaValue = dynamicList.relativeValue(simulation.averageTravelCost(), Math.abs(maxDetaQ));
+        //update relative delta value
+        dynamicList.add(relativeDeltaValue);
+        return relativeDeltaValue;
     }
 
-    private double relativeValue(double delta, double travelTime) {
-        return (delta * 100) / travelTime;
+    @Override
+    public void reset() {
+        //resets the list of elements
+        this.dynamicList.reset();
     }
 
 }

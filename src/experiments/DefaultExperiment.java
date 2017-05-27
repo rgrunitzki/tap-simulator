@@ -48,7 +48,7 @@ public class DefaultExperiment {
                 episodes.add(Params.CURRENT_EPISODE);
                 travelCost.add(simulation.averageTravelCost());
                 learningEffort.add(simulation.getLearningEffort());
-                stoppingValue.add(simulation.getStopCriterion().stoppingValue(simulation));
+                stoppingValue.add(simulation.getStopCriterion().stoppingValue());
                 //print results
                 if (Params.PRINT_AVERAGE_RESULTS) {
                     System.out.println("#" + (run - 1) + Params.COLUMN_SEPARATOR

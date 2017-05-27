@@ -25,15 +25,16 @@ public class HierarchicalExperiment {
 
         Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = true;
-        Params.PRINT_ON_TERMINAL = false;//
+        Params.PRINT_ON_TERMINAL = true;//
         Params.PRINT_AVERAGE_RESULTS = true;
         Params.PRINT_ON_FILE = false;
-        Params.RELATIVE_DELTA = 0.01;
-        Params.DELTA_INTERVAL = 3;
+        Params.RELATIVE_DELTA = 0.001;
+        QLStatefullHierarchical.DELTA_SECOND_LEVEL = 0.000005;
+        Params.DELTA_INTERVAL = 5;
         Params.PRINT_DELTA = true;
-        Params.MAX_EPISODES = 1000;
+        Params.MAX_EPISODES = 150;
         Params.MAX_STEPS = 100;
-        EpsilonDecreasing.EPSILON_DECAY = 0.99f;
+        EpsilonDecreasing.EPSILON_DECAY = 0.91f;
         EpsilonDecreasing.EPSILON_INITIAL = 1f;
         Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
@@ -41,9 +42,9 @@ public class HierarchicalExperiment {
         Params.REPETITIONS = 1;
         Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
 //        Params.DEFAULT_TAP = ImplementedTAP.OW;
-        Params.PROPORTION = 1;
-        int type = 0;
-        switch (type) {
+//        Params.PROPORTION = 1;
+        int experimentType = 0;
+        switch (experimentType) {
             case 0:
                 QLStatefullHierarchical.ALPHA = 0.5f;
                 QLStatefullHierarchical.GAMMA = 0.99f;

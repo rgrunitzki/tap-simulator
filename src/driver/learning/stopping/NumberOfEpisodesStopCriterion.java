@@ -6,22 +6,26 @@
 package driver.learning.stopping;
 
 import simulation.Params;
-import simulation.Simulation;
 
 /**
- * Ends the simulation process always the nubmer of
+ * Ends the simulation process
  *
  * @author rgrunitzki
  */
 public class NumberOfEpisodesStopCriterion extends AbstractStopCriterion {
 
     @Override
-    public boolean stop(Simulation simulation) {
-        return Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
+    public boolean stop() {
+        return !isConstraint() && Params.CURRENT_EPISODE >= Params.MAX_EPISODES;
     }
 
     @Override
-    public double stoppingValue(Simulation simulation) {
+    public boolean stop(Double criteria) {
+        return this.stop();
+    }
+
+    @Override
+    public double stoppingValue() {
         return Params.CURRENT_EPISODE;
     }
 

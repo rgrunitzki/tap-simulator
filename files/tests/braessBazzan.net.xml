@@ -5,14 +5,27 @@
 
 -->
 <graph>
-    <node id="s"/>
-    <node id="v1"/>
-    <node id="w1"/>
-    <node id="t"/>
+    <node id="s1"/>
+    <node id="s2"/>
+    <node id="p1"/>
+    <node id="m"/>
+    <node id="p2"/>
+    <node id="q1"/>
+    <node id="n"/>
+    <node id="q2"/>
+    <node id="d1"/>
+    <node id="d2"/>
     
-    <edge id="s-v1" from="s" to="v1" m="0.00238095238095" n="0.0"/>
-    <edge id="s-w1" from="s" to="w1" m="0.0" n="10.0" />
-    <edge id="v1-w1" from="v1" to="w1" m="0.0" n="0.0" />
-    <edge id="v1-t" from="v1" to="t" m="0.0" n="10.0"/>
-    <edge id="w1-t" from="w1" to="t" m="0.00238095238095" n="0.0" />
+    
+    <edge id="s1-p1" from="s1" to="p1" ffttime="0.0" alpha="0.0"/>
+    <edge id="s1-m" from="s1" to="m" ffttime="0.0" alpha="0.0"/>
+    <edge id="s2-m" from="s2" to="m" ffttime="0.0" alpha="0.0"/>
+    <edge id="s2-p2" from="s2" to="p2" ffttime="0.0" alpha="0.0"/>
+    <edge id="p1-q1" from="p1" to="q1" ffttime="20.0" alpha="0.0"/>
+    <edge id="m-n" from="m" to="n" ffttime="0.0" alpha="0.1"/>
+    <edge id="p2-q2" from="p2" to="q2" ffttime="10.0" alpha="0.0"/>
+    <edge id="q1-d1" from="q1" to="d1" ffttime="0.0" alpha="0.0"/>
+    <edge id="n-d1" from="n" to="d1" ffttime="0.0" alpha="0.0"/>
+    <edge id="n-d2" from="n" to="d2" ffttime="0.0" alpha="0.0"/>
+    <edge id="q2-d2" from="q2" to="d2" ffttime="0.0" alpha="0.0"/>
 </graph>

@@ -3,5 +3,6 @@
     Created by Ana L. C. Bazzan. 04/01/2017
 -->
 <od-matrix>
-    <od origin="s" destination="t" trips="42"/>
+    <od origin="s1" destination="d1" trips="200"/>
+    <od origin="s2" destination="d2" trips="200"/>
 </od-matrix>
