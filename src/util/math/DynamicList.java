@@ -5,8 +5,11 @@
  */
 package util.math;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Creates an structure that keeps the last n elements of an list
@@ -33,6 +36,7 @@ public class DynamicList {
     public DynamicList(int size) {
         this.size = size;
         this.elements = new LinkedList<>();
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
     }
 
     /**
@@ -74,11 +78,11 @@ public class DynamicList {
         }
 
         for (Double element : elements) {
+//            System.err.println(df.format(relativeValue(currentTravelTime, element)) + "\t" + df.format(delta));
             if (relativeValue(currentTravelTime, element) > delta) {
                 return false;
             }
         }
-        elements.clear();
         return true;
     }
 
@@ -103,7 +107,7 @@ public class DynamicList {
      * @return a positive relative delta value
      */
     public Double relativeValue(Double currentTravelTime, Double deltaValue) {
-        return deltaValue / currentTravelTime;
+        return (deltaValue) / currentTravelTime;
     }
 
     /**
@@ -112,5 +116,10 @@ public class DynamicList {
     public void reset() {
         this.elements.clear();
     }
+
+    /**
+     * used for tests. must be removed
+     */
+    private DecimalFormat df = new DecimalFormat("#0.0000");
 
 }

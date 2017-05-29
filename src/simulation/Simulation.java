@@ -8,10 +8,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -48,8 +52,10 @@ public class Simulation {
      * Task executor
      */
     private final CompletionService<Object> cservice = new ExecutorCompletionService<>(eservice);
-
+    
     private String fileNameToPrint = "";
+    
+    private DecimalFormat df = new DecimalFormat("#0.00");
 
     /**
      * Stopping criteria for the Reinforcement Learning algorithm.
@@ -62,6 +68,7 @@ public class Simulation {
      * @param tap traffic assignment problem
      */
     public Simulation(TAP tap) {
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
         Simulation.stopCriterion.setSimulation(this);
         this.tap = tap;
     }
@@ -90,9 +97,9 @@ public class Simulation {
                 System.exit(1);
             }
         });
-
+        
         Params.CURRENT_EPISODE = 0;
-
+        
         while (!stopCriterion.stop()) {
 
             //episode's looping
@@ -106,7 +113,7 @@ public class Simulation {
                     driver.beforeEpisode();
                     System.exit(1);
                 }
-
+                
             });
 
             //process edges at the begining of the current episode
@@ -140,7 +147,7 @@ public class Simulation {
                     System.err.println("Error on edge.afterEpisode();");
                     System.exit(1);
                 }
-
+                
             });
 
             //mannage outputs
@@ -155,7 +162,7 @@ public class Simulation {
                 }
                 this.printExperimentResultsOnFile(getExperimentPath(), fileNameToPrint, results);
             }
-
+            
             Params.CURRENT_EPISODE++;
         }
 
@@ -178,7 +185,7 @@ public class Simulation {
                 System.exit(1);
             }
         });
-
+        
     }
 
     /**
@@ -190,11 +197,11 @@ public class Simulation {
         resetEdgesForEpisode();
         while ((!runStep()) && (Params.CURRENT_STEP++ < Params.MAX_STEPS));
     }
-
+    
     private boolean runStep() {
         boolean finished = true;
         List<Driver> driversToProcess = new LinkedList<>();
-
+        
         for (Driver d : this.tap.getDrivers()) {
             if (!d.hasArrived()) {
                 finished = false;
@@ -209,7 +216,7 @@ public class Simulation {
         driversToProcess.parallelStream().forEach((driver) -> {
             this.cservice.submit(driver);
         });
-
+        
         driversToProcess.stream().forEach((driver) -> {
             try {
                 boolean result = this.cservice.take().isDone();
@@ -225,7 +232,7 @@ public class Simulation {
         this.tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
             edge.clearCurrentFlow();
         });
-
+        
         driversToProcess.stream().filter((driver) -> (!driver.hasArrived())).forEach((Driver driver) -> {
             if (driver.getCurrentEdge() == null) {
                 System.err.println("Error on Edge's processing ");
@@ -275,19 +282,19 @@ public class Simulation {
         }
         return learningEffort / tap.getDrivers().size();
     }
-
+    
     private void resetEdgesForEpisode() {
         this.tap.getGraph().edgeSet().parallelStream().forEach((e) -> {
             e.reset();
         });
     }
-
+    
     private void resetEdgesForSimulation() {
         this.tap.getGraph().edgeSet().parallelStream().forEach((e) -> {
             e.resetAll();
         });
     }
-
+    
     private void resetDrivers() {
         tap.getDrivers().parallelStream().forEach((driver) -> {
             driver.resetAll();
@@ -310,15 +317,15 @@ public class Simulation {
     public void end() {
         eservice.shutdown();
     }
-
+    
     private String getAverageTravelCosts() {
-        String out = String.valueOf(averageTravelCost()); //Average Cost
+        String out = df.format(averageTravelCost()); //Average Cost
 
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
-
+            
             List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
             Collections.sort(keys);
-
+            
             for (String key : keys) {
                 out += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(key).getAverageCost();
             }
@@ -360,18 +367,18 @@ public class Simulation {
             output += Params.COLUMN_SEPARATOR + this.getOnlyMonetaryCost();
         }
         if (Params.PRINT_EFFORT) {
-            output += Params.COLUMN_SEPARATOR + getLearningEffort();
+            output += Params.COLUMN_SEPARATOR + df.format(getLearningEffort());
         }
         if (Params.PRINT_DELTA) {
-            output += Params.COLUMN_SEPARATOR + Simulation.stopCriterion.stoppingValue();
+            output += Params.COLUMN_SEPARATOR + df.format(Simulation.stopCriterion.stoppingValue());
         }
         if (Params.PRINT_FLOWS) {
             output += Params.COLUMN_SEPARATOR + getFlows();
         }
-
+        
         return output + "\n";
     }
-
+    
     private void printExperimentResultsOnFile(String directory, String fileName, String content) {
 
         //verifica e cria o diretório
@@ -383,7 +390,7 @@ public class Simulation {
         //initialize the writer
         if (fileWriter == null) {
             try {
-
+                
                 fileWriter = new FileWriter(file.getPath() + File.separator + fileName);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
@@ -391,16 +398,16 @@ public class Simulation {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         try {
             //print the outputs
             fileWriter.write(content);
         } catch (IOException ex) {
             Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         if (Params.CURRENT_EPISODE >= Params.MAX_EPISODES - 1) {
-
+            
             try {
                 fileWriter.flush();
                 fileWriter.close();
@@ -409,10 +416,10 @@ public class Simulation {
             }
         }
     }
-
+    
     private String getExperimentPath() {
         String path = Params.OUTPUT_DIRECTORY + File.separator + tap.getNetworkName();
-
+        
         for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
             if (p.getRight().equals("")) {
@@ -423,10 +430,10 @@ public class Simulation {
         }
         return path;
     }
-
+    
     private String getExperimentOutputHeader() {
         String output = "";
-
+        
         output += "#parameters";
         for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
@@ -443,24 +450,24 @@ public class Simulation {
             output += Params.COLUMN_SEPARATOR + "f1";
             output += Params.COLUMN_SEPARATOR + "f2";
         }
-
+        
         if (Params.PRINT_EFFORT) {
             output += Params.COLUMN_SEPARATOR + "effort";
         }
         if (Params.PRINT_DELTA) {
             output += Params.COLUMN_SEPARATOR + "delta";
         }
-
+        
         if (Params.PRINT_OD_PAIRS_AVG_COST) {
-
+            
             List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
             Collections.sort(keys);
-
+            
             for (String key : keys) {
                 output += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(key).getName();
             }
         }
-
+        
         if (Params.PRINT_FLOWS) {
             List<AbstractEdge> keys = new ArrayList<>(tap.getGraph().edgeSet());
             Collections.sort(keys);
@@ -470,18 +477,18 @@ public class Simulation {
         }
         return output;
     }
-
+    
     private String getExperimentFileName() {
         String name = tap.getClazz().getSimpleName().toLowerCase()
                 + "_" + tap.getNetworkName();
-
+        
         for (Object pair : tap.getDrivers().get(0).getParameters()) {
             Pair p = (Pair) pair;
             if (!p.getRight().equals("")) {
                 name += "_" + p.getLeft().toString().charAt(0) + p.getRight();
             }
         }
-
+        
         if (new File(getExperimentPath()).exists()) {
             name += "_" + (new File(getExperimentPath()).listFiles().length + 1);
         } else {
@@ -512,13 +519,13 @@ public class Simulation {
         }
         return cost / tap.getDrivers().size();
     }
-
+    
     public TAP getTap() {
         return tap;
     }
-
+    
     public AbstractStopCriterion getStopCriterion() {
         return stopCriterion;
     }
-
+    
 }

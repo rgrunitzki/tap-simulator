@@ -111,7 +111,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Relative delta value used as stopping criteria for low level MDPs.
      */
-    public static double DELTA_SECOND_LEVEL = 0.0001;
+    public static double DELTA_FIRST_LEVEL = 0.0001;
 
     /**
      * Flag used to identify the moment in which the current MDP must be
@@ -261,7 +261,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             if (FIRST_LEVEL) {
                 //stopping criterion has been reached?
                 if (Params.CURRENT_EPISODE == Params.MAX_EPISODES - 2
-                        || Simulation.stopCriterion.stop(DELTA_SECOND_LEVEL)) {
+                        || Simulation.stopCriterion.stop(DELTA_FIRST_LEVEL)) {
                     Simulation.stopCriterion.setConstraint(true);
                     CHANGE_MDP = true;
                 }
