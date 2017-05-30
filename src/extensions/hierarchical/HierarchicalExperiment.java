@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2017 Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package extensions.hierarchical;
 
 import driver.learning.exploration.EpsilonDecreasing;
@@ -26,15 +42,15 @@ public class HierarchicalExperiment {
         Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = false;
         Params.PRINT_ON_TERMINAL = true;//
-        Params.PRINT_AVERAGE_RESULTS = true;
+        Params.PRINT_AVERAGE_RESULTS = false;
         Params.PRINT_ON_FILE = false;
-        Params.RELATIVE_DELTA = 0.001;
-        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.0001;
-        Params.DELTA_INTERVAL = 5;
+        Params.RELATIVE_DELTA = 0.0001;
+        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.8;
+        Params.DELTA_INTERVAL = 3;
         Params.PRINT_DELTA = true;
         Params.MAX_EPISODES = 1000;
         Params.MAX_STEPS = 100;
-        EpsilonDecreasing.EPSILON_DECAY = 0.95f;
+        EpsilonDecreasing.EPSILON_DECAY = 0.99f;
         EpsilonDecreasing.EPSILON_INITIAL = 1f;
         Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
@@ -43,7 +59,8 @@ public class HierarchicalExperiment {
         Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
 //        Params.DEFAULT_TAP = ImplementedTAP.OW;
 //        Params.PROPORTION = 1;
-        int experimentType = 0;
+//        QLStatefullHierarchical.FIRST_LEVEL = false;
+        int experimentType = 1;
         switch (experimentType) {
             case 0:
                 QLStatefullHierarchical.ALPHA = 0.5f;
