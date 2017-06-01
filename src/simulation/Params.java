@@ -24,6 +24,7 @@ import extensions.c2i.QLStatefullC2I;
 import driver.learning.QLStateless;
 import driver.learning.reward.RewardFunction;
 import driver.learning.exploration.SoftMaxExploration;
+import experiments.DefaultExperiment;
 import extensions.c2i.EdgeC2I;
 import extensions.c2i.InformationType;
 import java.util.Random;
@@ -44,12 +45,11 @@ import scenario.TAP;
 public class Params {
 
     //Simulation
-    public static int MAX_EPISODES = 1000;//
+    public static int MAX_EPISODES = 1000;
     public static int MAX_STEPS = 100;
     public static int CURRENT_STEP = 0;
     public static int CURRENT_EPISODE = 1;
-    public static TAP USED_TAP = null;//
-    public static int REPETITIONS = 1;//
+    public static TAP USED_TAP = null;
     public static final long RAMDON_SEED = System.currentTimeMillis();
     public static Random RANDOM = new Random();
     /**
@@ -196,7 +196,7 @@ public class Params {
             }
 
             if (cmdLine.hasOption("runs")) {
-                REPETITIONS = Integer.parseInt(cmdLine.getParsedOptionValue("runs").toString());
+                DefaultExperiment.REPETITIONS = Integer.parseInt(cmdLine.getParsedOptionValue("runs").toString());
             }
 
             if (cmdLine.hasOption("ql.episodes")) {

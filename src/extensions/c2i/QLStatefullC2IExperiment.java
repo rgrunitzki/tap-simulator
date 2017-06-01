@@ -37,8 +37,8 @@ public class QLStatefullC2IExperiment {
 
     //QLStateless on Nguyen and Dupuis 1984
     public static void main(String[] args) {
-        
-        Params.COLUMN_SEPARATOR="\t";
+
+        Params.COLUMN_SEPARATOR = "\t";
 
         Params.PRINT_OD_PAIRS_AVG_COST = false;
         Params.PRINT_FLOWS = false;
@@ -49,7 +49,7 @@ public class QLStatefullC2IExperiment {
         Params.MAX_EPISODES = 1000;
         Params.MAX_STEPS = 100;
         EpsilonDecreasing.EPSILON_DECAY = 0.99f;
-        Params.REPETITIONS = 1;
+        DefaultExperiment.REPETITIONS = 1;
         Params.DEFAULT_TAP = ImplementedTAP.OW;
         Params.PROPORTION = 1;
 

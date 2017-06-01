@@ -132,7 +132,7 @@ public class QLStatefullC2I extends Driver<QLStatefullC2I, List<AbstractEdge>> {
         double random = Params.RANDOM.nextDouble();
         //current epsilon
         double decay = Math.pow(EpsilonDecreasing.EPSILON_DECAY, Params.CURRENT_EPISODE);
-         //        double epsilon = 0.5 - Params.CURRENT_EPISODE * 0.001;
+        //        double epsilon = 0.5 - Params.CURRENT_EPISODE * 0.001;
 
         //e-greedy policy
         //        if (random <= 0.2 * epsilon) {

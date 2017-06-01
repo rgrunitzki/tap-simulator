@@ -18,12 +18,11 @@ package scenario.network;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class BraessBazzanCostFunction extends AbstractCostFunction {
 
     //function BraessG (f) m*f+n 
-
     @Override
     public double evalCost(AbstractEdge edge) {
         return stringToDouble((String) edge.getParams().get("alpha")) * edge.getTotalFlow() + stringToDouble((String) edge.getParams().get("ffttime"));

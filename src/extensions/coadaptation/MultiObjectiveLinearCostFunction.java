@@ -21,7 +21,7 @@ import scenario.network.AbstractEdge;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class MultiObjectiveLinearCostFunction extends AbstractCostFunction {
 

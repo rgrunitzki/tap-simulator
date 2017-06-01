@@ -24,11 +24,14 @@ import simulation.Simulation;
 
 /**
  * Object used to represent an experiment structure. It enables to run
- * repetitions of the same simulation.
+ * repetitions of the same simulation and generate average values and standard
+ * deviation.
  *
  * @author Ricardo Grunitzki
  */
 public class DefaultExperiment {
+
+    public static int REPETITIONS = 1;
 
     private final int runs;
     private final Simulation simulation;
@@ -41,7 +44,7 @@ public class DefaultExperiment {
      * Creates a DefaultExperiment object.
      */
     public DefaultExperiment() {
-        this.runs = Params.REPETITIONS;
+        this.runs = REPETITIONS;
         Params.createTap();
         this.simulation = new Simulation(Params.USED_TAP);
     }

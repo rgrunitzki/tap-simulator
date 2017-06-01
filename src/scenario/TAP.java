@@ -96,6 +96,15 @@ public class TAP {
     }
 
     /**
+     * Returns an integer representing the demand size.
+     *
+     * @return demand size
+     */
+    public int demandSize() {
+        return drivers.size() * Params.PROPORTION;
+    }
+
+    /**
      * Returns the cost function of the TAP.
      *
      * @return cost function object

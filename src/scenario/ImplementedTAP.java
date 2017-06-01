@@ -66,7 +66,6 @@ public enum ImplementedTAP {
      * Scenario defined by Ana L.C. Bazzan.
      */
     TWO_NEIGHBORHOOD_MIRRORED("TWO_NEIGHBORHOOD_MIRRORED"),
-    
     /**
      * Scenario defined by Ana L.C. Bazzan.
      */

@@ -23,8 +23,8 @@ import scenario.network.AbstractEdge;
  *
  * @author Ricardo Grunitzki
  */
-public class EdgeMSA extends AbstractEdge{
-    
+public class EdgeMSA extends AbstractEdge {
+
     private double msaFlow;
 
     public EdgeMSA(AbstractCostFunction costFunction) {
@@ -36,7 +36,7 @@ public class EdgeMSA extends AbstractEdge{
     protected double getWeight() {
         return getCostFunction().evalDesirableCost(this, msaFlow); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public double getMsaFlow() {
         return msaFlow;
     }
@@ -44,6 +44,5 @@ public class EdgeMSA extends AbstractEdge{
     public synchronized void setMsaFlow(double msaFlow) {
         this.msaFlow = msaFlow;
     }
-    
-    
+
 }

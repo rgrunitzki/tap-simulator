@@ -53,34 +53,35 @@ public class StatelessRewardFunction extends AbstractRewardFunction<QLStateless>
     }
 
     @Override
-    public Double getDifferenceRewards(QLStateless driver
-    ) {
-        double soma_gz = 0;
-        double gz_zi = 0;
-        for (Object edge : driver.getRoute().getGraph().edgeSet()) {
-            AbstractEdge e = (AbstractEdge) edge;
+    public Double getDifferenceRewards(QLStateless driver) {
+        //global system's performance
+        double gz = 0;
+        //global system's performance of a theretical system without agent i
+        double gz_i = 0;
+        for (Object edg : driver.getRoute().getGraph().edgeSet()) {
+            AbstractEdge edge = (AbstractEdge) edg;
 
-            if (e.getTotalFlow() > 0) {
-                soma_gz -= e.getCost() * e.getTotalFlow();
+            if (edge.getTotalFlow() > 0) {
+                gz -= edge.getCost() * edge.getTotalFlow();
             } else {
-                soma_gz -= e.getCost();
+                gz -= edge.getCost();
             }
 
-            if (driver.getRoute().getEdgeList().contains(e)) {
-                if (e.getTotalFlow() > 0) {
-                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1 * Params.PROPORTION) * (e.getTotalFlow() - 1 * Params.PROPORTION);
+            if (driver.getRoute().getEdgeList().contains(edge)) {
+                if (edge.getTotalFlow() > 0) {
+                    gz_i -= edge.getCostFunction().evalDesirableCost(edge, edge.getTotalFlow() - 1) * (edge.getTotalFlow() - 1);
                 } else {
-                    gz_zi -= e.getCostFunction().evalDesirableCost(e, e.getTotalFlow() - 1 * Params.PROPORTION);
+                    gz_i -= edge.getCostFunction().evalDesirableCost(edge, edge.getTotalFlow() - 1);
                 }
             } else {
-                if (e.getTotalFlow() > 0) {
-                    gz_zi -= e.getCost() * e.getTotalFlow();
+                if (edge.getTotalFlow() > 0) {
+                    gz_i -= edge.getCost() * edge.getTotalFlow();
                 } else {
-                    gz_zi -= e.getCost();
+                    gz_i -= edge.getCost();
                 }
             }
 
         }
-        return (soma_gz - gz_zi) / Params.USED_TAP.getDrivers().size();
+        return (gz - gz_i) / Params.USED_TAP.demandSize();
     }
 }

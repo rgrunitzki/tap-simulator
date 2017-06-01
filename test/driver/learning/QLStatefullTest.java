@@ -18,7 +18,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class QLStatefullTest {
 

@@ -29,8 +29,8 @@ import scenario.network.AbstractEdge;
 import simulation.Params;
 
 /**
- * Implementation of the improved version of all-or-nothing algorithm. This method was
- * proposed by Ana L. C. Bazzan.
+ * Implementation of the improved version of all-or-nothing algorithm. This
+ * method was proposed by Ana L. C. Bazzan.
  *
  * @author Ricardo Grunitzki
  */

@@ -24,7 +24,7 @@ import org.jgrapht.Graph;
  *
  * @author Ricardo Grunitzki
  */
-public class MSADriver extends driver.Driver<MSADriver, List<EdgeMSA>>{
+public class MSADriver extends driver.Driver<MSADriver, List<EdgeMSA>> {
 
     public MSADriver(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
@@ -87,5 +87,5 @@ public class MSADriver extends driver.Driver<MSADriver, List<EdgeMSA>>{
         }
         return cost;
     }
-    
+
 }

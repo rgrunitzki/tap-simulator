@@ -55,7 +55,7 @@ public class HierarchicalExperiment {
         Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
-        Params.REPETITIONS = 1;
+        DefaultExperiment.REPETITIONS = 1;
         Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
 //        Params.DEFAULT_TAP = ImplementedTAP.OW;
 //        Params.PROPORTION = 1;

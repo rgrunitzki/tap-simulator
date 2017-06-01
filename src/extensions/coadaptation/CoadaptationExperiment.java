@@ -49,7 +49,7 @@ public class CoadaptationExperiment {
         Params.MAX_STEPS = 100;
         EpsilonDecreasing.EPSILON_DECAY = 0.99f;
         EpsilonDecreasing.EPSILON_INITIAL = 1f;
-        Params.REPETITIONS = 10;
+        DefaultExperiment.REPETITIONS = 10;
         Params.DEFAULT_TAP = ImplementedTAP.OW;
 //        Params.DEFAULT_EDGE = LearnerEdge.class;
         Params.PROPORTION = 1;

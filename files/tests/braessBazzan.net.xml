@@ -22,10 +22,13 @@
     <edge id="s2-m" from="s2" to="m" ffttime="0.0" alpha="0.0"/>
     <edge id="s2-p2" from="s2" to="p2" ffttime="0.0" alpha="0.0"/>
     <edge id="p1-q1" from="p1" to="q1" ffttime="20.0" alpha="0.0"/>
-    <edge id="m-n" from="m" to="n" ffttime="0.0" alpha="0.01"/>
+    <edge id="m-n" from="m" to="n" ffttime="0.0" alpha="0.1"/>
     <edge id="p2-q2" from="p2" to="q2" ffttime="10.0" alpha="0.0"/>
-    <edge id="q1-d1" from="q1" to="d1" ffttime="0.0" alpha="0.0"/>
+    <edge id="q1-d1" from="q1" to="d1" ffttime="5" alpha="0.0"/>
     <edge id="n-d1" from="n" to="d1" ffttime="0.0" alpha="0.0"/>
     <edge id="n-d2" from="n" to="d2" ffttime="0.0" alpha="0.0"/>
-    <edge id="q2-d2" from="q2" to="d2" ffttime="0.0" alpha="0.0"/>
+    <edge id="q2-d2" from="q2" to="d2" ffttime="5" alpha="0.0"/>
+    <!-- diagonal  links        -->
+    <edge id="q1-m" from="q1" to="m" ffttime="0.0" alpha="0.001"/>
+    <edge id="q2-m" from="q2" to="m" ffttime="0.0" alpha="0.001"/>
 </graph>

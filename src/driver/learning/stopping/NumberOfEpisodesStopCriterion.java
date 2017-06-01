@@ -21,7 +21,7 @@ import simulation.Params;
 /**
  * Ends the simulation process
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class NumberOfEpisodesStopCriterion extends AbstractStopCriterion {
 

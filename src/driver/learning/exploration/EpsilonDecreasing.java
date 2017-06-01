@@ -33,7 +33,7 @@ import simulation.Params;
  * @param <Value>
  */
 public class EpsilonDecreasing<State, Action, Value extends Comparable> extends ExplorationStrategy<State, Action, Value> {
-    
+
     /**
      * Decreasing factor of e-decreasing
      */

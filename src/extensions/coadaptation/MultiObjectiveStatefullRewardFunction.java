@@ -23,7 +23,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class MultiObjectiveStatefullRewardFunction extends AbstractRewardFunction<Driver> {
 
@@ -62,7 +62,7 @@ public class MultiObjectiveStatefullRewardFunction extends AbstractRewardFunctio
     @Override
     public Double getDifferenceRewards(Driver driver) {
         Double gz = driver.getCurrentEdge().getCost();
-        Double gz_zi = (double) driver.getCurrentEdge().getCostFunction().evalDesirableCost(driver.getCurrentEdge(), driver.getCurrentEdge().getTotalFlow() - 1 * Params.PROPORTION);
+        Double gz_zi = (double) driver.getCurrentEdge().getCostFunction().evalDesirableCost(driver.getCurrentEdge(), driver.getCurrentEdge().getTotalFlow() - 1);
         return -(gz - gz_zi);
     }
 }

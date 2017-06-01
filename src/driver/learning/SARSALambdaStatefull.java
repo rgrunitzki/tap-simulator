@@ -183,8 +183,8 @@ public class SARSALambdaStatefull extends Driver<SARSALambdaStatefull, List<Abst
             for (AbstractEdge a : this.mdp.getMdp().get(s).keySet()) {
                 //Q(s, a)←Q(s, a)+αδZ(s, a)
                 this.mdp.setValue(a,
-                        this.mdp.getValue(a) + 
-                                ALPHA * delta * this.mdp.getzTable().get(s).get(a));
+                        this.mdp.getValue(a)
+                        + ALPHA * delta * this.mdp.getzTable().get(s).get(a));
                 //Z(s, a)←γλZ(s, a)
                 this.mdp.getzTable().get(s).put(a,
                         GAMMA * LAMBDA * this.mdp.getzTable().get(s).get(a));

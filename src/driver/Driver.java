@@ -93,7 +93,6 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
      */
     protected double learningEffort;
 
-   
     /**
      * <p>
      * Creates a Driver object according to the descriptions of his OD-pair.
@@ -197,8 +196,8 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
     public double getLearningEffort() {
         return learningEffort;
     }
-    
-    public double getDeltaQ(){
+
+    public double getDeltaQ() {
         return 0;
     }
 

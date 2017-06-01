@@ -27,7 +27,7 @@ import scenario.network.AbstractCostFunction;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public abstract class AbstractLoader {
 
@@ -49,16 +49,16 @@ public abstract class AbstractLoader {
      * @param costFunction
      * @return
      */
-    protected abstract Pair<Graph, AbstractCostFunction> createSupply(File networkFile ,Class edgeClass, AbstractCostFunction costFunction);
+    protected abstract Pair<Graph, AbstractCostFunction> createSupply(File networkFile, Class edgeClass, AbstractCostFunction costFunction);
 
     /**
-     * 
+     *
      * @param demandFile
      * @param netFile
      * @param driverClass
      * @param edClass
      * @param costFunction
-     * @return 
+     * @return
      */
     public TAP createTAP(File demandFile, File netFile, Class driverClass, Class edClass, AbstractCostFunction costFunction) {
         //generate network

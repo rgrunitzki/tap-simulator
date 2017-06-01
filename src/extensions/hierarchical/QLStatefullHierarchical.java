@@ -451,7 +451,6 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /*
      * METHODS FOR HIERALQUICAL QL.
      */
-    
     /**
      * Computes the options of each low level MDP.
      *

@@ -29,7 +29,7 @@ import simulation.Params;
 
 /**
  *
- * @author rgrunitzki
+ * @author Ricardo Grunitzki <rgrunitzki@inf.ufrgs.br>
  */
 public class LearnerEdge extends AbstractEdge {
 
@@ -100,8 +100,9 @@ public class LearnerEdge extends AbstractEdge {
     }
 
     /**
-     * Returns the reward signal. 
-     * Reward is positive because the goal is maximize the flow.
+     * Returns the reward signal. Reward is positive because the goal is
+     * maximize the flow.
+     *
      * @return double value representing the reward.
      */
     private double getReward() {
