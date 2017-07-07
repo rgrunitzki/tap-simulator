@@ -19,6 +19,7 @@ package scenario.demand;
 import driver.Driver;
 import java.util.ArrayList;
 import java.util.List;
+import simulation.Params;
 
 /**
  * Represents an OD-pair of the TAP. The OD-pair is composed of a collection of
@@ -59,9 +60,9 @@ public class ODPair<DriverType> {
     public double getAverageCost() {
         Double soma = 0.0;
         for (Object driver : drivers) {
-            soma += ((Driver) driver).getTravelTime();
+            soma += ((Driver) driver).getTravelTime() * Params.PROPORTION;
         }
-        return soma / drivers.size();
+        return soma / (drivers.size() * Params.PROPORTION);
     }
 
     /**
@@ -88,7 +89,7 @@ public class ODPair<DriverType> {
      * @return number of drivers
      */
     public synchronized int demandSize() {
-        return drivers.size();
+        return drivers.size() * Params.PROPORTION;
     }
 
 }

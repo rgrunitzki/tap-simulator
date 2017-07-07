@@ -66,7 +66,7 @@ public class DefaultExperiment {
                 //get outputs
                 episodes.add(Params.CURRENT_EPISODE);
                 travelCost.add(simulation.averageTravelCost());
-                learningEffort.add(simulation.getLearningEffort());
+                learningEffort.add(simulation.averageLearningEffort());
                 stoppingValue.add(simulation.getStopCriterion().stoppingValue());
                 //print results
                 if (Params.PRINT_AVERAGE_RESULTS) {
@@ -106,12 +106,6 @@ public class DefaultExperiment {
                         + dsLearningEffort.getStandardDeviation() + Params.COLUMN_SEPARATOR
                         + dsStoppingValue.getStandardDeviation() + Params.COLUMN_SEPARATOR
                 );
-
-//                for (double d : travelCost) {
-//                    dsTravelCost.addValue(d);
-//                }
-//                System.out.println("mean: " + dsTravelCost.getMean() + Params.RAMDON_SEED + "\tstdev: " + dsTravelCost.getStandardDeviation());
-//                System.out.println("mean: " + dsTravelCost.getMean() + Params.RAMDON_SEED + "\tstdev: " + dsTravelCost.getStandardDeviation());
             }
         }
     }

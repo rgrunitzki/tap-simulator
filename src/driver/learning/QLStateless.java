@@ -42,7 +42,14 @@ public class QLStateless extends Driver<QLStateless, GraphPath> {
 
     public static Map<String, StatelessMDP> mdpPerOD = new ConcurrentHashMap<>();
     public static Map<String, KShortestPaths> ksps = new ConcurrentHashMap<>();
-    public static float ALPHA = 0.1f;
+    /**
+     * Learning rate parameter of Q-Learning. The default value is {@code 0.5}.
+     */
+    public static float ALPHA = 0.5f;
+    /**
+     * Number of available routes used in the MDP. The default value is
+     * {@code 4}.
+     */
     public static int K = 4;
 
     private int edgeIndex = 0;

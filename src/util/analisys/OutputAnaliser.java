@@ -44,7 +44,7 @@ public class OutputAnaliser {
         System.out.println("!-----------------------------------------------------!");
         System.out.println("!Generates the average files of repetead simulations  !");
         System.out.println("!-----------------------------------------------------!");
-        String experimentsDirectory = "/home/gauss/rgrunitzki/Dropbox/Profissional/UFRGS/Submissões/DEVELOPMENT/TRI15/SF Experiments/IQ-Learning";
+        String experimentsDirectory = "/home/gauss/rgrunitzki/Dropbox/Profissional/UFRGS/Submissões/DEVELOPMENT/AAAI17/results/nd";
         //Params.OUTPUTS_DIRECTORY + File.separator + "braess";
         type = AnalysisType.GENERATE_AVERAGES;
         Params.COLUMN_SEPARATOR = ";";
@@ -101,6 +101,9 @@ public class OutputAnaliser {
             BufferedReader reader = new BufferedReader(new FileReader(files[file]));
             int lineCounter = 0;
             while ((line = reader.readLine()) != null) {
+                //gambiarra momentanea
+//                String[] rows = line.trim().replaceAll(".", ",").split(Params.COLUMN_SEPARATOR);
+                //original
                 String[] rows = line.trim().split(Params.COLUMN_SEPARATOR);
                 if (!rows[0].contains(Params.COMMENT_CHARACTER)) {
                     if (summary.size() <= lineCounter) {

@@ -31,7 +31,7 @@ import simulation.Params;
  * <li> Reward Shaping.
  * </ul>
  *
- * The enum 'Reward Function' describes which must be used.
+ * The enum "Reward Function" describes which must be used.
  *
  * @author Ricardo Grunitzki
  * @param <DriverType> Class of the driver.
@@ -44,6 +44,10 @@ public abstract class AbstractRewardFunction<DriverType extends Driver> {
      */
     public static Map<String, Double> COMPUTED_REWARDS = new ConcurrentHashMap<>();
 
+    /**
+     * @TODO: THE EPISODIC STORAGE OF COMPUTED_REWARDS must be improved and
+     * generalized for all cases.
+     */
     /**
      * Gets the reward value for an specific driver.
      *

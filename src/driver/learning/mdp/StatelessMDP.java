@@ -49,8 +49,10 @@ public class StatelessMDP extends AbstractMDP<String, GraphPath, Double> {
 
     @Override
     public void reset() {
-        mdp.get(mdp.keySet().iterator().next()).entrySet().parallelStream().forEach((entrySet) -> {
-            entrySet.setValue(0.0);
-        });
+        if (!mdp.isEmpty()) {
+            mdp.get(mdp.keySet().iterator().next()).entrySet().parallelStream().forEach((entrySet) -> {
+                entrySet.setValue(0.0);
+            });
+        }
     }
 }

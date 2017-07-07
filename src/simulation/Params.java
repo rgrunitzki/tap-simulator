@@ -24,6 +24,7 @@ import extensions.c2i.QLStatefullC2I;
 import driver.learning.QLStateless;
 import driver.learning.reward.RewardFunction;
 import driver.learning.exploration.SoftMaxExploration;
+import driver.learning.reward.AbstractRewardFunction;
 import experiments.DefaultExperiment;
 import extensions.c2i.EdgeC2I;
 import extensions.c2i.InformationType;
@@ -39,47 +40,176 @@ import scenario.ImplementedTAP;
 import scenario.TAP;
 
 /**
+ * This class contains most of the parameters used to control a simulation.
+ *
+ * TODO: CURRENTLY IT IS NOT POSSIBLE TO RUN PARALLEL SIMULATIONS IN A SAME
+ * INSTANCE OF THE SIMULATOR BECAUSE IT SHARE'S LOTS OF COMMON STATIC VARIABLES,
+ * SUCH AS:
+ * <ul>
+ * <li>CURRENT_STEP</li>
+ * <li>CURRENT_EPISODE</li>
+ * <li>USED_TAP: THIS MUST BE REMOVED BECAUSE IT IS JUST USED BY REWARD SHAPING.</li>
+ * <li></li>
+ * <li></li>
+ * </ul>
  *
  * @author Ricardo Grunitzki
  */
 public class Params {
 
-    //Simulation
+    /**
+     * Maximum number of episodes for the simulation. Default value is 1000.
+     */
     public static int MAX_EPISODES = 1000;
+    /**
+     * Maximum number of time steps of the episode. Default value is 100.
+     */
     public static int MAX_STEPS = 100;
+    /**
+     * Current step indicator.
+     */
     public static int CURRENT_STEP = 0;
-    public static int CURRENT_EPISODE = 1;
+    /**
+     * Current episode indicator. TODO: DEFAULT VALUE MUST BE ZERO???
+     */
+    public static int CURRENT_EPISODE = 0;
+    /**
+     * The traffic Assignment Problem object used in the simulation. The default
+     * value is defined according to parameter {@code Params.DEFAULT_TAP}.
+     */
     public static TAP USED_TAP = null;
+    /**
+     * Random seed of the experiment. Default value is the current system time
+     * in milliseconds.
+     */
     public static final long RAMDON_SEED = System.currentTimeMillis();
+    /**
+     * Object used to generate random variables.
+     */
     public static Random RANDOM = new Random();
     /**
-     * Proportion of learning agents per trip. For instance: - value = 1 means
-     * that it will be one learning agent per unit of trip; - value = 100 means
-     * that it will be one learning agent for each 100 trips; All trips will use
-     * the route the agent is learning.
+     * Proportion of learning agents per trip. For instance:
+     * <ul>
+     * <li> value = 1 means that it will be one learning agent per unit of
+     * trip;</li>
+     * <li>value = 100 means that it will be one learning agent for each 100
+     * trips;</li>
+     * </ul>
+     * All trips will use the route the agent is learning.
+     * <p>
+     * Default value is {@code 1.0}.</p>
      */
     public static int PROPORTION = 1;
+    /**
+     * Default TAP used in the initialization of {@code Used_TAP} object.
+     */
     public static ImplementedTAP DEFAULT_TAP = ImplementedTAP.OW;
+    /**
+     * The class of the edges that will be generated.
+     */
     public static Class DEFAULT_EDGE = StandardEdge.class;
     //Learning Parameters
+    /**
+     * Default reward function type. Available values are:
+     * <ul>
+     * <li>{@link RewardFunction}.STANDARD_REWARD: Uses local reward function to
+     * reward each agent.</li>
+     * <li>{@link RewardFunction}.REWARD_SHAPING: Uses reward shaping
+     * strategy</li>
+     * <li>{@link RewardFunction}.DIFFERENCE_REWARDS: Uses Difference Rewards
+     * strategy to stimulate cooperation among agents.</li>
+     * </ul>
+     * <p>
+     * Note that for the correct working of the reward strategy, it must be
+     * properly implemented in the {@link AbstractRewardFunction} being used.
+     * </p>
+     */
     public static RewardFunction REWARD_FUNCTION = RewardFunction.STANDARD_REWARD;
+    /**
+     * Default exploration policy.
+     */
     public static Class EXPLORATION_POLICY = EpsilonDecreasing.class;
+    /**
+     * Default learning algorithm.
+     */
     public static Class DEFAULT_ALGORITHM = QLStatefull.class;
+    /**
+     * Relative delta used in dynamic stopping criteria. The default value is
+     * {@code 0.01}.
+     */
     public static double RELATIVE_DELTA = 0.01;
+    /**
+     * Default window of values used by dynamic stopping criteria. The default
+     * value is {@code 3}.
+     */
     public static int DELTA_INTERVAL = 3;
-    public static boolean PRINT_DELTA = false;
+    /**
+     * Flag indicating if the relative deltas must be printed in the outputs.
+     * The default value is {@code false}.
+     */
+    public static boolean PRINT_RELATIVE_DELTA = false;
+    /**
+     * Flag indicating if the learning effort must be printed in the outputs. *
+     * The default value is {@code true}.
+     */
     public static boolean PRINT_EFFORT = true;
+    /**
+     * Stopping criteria used in the simulation. The default value is a
+     * {@link NumberOfEpisodesStopCriterion} object.
+     */
     public static AbstractStopCriterion DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
     //Outputs Parameters
-    public static boolean PRINT_AVERAGE_RESULTS = false; //not been used (problems here)
+    /**
+     * Flag indicating if the average results, in the case of using a
+     * {@link DefaultExperiment} object to organize to handle multiple
+     * simulations, must be printed in the outputs. The default value is
+     * {@code false}.
+     */
+    public static boolean PRINT_AVERAGE_RESULTS = false; //TODO: not been used (problems here)
+    /**
+     * Flag indicating if the average travel times of the
+     * Origin-Destination-pars must be printed in the outputs. The default value
+     * is {@code false}.
+     */
     public static boolean PRINT_OD_PAIRS_AVG_COST = false;
+    /**
+     * Flag indicating if the flows of the links must be printed in the outputs.
+     * The default value is {@code false}.
+     */
     public static boolean PRINT_FLOWS = false;
+    /**
+     * Flag indicating if the outputs must be printed in a file. The default
+     * value is {@code false}.
+     */
     public static boolean PRINT_ON_FILE = false;
+    /**
+     * Flag indicating if the outputs must be printed in the terminal. The
+     * default value is {@code true}.
+     */
     public static boolean PRINT_ON_TERMINAL = true;
+    /**
+     * Directory in which the outputs must be printed. The default value is
+     * {@code "results/"}.
+     */
     public static String OUTPUT_DIRECTORY = "results";
+    /**
+     * The column separator character used in the outputs. The default value is
+     * {@code " "} (blank space).
+     */
     public static String COLUMN_SEPARATOR = " ";
+    /**
+     * The comment character indicator used in the outputs. Columns started with
+     * this character are ignored in the processing routines. The default value
+     * is {@code "#"}.
+     */
     public static String COMMENT_CHARACTER = "#";
 
+    /**
+     * This class parses the parameters informed in {@code args} variable.
+     *
+     * @param args
+     * @throws ParseException
+     */
     public static void parseParams(String[] args) throws ParseException {
 
         if (args.length == 0) {
@@ -111,7 +241,7 @@ public class Params {
 //        options.addOption("c2irate", "qlc2i.communication-rate", true, "Probability to get information from infrastructure in QLC2Infrastructure.");
         options.addOption("k", "ql.k", true, "Number of routes used in QLStateless");
         options.addOption("gamma", "ql.gamma", true, "Gamma parameter of QLStatefull");
-
+        //TODO: SOME PARAMTERS ARE NO INCLUDED HERE.
         CommandLineParser parser = new DefaultParser();
         CommandLine cmdLine = parser.parse(options, args);
 
@@ -249,6 +379,10 @@ public class Params {
 
     }
 
+    /**
+     * Creates a TAP according the {@code DEFAULT_TAP} object. The object
+     * {@code USED_TAP} is also update with the new tap.
+     */
     public static void createTap() {
 
         switch (DEFAULT_TAP) {

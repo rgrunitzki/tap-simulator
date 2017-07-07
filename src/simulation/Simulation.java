@@ -28,7 +28,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -63,11 +62,11 @@ public class Simulation {
     /**
      * Factory class to create ExecuterServices instances
      */
-    private final ExecutorService eservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService eService;
     /**
      * Task executor
      */
-    private final CompletionService<Object> cservice = new ExecutorCompletionService<>(eservice);
+    private CompletionService<Object> cService;
 
     private String fileNameToPrint = "";
 
@@ -76,7 +75,7 @@ public class Simulation {
     /**
      * Stopping criteria for the Reinforcement Learning algorithm.
      */
-    public static final AbstractStopCriterion stopCriterion = Params.DEFAULT_STOP_CRITERION;
+    public static AbstractStopCriterion STOP_CRITERION = Params.DEFAULT_STOP_CRITERION;
 
     /**
      * Creates and simulation object according to the TAP specifications.
@@ -84,16 +83,23 @@ public class Simulation {
      * @param tap traffic assignment problem
      */
     public Simulation(TAP tap) {
+        //initialize the executorService
+        eService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        //initialize the completitionService
+        cService = new ExecutorCompletionService<>(eService);
+        //sets the default format for the outputs
         df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-        Simulation.stopCriterion.setSimulation(this);
+        //sets the stop criterion
+        Simulation.STOP_CRITERION.setSimulation(this);
+        //sets the current tap
         this.tap = tap;
     }
 
     /**
      * Executes the traffic simulation.
      */
-    public void execute() {
-
+    public void execute() 
+{
         //process drivers before simulation starting
         tap.getDrivers().parallelStream().forEach((driver) -> {
             try {
@@ -116,7 +122,7 @@ public class Simulation {
 
         Params.CURRENT_EPISODE = 0;
 
-        while (!stopCriterion.stop()) {
+        while (!STOP_CRITERION.stop()) {
 
             //episode's looping
             //for (Params.CURRENT_EPISODE = 0; Params.CURRENT_EPISODE < Params.MAX_EPISODES; Params.CURRENT_EPISODE++) {
@@ -215,27 +221,31 @@ public class Simulation {
     }
 
     private boolean runStep() {
+        //flag indicating if all drivers reached their destination
         boolean finished = true;
+        //list of drivers that must be processed 
         List<Driver> driversToProcess = new LinkedList<>();
-
+        //certifies that only drivers that doesn't arrived to its destination node will be processed.
         for (Driver d : this.tap.getDrivers()) {
             if (!d.hasArrived()) {
                 finished = false;
                 driversToProcess.add(d);
             }
         }
+        //stops here case all driver reached its own destination node
         if (finished) {
             return true;
         }
 
-        //before step processing
+        //driver's before step processing
         driversToProcess.parallelStream().forEach((driver) -> {
-            this.cservice.submit(driver);
+            this.cService.submit(driver);
         });
 
+        //
         driversToProcess.stream().forEach((driver) -> {
             try {
-                boolean result = this.cservice.take().isDone();
+                boolean result = this.cService.take().isDone();
                 if (!result) {
                     System.err.println("step A error");
                 }
@@ -244,7 +254,7 @@ public class Simulation {
             }
         });
 
-        //intermediate computation
+        //edge's intermediate processing
         this.tap.getGraph().edgeSet().parallelStream().forEach((edge) -> {
             edge.clearCurrentFlow();
         });
@@ -256,13 +266,13 @@ public class Simulation {
             driver.getCurrentEdge().proccess(driver);
         });
 
-        //before step processing
+        //driver's after step processing
         driversToProcess.parallelStream().forEach((driver) -> {
-            this.cservice.submit(driver);
+            this.cService.submit(driver);
         });
         driversToProcess.parallelStream().forEach((driver) -> {
             try {
-                boolean result = this.cservice.take().isDone();
+                boolean result = this.cService.take().isDone();
                 if (!result) {
                     System.err.println("step_b error");
                 }
@@ -281,9 +291,13 @@ public class Simulation {
     public double averageTravelCost() {
         double avgcost = 0;
         for (AbstractEdge e : tap.getGraph().edgeSet()) {
-            avgcost += e.getTotalFlow() * e.getCost();
+//            if (e.getTotalFlow() > 0) {
+            avgcost += (e.getTotalFlow() * e.getCost());
+//            } else {
+//                avgcost += e.getCost();
+//            }
         }
-        return (avgcost / (tap.demandSize()));
+        return avgcost / tap.demandSize();
     }
 
     /**
@@ -291,11 +305,12 @@ public class Simulation {
      *
      * @return average learning effort of all drivers
      */
-    public double getLearningEffort() {
+    public double averageLearningEffort() {
         double learningEffort = 0;
         for (Driver d : tap.getDrivers()) {
             learningEffort += d.getLearningEffort();
         }
+        //*it MUST NOT be multiplied by {@code Params.PROPORTION}
         return learningEffort / tap.getDrivers().size();
     }
 
@@ -331,20 +346,19 @@ public class Simulation {
      * Finishes the executor service.
      */
     public void end() {
-        eservice.shutdown();
+        eService.shutdown();
+        eService = null;
+        cService = null;
     }
 
-    private String getAverageTravelCosts() {
-        String out = df.format(averageTravelCost()); //Average Cost
+    private String getAverageTravelCostsPerODPair() {
+        String out = "";
 
-        if (Params.PRINT_OD_PAIRS_AVG_COST) {
+        List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
+        Collections.sort(keys);
 
-            List<String> keys = new ArrayList<>(tap.getOdpairs().keySet());
-            Collections.sort(keys);
-
-            for (String key : keys) {
-                out += Params.COLUMN_SEPARATOR + tap.getOdpairs().get(key).getAverageCost();
-            }
+        for (String key : keys) {
+            out += Params.COLUMN_SEPARATOR + df.format(tap.getOdpairs().get(key).getAverageCost());
         }
         return out;
     }
@@ -377,16 +391,21 @@ public class Simulation {
         //episode
         output += Params.CURRENT_EPISODE;
         //overal travel time
-        output += Params.COLUMN_SEPARATOR + getAverageTravelCosts();
+        output += Params.COLUMN_SEPARATOR + df.format(averageTravelCost());
         if (Params.DEFAULT_EDGE == LearnerEdge.class) {
             output += Params.COLUMN_SEPARATOR + this.getOnlyTravelCost();
             output += Params.COLUMN_SEPARATOR + this.getOnlyMonetaryCost();
         }
+        //learning effort
         if (Params.PRINT_EFFORT) {
-            output += Params.COLUMN_SEPARATOR + df.format(getLearningEffort());
+            output += Params.COLUMN_SEPARATOR + df.format(averageLearningEffort());
         }
-        if (Params.PRINT_DELTA) {
-            output += Params.COLUMN_SEPARATOR + df.format(Simulation.stopCriterion.stoppingValue());
+        //relative delta
+        if (Params.PRINT_RELATIVE_DELTA) {
+            output += Params.COLUMN_SEPARATOR + df.format(Simulation.STOP_CRITERION.stoppingValue());
+        }
+        if (Params.PRINT_OD_PAIRS_AVG_COST) {
+            output += getAverageTravelCostsPerODPair();
         }
         if (Params.PRINT_FLOWS) {
             output += Params.COLUMN_SEPARATOR + getFlows();
@@ -459,7 +478,7 @@ public class Simulation {
         //episode label
         output += "\n" + Params.COMMENT_CHARACTER + "episode";
         //overal travel time label
-        output += Params.COLUMN_SEPARATOR + "overal-tt";
+        output += Params.COLUMN_SEPARATOR + "avg-travel-time";
 
         //@TODO: this is temporary
         if (Params.DEFAULT_EDGE == LearnerEdge.class) {
@@ -468,9 +487,9 @@ public class Simulation {
         }
 
         if (Params.PRINT_EFFORT) {
-            output += Params.COLUMN_SEPARATOR + "effort";
+            output += Params.COLUMN_SEPARATOR + "learning-effort";
         }
-        if (Params.PRINT_DELTA) {
+        if (Params.PRINT_RELATIVE_DELTA) {
             output += Params.COLUMN_SEPARATOR + "stopping-value";
         }
 
@@ -522,7 +541,7 @@ public class Simulation {
             MultiObjectiveLinearCostFunction cf = (MultiObjectiveLinearCostFunction) ((LearnerEdge) edge).getCostFunction();
             cost += cf.getTravelCost(edge, le.getTotalFlow()) * le.getTotalFlow();
         }
-        return cost / tap.getDrivers().size();
+        return cost / tap.demandSize();
     }
 
     //@TODO: devo excluir no futuro
@@ -533,7 +552,7 @@ public class Simulation {
             MultiObjectiveLinearCostFunction cf = (MultiObjectiveLinearCostFunction) ((LearnerEdge) edge).getCostFunction();
             cost += cf.getMonetaryCost(edge, le.getTotalFlow()) * le.getTotalFlow();
         }
-        return cost / tap.getDrivers().size();
+        return cost / tap.demandSize();
     }
 
     public TAP getTap() {
@@ -541,7 +560,7 @@ public class Simulation {
     }
 
     public AbstractStopCriterion getStopCriterion() {
-        return stopCriterion;
+        return STOP_CRITERION;
     }
 
 }

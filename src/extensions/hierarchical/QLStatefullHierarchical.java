@@ -70,12 +70,13 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     private HierarchicalMDP mdp = new HierarchicalMDP();
 
     /**
-     * Learning rate parameter of Q-Learning.
+     * Learning rate parameter of Q-Learning. The default value is {@code 0.5}.
      */
-    public static double ALPHA = 0.9;
+    public static double ALPHA = 0.5;
 
     /**
-     * Discount factor parameter of Q-Learning.
+     * Discount factor parameter of Q-Learning. The default value is
+     * {@code 0.99}.
      */
     public static double GAMMA = 0.99;
     /**
@@ -144,10 +145,10 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Creates an QLStatefull driver according to its specifications.
      *
-     * @param id Driver identifier
-     * @param origin Origin node
+     * @param id          Driver identifier
+     * @param origin      Origin node
      * @param destination Destination node
-     * @param graph Road network
+     * @param graph       Road network
      */
     public QLStatefullHierarchical(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
@@ -249,7 +250,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
                 //creates a High level MDP
                 createHighLevelMDP();
             }
-
+            //PROBLEM FIXING COMMENT
             //sets the fixed origin defined on OD-Matrix
             this.currentVertex = this.absoluteOrigin;
             //sets the fixed destination defined on OD-Matrix
@@ -257,6 +258,9 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             this.currentEdge = null;
             this.travelTime = 0;
             this.route = new LinkedList<>();
+            if (id == 7) {
+                System.err.println("id: 4; current_vertex:" + this.currentVertex + "; current destination: " + this.destination);
+            }
         }
 
     }
@@ -272,15 +276,15 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             if (FIRST_LEVEL) {
                 //stopping criterion has been reached?
                 if (Params.CURRENT_EPISODE == Params.MAX_EPISODES - 2
-                        || Simulation.stopCriterion.stop(DELTA_FIRST_LEVEL)) {
-                    Simulation.stopCriterion.setConstraint(true);
+                        || Simulation.STOP_CRITERION.stop(DELTA_FIRST_LEVEL)) {
+                    Simulation.STOP_CRITERION.setConstraint(true);
                     CHANGE_MDP = true;
                 }
             } else {
                 //Learning on second level
                 //removes the constraint in order to enable the 
-                if (Simulation.stopCriterion.isConstraint()) {
-                    Simulation.stopCriterion.setConstraint(false);
+                if (Simulation.STOP_CRITERION.isConstraint()) {
+                    Simulation.STOP_CRITERION.setConstraint(false);
                 }
             }
 
@@ -303,12 +307,12 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
                 if (NEIGHBORHOODS_QUEUE.size() > 0) {
                     FIRST_LEVEL = true;
                     setNeighborhood(pullFromNeighborhoodsQueue());
-                    Simulation.stopCriterion.reset();
-                    Simulation.stopCriterion.setConstraint(true);
+                    Simulation.STOP_CRITERION.reset();
+                    Simulation.STOP_CRITERION.setConstraint(true);
                 } else {
                     FIRST_LEVEL = false;
                     setNeighborhood("Z");
-                    Simulation.stopCriterion.reset();
+                    Simulation.STOP_CRITERION.reset();
                 }
                 //CURRENT_NEIGHBORHOOD = NEIGHBORHOODS_QUEUE.poll();
                 if (Params.PRINT_ON_TERMINAL) {

@@ -56,18 +56,19 @@ public class XMLLoader {
     /**
      * Collection of OD-pairs of the problem.
      */
-    public static Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
+    public Map<String, ODPair> odpairs = new ConcurrentHashMap<>();
 
     /**
      * Creates the Graph object that represents the road network of the TAP.
      *
-     * @param netFile .net.xml file with the definitions of the road network
-     * @param edgeClass the type of the edge.
+     * @param netFile      .net.xml file with the definitions of the road
+     *                     network
+     * @param edgeClass    the type of the edge.
      * @param costFunction the cost function of the edge.
      * @return Graph object
      * @throws NoSuchMethodException
      */
-    public static Graph loadNetwork(File netFile, Class edgeClass, AbstractCostFunction costFunction) throws NoSuchMethodException {
+    public Graph loadNetwork(File netFile, Class edgeClass, AbstractCostFunction costFunction) throws NoSuchMethodException {
 
         Graph<String, AbstractEdge> graph = new DefaultDirectedWeightedGraph<>(Params.DEFAULT_EDGE);
 
@@ -131,9 +132,9 @@ public class XMLLoader {
      * Creates the demand of the TAP.
      *
      * @param <DriverType> The type of the drivers
-     * @param graph Network graph
-     * @param demandFile File containing the demand definitions
-     * @param driverClass The class of the drivers.
+     * @param graph        Network graph
+     * @param demandFile   File containing the demand definitions
+     * @param driverClass  The class of the drivers.
      * @return
      * @throws NoSuchMethodException
      * @throws InstantiationException
@@ -141,7 +142,7 @@ public class XMLLoader {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public static <DriverType> List<DriverType> processODMatrix(Graph graph, File demandFile, Class driverClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public <DriverType> List<DriverType> processODMatrix(Graph graph, File demandFile, Class driverClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         List<DriverType> drivers = new ArrayList<>();
         try {
 

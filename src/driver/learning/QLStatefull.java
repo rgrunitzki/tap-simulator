@@ -44,24 +44,28 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     private StatefullMDP mdp = new StatefullMDP();
 
     /**
-     * Learning rate parameter of Q-Learning.
+     * Learning rate parameter of Q-Learning. The default value is {@code 0.5}.
      */
     public static double ALPHA = 0.5;
 
     /**
-     * Discount factor parameter of Q-Learning.
+     * Discount factor parameter of Q-Learning. The default value is
+     * {@code 0.99}.
      */
     public static double GAMMA = 0.99;
 
-    private final AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
+    /**
+     * Reward function
+     */
+    private AbstractRewardFunction rewardFunction = new StatefullRewardFunction(graph);
 
     /**
      * Creates an QLStatefull driver according to its specifications.
      *
-     * @param id Driver identifier
-     * @param origin Origin node
+     * @param id          Driver identifier
+     * @param origin      Origin node
      * @param destination Destination node
-     * @param graph Road network
+     * @param graph       Road network
      */
     public QLStatefull(int id, String origin, String destination, Graph graph) {
         super(id, origin, destination, graph);
@@ -71,6 +75,7 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     public void beforeSimulation() {
 
         if (StatefullMDP.staticMdp == null) {
+            @SuppressWarnings("unchecked")
             Set<String> vertices = graph.vertexSet();
 
             Map states = new ConcurrentHashMap<>();
@@ -120,7 +125,6 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
 
     @Override
     public void beforeStep() {
-
         currentEdge = mdp.getAction(mdp.getMdp().get(currentVertex));
         this.route.add(currentEdge);
         this.currentVertex = currentEdge.getTargetVertex();
@@ -189,6 +193,14 @@ public class QLStatefull extends Driver<QLStatefull, List<AbstractEdge>> {
     @Override
     public double getDeltaQ() {
         return this.mdp.getDeltaQ();
+    }
+
+    public AbstractRewardFunction getRewardFunction() {
+        return rewardFunction;
+    }
+
+    public void setRewardFunction(AbstractRewardFunction rewardFunction) {
+        this.rewardFunction = rewardFunction;
     }
 
 }

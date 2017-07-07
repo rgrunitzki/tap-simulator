@@ -123,11 +123,12 @@ public class DynamicList {
      * Computes the relative delta value.
      *
      * @param currentTravelTime current travel time of the simulation
-     * @param deltaValue current delta value
+     * @param deltaValue        current delta value
      * @return a positive relative delta value
      */
     public Double relativeValue(Double currentTravelTime, Double deltaValue) {
         return (deltaValue) / currentTravelTime;
+//        return deltaValue;
     }
 
     /**

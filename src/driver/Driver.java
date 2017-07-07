@@ -37,7 +37,7 @@ import scenario.network.AbstractEdge;
  *
  * @author Ricardo Grunitzki
  * @param <DriverClass> The type of the driver
- * @param <Route> The type of the route
+ * @param <Route>       The type of the route
  */
 @SuppressWarnings("rawtypes")
 public abstract class Driver<DriverClass extends Driver, Route> implements Callable<Driver> {
@@ -55,7 +55,7 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
     /**
      * The origin of the Driver
      */
-    protected final String origin;
+    protected String origin;
 
     /**
      * The destination of the driver
@@ -98,10 +98,10 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
      * Creates a Driver object according to the descriptions of his OD-pair.
      * </p>
      *
-     * @param id the identifier
-     * @param origin the origin node
+     * @param id          the identifier
+     * @param origin      the origin node
      * @param destination the destination node
-     * @param graph the graph representing the road network
+     * @param graph       the graph representing the road network
      */
     public Driver(int id, String origin, String destination, Graph graph) {
         this.id = id;
@@ -251,6 +251,15 @@ public abstract class Driver<DriverClass extends Driver, Route> implements Calla
      */
     public String getDestination() {
         return destination;
+    }
+
+    /**
+     * Returns the origin node of the driver
+     *
+     * @return Destination node
+     */
+    public String getOrigin() {
+        return origin;
     }
 
     /**

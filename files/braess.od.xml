@@ -4,6 +4,6 @@
     accessed in: 25/04/2016
 -->
 <od-matrix>
-    <!--<od origin="O" destination="D" trips="4000" />-->
-    <od origin="O" destination="D" trips="150" />
+    <od origin="O" destination="D" trips="4000" />
+    <!--<od origin="O" destination="D" trips="150" />-->
 </od-matrix>

@@ -37,54 +37,53 @@ public class HierarchicalExperiment {
 
     public static void main(String[] args) {
 
+        /*
+        * Know bugs for the current version:
+        1) Sometimes options are created with loops, causing error.
+        2) Sometimes the flow of one OD par stucks in states B7 and B8 (looping)
+         */
+ /*printing parameters*/
         Params.COLUMN_SEPARATOR = "\t";
-
-        Params.PRINT_OD_PAIRS_AVG_COST = false;
-        Params.PRINT_FLOWS = false;
+        Params.PRINT_OD_PAIRS_AVG_COST = true;
+        Params.PRINT_FLOWS = true;
         Params.PRINT_ON_TERMINAL = true;//
         Params.PRINT_AVERAGE_RESULTS = false;
         Params.PRINT_ON_FILE = false;
-        Params.RELATIVE_DELTA = 0.0001;
-        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.8;
-        Params.DELTA_INTERVAL = 3;
-        Params.PRINT_DELTA = true;
+        Params.PRINT_RELATIVE_DELTA = true;
+        /*stopping criterion parameters*/
+        Params.RELATIVE_DELTA = 0.2;
+        Params.DELTA_INTERVAL = 10;
         Params.MAX_EPISODES = 1000;
-        Params.MAX_STEPS = 100;
-        EpsilonDecreasing.EPSILON_DECAY = 0.99f;
-        EpsilonDecreasing.EPSILON_INITIAL = 1f;
-        Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
-//        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
+        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.5;
+//        Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
+        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
+        /*Learning parameters*/
+        Params.MAX_STEPS = 100;
+        EpsilonDecreasing.EPSILON_DECAY = 0.91f;
+        EpsilonDecreasing.EPSILON_INITIAL = 1f;
         DefaultExperiment.REPETITIONS = 1;
+        Params.PROPORTION = 1;
         Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
-//        Params.DEFAULT_TAP = ImplementedTAP.OW;
-//        Params.PROPORTION = 1;
-//        QLStatefullHierarchical.FIRST_LEVEL = false;
+
+        /*Experimentation settings*/
         int experimentType = 1;
         switch (experimentType) {
             case 0:
-                QLStatefullHierarchical.ALPHA = 0.5f;
-                QLStatefullHierarchical.GAMMA = 0.99f;
+                QLStatefullHierarchical.ALPHA = 0.1;
                 Params.DEFAULT_ALGORITHM = QLStatefullHierarchical.class;
                 break;
             case 1:
-                //"QLStatefull"
-//                Params.MAX_EPISODES = 150;
-                QLStatefull.ALPHA = 0.5f;
-                QLStatefull.GAMMA = 0.99f;
                 Params.DEFAULT_ALGORITHM = QLStatefull.class;
-
                 break;
             case 2:
-                //"QLStateless"
-                QLStateless.K = 3;
+                QLStateless.K = 4;
                 Params.REWARD_FUNCTION = RewardFunction.DIFFERENCE_REWARDS;
-                QLStateless.ALPHA = 0.9f;
                 Params.DEFAULT_ALGORITHM = QLStateless.class;
-
                 break;
             default:
-
+                System.err.println("Experiment type not recognized");
+                System.exit(0);
         }
 
         Params.createTap();

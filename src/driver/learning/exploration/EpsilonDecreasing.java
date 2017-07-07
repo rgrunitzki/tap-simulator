@@ -35,11 +35,11 @@ import simulation.Params;
 public class EpsilonDecreasing<State, Action, Value extends Comparable> extends ExplorationStrategy<State, Action, Value> {
 
     /**
-     * Decreasing factor of e-decreasing
+     * Decreasing factor of e-decreasing. Default value is {@code 0.99}.s
      */
     public static float EPSILON_DECAY = 0.99F; //
     /**
-     * Initial exploration of e-decreasing policy
+     * Initial exploration of e-decreasing policy. Default value is {@code 1.0}.
      */
     public static float EPSILON_INITIAL = 1.0F;
 

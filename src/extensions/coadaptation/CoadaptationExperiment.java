@@ -44,7 +44,7 @@ public class CoadaptationExperiment {
         Params.PRINT_AVERAGE_RESULTS = true;
         Params.PRINT_ON_FILE = false;
         Params.RELATIVE_DELTA = -0.01;
-        Params.PRINT_DELTA = false;
+        Params.PRINT_RELATIVE_DELTA = false;
         Params.MAX_EPISODES = 1000;
         Params.MAX_STEPS = 100;
         EpsilonDecreasing.EPSILON_DECAY = 0.99f;

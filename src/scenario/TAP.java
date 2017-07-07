@@ -63,25 +63,26 @@ public class TAP {
      * </ul>
      * </p>
      *
-     * @param demand {@link File} object with the demand.od.xml file
-     * @param network {@link File} object with the network.net.xml file
+     * @param demand       {@link File} object with the demand.od.xml file
+     * @param network      {@link File} object with the network.net.xml file
      * @param costFunction {@link CostFunction} with the cost function of the
-     * problem
-     * @param clazz Type of the drivers.
+     *                     problem
+     * @param clazz        Type of the drivers.
      */
     public TAP(File demand, File network, AbstractCostFunction costFunction, Class clazz) {
         this.demandFile = demand;
         this.networkFile = network;
         this.costFunction = costFunction;
+        XMLLoader loader = new XMLLoader();
         try {
-            this.graph = XMLLoader.loadNetwork(networkFile, Params.DEFAULT_EDGE, costFunction);
+            this.graph = loader.loadNetwork(networkFile, Params.DEFAULT_EDGE, costFunction);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.driverClass = clazz;
         try {
-            this.drivers = XMLLoader.processODMatrix(graph, demandFile, clazz);
-            this.odPairs = XMLLoader.odpairs;
+            this.drivers = loader.processODMatrix(graph, demandFile, clazz);
+            this.odPairs = loader.odpairs;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(TAP.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -42,7 +42,7 @@ public class MethodOfSuccessiveAveragesAssignment {
         Params.DEFAULT_EDGE = EdgeMSA.class;
 
         //define a traffic assignment problem
-        TAP tap = TAP.BRAESS_BAZZAN(TADriver.class);//Braess paradox
+        TAP tap = TAP.ND(TADriver.class);//Braess paradox
 
         //other examples of TAP
         //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
