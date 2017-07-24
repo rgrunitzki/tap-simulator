@@ -42,95 +42,95 @@ neighborhood to another neighborhood.
     <node id="B8" neighborhood="B"/>
     <node id="B9" neighborhood="B"/>
     
-    <edge id="A1A2" from="A1" to="A2" fftime="2" alpha="1.0"/>
-    <edge id="A1A4" from="A1" to="A4" fftime="50" alpha="1.0"/>
-    <edge id="A1A5" from="A1" to="A5" fftime="50" alpha="1.0"/>
+    <edge id="A1A2" from="A1" to="A2" alpha="2" fftime="0.0"/>
+    <edge id="A1A4" from="A1" to="A4" alpha="10" fftime="0.0"/>
+    <edge id="A1A5" from="A1" to="A5" alpha="10" fftime="0.0"/>
     
-    <edge id="A2A1" from="A2" to="A1" fftime="2" alpha="1.0"/>
-    <edge id="A2A3" from="A2" to="A3" fftime="50" alpha="1.0"/>
-    <edge id="A2A5" from="A2" to="A5" fftime="2" alpha="1.0"/>
-    <edge id="A2A6" from="A2" to="A6" fftime="50" alpha="1.0"/>
+    <edge id="A2A1" from="A2" to="A1" alpha="2" fftime="0.0"/>
+    <edge id="A2A3" from="A2" to="A3" alpha="10" fftime="0.0"/>
+    <edge id="A2A5" from="A2" to="A5" alpha="2" fftime="0.0"/>
+    <edge id="A2A6" from="A2" to="A6" alpha="10" fftime="0.0"/>
     
-    <edge id="A3A2" from="A3" to="A2" fftime="50" alpha="1.0"/>
-    <edge id="A3A6" from="A3" to="A6" fftime="2" alpha="1.0"/>
+    <edge id="A3A2" from="A3" to="A2" alpha="10" fftime="0.0"/>
+    <edge id="A3A6" from="A3" to="A6" alpha="2" fftime="0.0"/>
     
-    <edge id="A4A1" from="A4" to="A1" fftime="50" alpha="1.0"/>
-    <edge id="A4A5" from="A4" to="A5" fftime="2" alpha="1.0"/>
-    <edge id="A4A7" from="A4" to="A7" fftime="2" alpha="1.0"/>
-    <edge id="A4A8" from="A4" to="A8" fftime="50" alpha="1.0"/>
+    <edge id="A4A1" from="A4" to="A1" alpha="10" fftime="0.0"/>
+    <edge id="A4A5" from="A4" to="A5" alpha="2" fftime="0.0"/>
+    <edge id="A4A7" from="A4" to="A7" alpha="2" fftime="0.0"/>
+    <edge id="A4A8" from="A4" to="A8" alpha="10" fftime="0.0"/>
     
-    <edge id="A5A1" from="A5" to="A1" fftime="50" alpha="1.0"/>
-    <edge id="A5A2" from="A5" to="A2" fftime="2" alpha="1.0"/>
-    <edge id="A5A4" from="A5" to="A4" fftime="2" alpha="1.0"/>
-    <edge id="A5A6" from="A5" to="A6" fftime="2" alpha="1.0"/>
-    <edge id="A5A8" from="A5" to="A8" fftime="50" alpha="1.0"/>
-    <edge id="A5A9" from="A5" to="A9" fftime="2" alpha="1.0"/>
+    <edge id="A5A1" from="A5" to="A1" alpha="10" fftime="0.0"/>
+    <edge id="A5A2" from="A5" to="A2" alpha="2" fftime="0.0"/>
+    <edge id="A5A4" from="A5" to="A4" alpha="2" fftime="0.0"/>
+    <edge id="A5A6" from="A5" to="A6" alpha="2" fftime="0.0"/>
+    <edge id="A5A8" from="A5" to="A8" alpha="10" fftime="0.0"/>
+    <edge id="A5A9" from="A5" to="A9" alpha="2" fftime="0.0"/>
     
-    <edge id="A6A2" from="A6" to="A2" fftime="50" alpha="1.0"/>
-    <edge id="A6A3" from="A6" to="A3" fftime="2" alpha="1.0"/>
-    <edge id="A6A5" from="A6" to="A5" fftime="2" alpha="1.0"/>
-    <edge id="A6A9" from="A6" to="A9" fftime="50" alpha="1.0"/>
+    <edge id="A6A2" from="A6" to="A2" alpha="10" fftime="0.0"/>
+    <edge id="A6A3" from="A6" to="A3" alpha="2" fftime="0.0"/>
+    <edge id="A6A5" from="A6" to="A5" alpha="2" fftime="0.0"/>
+    <edge id="A6A9" from="A6" to="A9" alpha="10" fftime="0.0"/>
     
-    <edge id="A7A4" from="A7" to="A4" fftime="2" alpha="1.0"/>
-    <edge id="A7A8" from="A7" to="A8" fftime="2" alpha="1.0"/>
-    <edge id="A7B1" from="A7" to="B1" fftime="1" alpha="0.0"/>
-    <edge id="A7B3" from="A7" to="B3" fftime="1" alpha="0.0"/>
+    <edge id="A7A4" from="A7" to="A4" alpha="2" fftime="0.0"/>
+    <edge id="A7A8" from="A7" to="A8" alpha="2" fftime="0.0"/>
+    <edge id="A7B1" from="A7" to="B1" alpha="1" fftime="0.0"/>
+    <edge id="A7B3" from="A7" to="B3" alpha="1" fftime="0.0"/>
         
-    <edge id="A8A4" from="A8" to="A4" fftime="50" alpha="1.0"/>
-    <edge id="A8A5" from="A8" to="A5" fftime="50" alpha="1.0"/>
-    <edge id="A8A7" from="A8" to="A7" fftime="2" alpha="1.0"/>
-    <edge id="A8A9" from="A8" to="A9" fftime="50" alpha="1.0"/>
+    <edge id="A8A4" from="A8" to="A4" alpha="10" fftime="0.0"/>
+    <edge id="A8A5" from="A8" to="A5" alpha="10" fftime="0.0"/>
+    <edge id="A8A7" from="A8" to="A7" alpha="2" fftime="0.0"/>
+    <edge id="A8A9" from="A8" to="A9" alpha="10" fftime="0.0"/>
     
-    <edge id="A9A5" from="A9" to="A5" fftime="2" alpha="1.0"/>
-    <edge id="A9A6" from="A9" to="A6" fftime="50" alpha="1.0"/>
-    <edge id="A9A8" from="A9" to="A8" fftime="50" alpha="1.0"/>
-    <edge id="A9B1" from="A9" to="B1" fftime="1" alpha="0.0"/>
-    <edge id="A9B3" from="A9" to="B3" fftime="1" alpha="0.0"/>
+    <edge id="A9A5" from="A9" to="A5" alpha="2" fftime="0.0"/>
+    <edge id="A9A6" from="A9" to="A6" alpha="10" fftime="0.0"/>
+    <edge id="A9A8" from="A9" to="A8" alpha="10" fftime="0.0"/>
+    <edge id="A9B1" from="A9" to="B1" alpha="1" fftime="0.0"/>
+    <edge id="A9B3" from="A9" to="B3" alpha="1" fftime="0.0"/>
     <!--    
     Neighborhood B
     -->
-    <edge id="B1B2" from="B1" to="B2" fftime="2" alpha="1.0"/>
-    <edge id="B1B4" from="B1" to="B4" fftime="50" alpha="1.0"/>
-    <edge id="B1B5" from="B1" to="B5" fftime="50" alpha="1.0"/>
-    <edge id="B1A7" from="B1" to="A7" fftime="1" alpha="0.0"/>
-    <edge id="B1A9" from="B1" to="A9" fftime="1" alpha="0.0"/>
+    <edge id="B1B2" from="B1" to="B2" alpha="2" fftime="0.0"/>
+    <edge id="B1B4" from="B1" to="B4" alpha="10" fftime="0.0"/>
+    <edge id="B1B5" from="B1" to="B5" alpha="10" fftime="0.0"/>
+    <edge id="B1A7" from="B1" to="A7" alpha="1" fftime="0.0"/>
+    <edge id="B1A9" from="B1" to="A9" alpha="1" fftime="0.0"/>
     
-    <edge id="B2B1" from="B2" to="B1" fftime="2" alpha="1.0"/>
-    <edge id="B2B3" from="B2" to="B3" fftime="50" alpha="1.0"/>
-    <edge id="B2B5" from="B2" to="B5" fftime="2" alpha="1.0"/>
-    <edge id="B2B6" from="B2" to="B6" fftime="50" alpha="1.0"/>
+    <edge id="B2B1" from="B2" to="B1" alpha="2" fftime="0.0"/>
+    <edge id="B2B3" from="B2" to="B3" alpha="10" fftime="0.0"/>
+    <edge id="B2B5" from="B2" to="B5" alpha="2" fftime="0.0"/>
+    <edge id="B2B6" from="B2" to="B6" alpha="10" fftime="0.0"/>
     
-    <edge id="B3B2" from="B3" to="B2" fftime="50" alpha="1.0"/>
-    <edge id="B3B6" from="B3" to="B6" fftime="2" alpha="1.0"/>
-    <edge id="B3A7" from="B3" to="A7" fftime="1" alpha="0.0"/>
-    <edge id="B3A9" from="B3" to="A9" fftime="1" alpha="0.0"/>
+    <edge id="B3B2" from="B3" to="B2" alpha="10" fftime="0.0"/>
+    <edge id="B3B6" from="B3" to="B6" alpha="2" fftime="0.0"/>
+    <edge id="B3A7" from="B3" to="A7" alpha="1" fftime="0.0"/>
+    <edge id="B3A9" from="B3" to="A9" alpha="1" fftime="0.0"/>
     
-    <edge id="B4B1" from="B4" to="B1" fftime="50" alpha="1.0"/>
-    <edge id="B4B5" from="B4" to="B5" fftime="2" alpha="1.0"/>
-    <edge id="B4B7" from="B4" to="B7" fftime="2" alpha="1.0"/>
-    <edge id="B4B8" from="B4" to="B8" fftime="50" alpha="1.0"/>
+    <edge id="B4B1" from="B4" to="B1" alpha="10" fftime="0.0"/>
+    <edge id="B4B5" from="B4" to="B5" alpha="2" fftime="0.0"/>
+    <edge id="B4B7" from="B4" to="B7" alpha="2" fftime="0.0"/>
+    <edge id="B4B8" from="B4" to="B8" alpha="10" fftime="0.0"/>
     
-    <edge id="B5B1" from="B5" to="B1" fftime="50" alpha="1.0"/>
-    <edge id="B5B2" from="B5" to="B2" fftime="2" alpha="1.0"/>
-    <edge id="B5B4" from="B5" to="B4" fftime="2" alpha="1.0"/>
-    <edge id="B5B6" from="B5" to="B6" fftime="2" alpha="1.0"/>
-    <edge id="B5B8" from="B5" to="B8" fftime="50" alpha="1.0"/>
-    <edge id="B5B9" from="B5" to="B9" fftime="2" alpha="1.0"/>
+    <edge id="B5B1" from="B5" to="B1" alpha="10" fftime="0.0"/>
+    <edge id="B5B2" from="B5" to="B2" alpha="2" fftime="0.0"/>
+    <edge id="B5B4" from="B5" to="B4" alpha="2" fftime="0.0"/>
+    <edge id="B5B6" from="B5" to="B6" alpha="2" fftime="0.0"/>
+    <edge id="B5B8" from="B5" to="B8" alpha="10" fftime="0.0"/>
+    <edge id="B5B9" from="B5" to="B9" alpha="2" fftime="0.0"/>
     
-    <edge id="B6B2" from="B6" to="B2" fftime="50" alpha="1.0"/>
-    <edge id="B6B3" from="B6" to="B3" fftime="2" alpha="1.0"/>
-    <edge id="B6B5" from="B6" to="B5" fftime="2" alpha="1.0"/>
-    <edge id="B6B9" from="B6" to="B9" fftime="50" alpha="1.0"/>
+    <edge id="B6B2" from="B6" to="B2" alpha="10" fftime="0.0"/>
+    <edge id="B6B3" from="B6" to="B3" alpha="2" fftime="0.0"/>
+    <edge id="B6B5" from="B6" to="B5" alpha="2" fftime="0.0"/>
+    <edge id="B6B9" from="B6" to="B9" alpha="10" fftime="0.0"/>
     
-    <edge id="B7B4" from="B7" to="B4" fftime="2" alpha="1.0"/>
-    <edge id="B7B8" from="B7" to="B8" fftime="2" alpha="1.0"/>
+    <edge id="B7B4" from="B7" to="B4" alpha="2" fftime="0.0"/>
+    <edge id="B7B8" from="B7" to="B8" alpha="2" fftime="0.0"/>
         
-    <edge id="B8B4" from="B8" to="B4" fftime="50" alpha="1.0"/>
-    <edge id="B8B5" from="B8" to="B5" fftime="50" alpha="1.0"/>
-    <edge id="B8B7" from="B8" to="B7" fftime="2" alpha="1.0"/>
-    <edge id="B8B9" from="B8" to="B9" fftime="50" alpha="1.0"/>
+    <edge id="B8B4" from="B8" to="B4" alpha="10" fftime="0.0"/>
+    <edge id="B8B5" from="B8" to="B5" alpha="10" fftime="0.0"/>
+    <edge id="B8B7" from="B8" to="B7" alpha="2" fftime="0.0"/>
+    <edge id="B8B9" from="B8" to="B9" alpha="10" fftime="0.0"/>
     
-    <edge id="B9B5" from="B9" to="B5" fftime="2" alpha="1.0"/>
-    <edge id="B9B6" from="B9" to="B6" fftime="50" alpha="1.0"/>
-    <edge id="B9B8" from="B9" to="B8" fftime="50" alpha="1.0"/>
+    <edge id="B9B5" from="B9" to="B5" alpha="2" fftime="0.0"/>
+    <edge id="B9B6" from="B9" to="B6" alpha="10" fftime="0.0"/>
+    <edge id="B9B8" from="B9" to="B8" alpha="10" fftime="0.0"/>
 </graph>

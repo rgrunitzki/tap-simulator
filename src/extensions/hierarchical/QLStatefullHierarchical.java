@@ -123,7 +123,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
     /**
      * Relative delta value used as stopping criteria for low level MDPs.
      */
-    public static double DELTA_FIRST_LEVEL = 0.0001;
+//    public static double DELTA_FIRST_LEVEL = 0.0001;//TODO This was removed because it was just a failed test
 
     /**
      * Flag used to identify the moment in which the current MDP must be
@@ -211,7 +211,8 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
                     //verifies if the edge is outgoing and belongs to the same neighborhood
                     if (edg.getSourceVertex().equalsIgnoreCase(vertex)
                             && getNeighborhood(edg.getTargetVertex()).equalsIgnoreCase(neighborhood)) {
-                        actions.put(edg, new Random().nextDouble() * 0.1);
+                        actions.put(edg, new Random().nextDouble() * 0.1);//Randomly initialized between [0,0.1] 
+                        actions.put(edg, 0.);//initialized in zero.
                     }
                 }
                 states.put(vertex, actions);
@@ -258,9 +259,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             this.currentEdge = null;
             this.travelTime = 0;
             this.route = new LinkedList<>();
-            if (id == 7) {
-                System.err.println("id: 4; current_vertex:" + this.currentVertex + "; current destination: " + this.destination);
-            }
+//            
         }
 
     }
@@ -276,7 +275,7 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             if (FIRST_LEVEL) {
                 //stopping criterion has been reached?
                 if (Params.CURRENT_EPISODE == Params.MAX_EPISODES - 2
-                        || Simulation.STOP_CRITERION.stop(DELTA_FIRST_LEVEL)) {
+                        || Simulation.STOP_CRITERION.stop(Params.RELATIVE_DELTA)) {
                     Simulation.STOP_CRITERION.setConstraint(true);
                     CHANGE_MDP = true;
                 }
@@ -464,23 +463,49 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
      */
     private Entry<List<AbstractEdge>, Double> getOptimalPolicyForNeighborhood(String initialState, String terminalState) {
         LinkedList<AbstractEdge> option = new LinkedList<>();
+        LinkedList<String> visitedStates = new LinkedList<>();
         String currentState = initialState;
+        visitedStates.add(initialState);
         Double qValue = 0.0;
-        Entry<AbstractEdge, Double> entry;
+        Entry<AbstractEdge, Double> entry = null;
         //counter for the discont factor
         int cont = 0;
         String lastState = "";
         do {
-            //take the best action
-            entry = Collections.max(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
-            //verifies if this action represents  a "turn around"
-//            if(cont>6){
-//                System.out.println(entry.getKey().getTargetVertex());
+            //creates a temporary list of available actions
+            List<Map.Entry<AbstractEdge, Double>> availableActions = new LinkedList<>(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet());
+            //sort this list according to 
+            Collections.sort(availableActions, (Entry<AbstractEdge, Double> o1, Entry<AbstractEdge, Double> o2) -> o2.getValue().compareTo(o1.getValue()));
+            //take an edge that will not generate a looping
+            for (Entry<AbstractEdge, Double> e : availableActions) {
+                if (!visitedStates.contains(e.getKey().getTargetVertex())) {
+                    entry = e;
+                    //update the set of visited states
+                    visitedStates.add(entry.getKey().getTargetVertex());
+                    break;
+                }
+            }
+            
+            //TODO: SHOULD BE REMOVED
+            if (entry == null) {
+                System.err.println("Todos os nós já foram visitados");
+            }
+
+            //older version of the code
+//            entry = Collections.max(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet(), (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
+//            //verifies if this action takes him to an already visited edge (looping)
+//            if (visitedStates.contains(entry.getKey().getTargetVertex())) {
+//                System.err.println("Esse nó já foi visitado antes");
 //            }
+            //updates the set of visited states
+            
+
+            //Acredito que eu não preciso disso.
             if (entry.getKey().getTargetVertex().equalsIgnoreCase(lastState)) {
                 List<Entry<AbstractEdge, Double>> entrs = new ArrayList<>(this.mdp.lowLevelMDPs.get(terminalState).get(currentState).entrySet());
                 Collections.sort(entrs, (entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue()));
                 entry = entrs.get(1);
+                System.err.println("As vezes entra aqui: " + id);
             }
 
             option.add(entry.getKey());
@@ -495,8 +520,8 @@ public class QLStatefullHierarchical extends Driver<QLStatefullHierarchical, Lis
             }
             cont++;
             //TODO: in the future, this parameter could be changed.
-            if (cont > 10) {
-                System.err.println("Could not find a route in 1st level MDP." + option);
+            if (cont > 30) {
+                System.err.println("Agent \"" + id + "\" could not find a route from \"" + initialState + "\" to \"" + destination + "\" in 1st level MDP \"" + CURRENT_NEIGHBORHOOD + "\": " + option);
                 System.exit(0);
 //                System.out.println(this.mdp.lowLevelMDPs.get(terminalState));
             }

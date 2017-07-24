@@ -44,33 +44,33 @@ public class HierarchicalExperiment {
          */
  /*printing parameters*/
         Params.COLUMN_SEPARATOR = "\t";
-        Params.PRINT_OD_PAIRS_AVG_COST = true;
-        Params.PRINT_FLOWS = true;
+        Params.PRINT_OD_PAIRS_AVG_COST = false;
+        Params.PRINT_FLOWS = false;
         Params.PRINT_ON_TERMINAL = true;//
         Params.PRINT_AVERAGE_RESULTS = false;
         Params.PRINT_ON_FILE = false;
         Params.PRINT_RELATIVE_DELTA = true;
         /*stopping criterion parameters*/
-        Params.RELATIVE_DELTA = 0.2;
+        Params.RELATIVE_DELTA = 0.05;
         Params.DELTA_INTERVAL = 10;
         Params.MAX_EPISODES = 1000;
-        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.5;
-//        Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
-        Params.DEFAULT_STOP_CRITERION = new DeltaVStopCriterion();
+//        QLStatefullHierarchical.DELTA_FIRST_LEVEL = 0.1; //THIS WAS REMOVED 
+        Params.DEFAULT_STOP_CRITERION = new DeltaQStopCriterion();
+//        Params.DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
 //        Params.DEFAULT_STOP_CRITERION = new NumberOfEpisodesStopCriterion();
         /*Learning parameters*/
         Params.MAX_STEPS = 100;
-        EpsilonDecreasing.EPSILON_DECAY = 0.91f;
+        EpsilonDecreasing.EPSILON_DECAY = 0.99f;
         EpsilonDecreasing.EPSILON_INITIAL = 1f;
         DefaultExperiment.REPETITIONS = 1;
         Params.PROPORTION = 1;
         Params.DEFAULT_TAP = ImplementedTAP.TWO_NEIGHBORHOOD_REPLICATED;
 
         /*Experimentation settings*/
-        int experimentType = 1;
+        int experimentType = 0;
         switch (experimentType) {
             case 0:
-                QLStatefullHierarchical.ALPHA = 0.1;
+                QLStatefullHierarchical.ALPHA = 0.5;
                 Params.DEFAULT_ALGORITHM = QLStatefullHierarchical.class;
                 break;
             case 1:

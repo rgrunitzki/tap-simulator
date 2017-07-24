@@ -57,11 +57,11 @@ public class DeltaQStopCriterion extends AbstractStopCriterion {
         double deltaValue;
 
         //delta value
-        if (QLStatefullHierarchical.FIRST_LEVEL) {
-            deltaValue = Math.abs(maxDetaQ);
-        } else {
+//        if (QLStatefullHierarchical.FIRST_LEVEL) {
+//            deltaValue = Math.abs(maxDetaQ);
+//        } else {
             deltaValue = dynamicList.relativeValue(simulation.averageTravelCost(), Math.abs(maxDetaQ));
-        }
+//        }
         //deltaValue = dynamicList.relativeValue(simulation.averageTravelCost(), Math.abs(maxDetaQ));
         //update relative delta value
         dynamicList.add(deltaValue);

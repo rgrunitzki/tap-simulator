@@ -42,7 +42,7 @@ public class MethodOfSuccessiveAveragesAssignment {
         Params.DEFAULT_EDGE = EdgeMSA.class;
 
         //define a traffic assignment problem
-        TAP tap = TAP.ND(TADriver.class);//Braess paradox
+        TAP tap = TAP.TWO_NEIGHBORHOOD_REPLICATED(TADriver.class);//Braess paradox
 
         //other examples of TAP
         //TAP tap = TAP.OW(TADriver.class); //scenario presented in Exercise 10.1 of Ortúzar and Willumsen (2011)
@@ -57,7 +57,7 @@ public class MethodOfSuccessiveAveragesAssignment {
 
         String header = "iteration" + Params.COLUMN_SEPARATOR + "average_tt";
         String results = "";
-        int iterations = 10000;
+        int iterations = 1000;
         double phi;
         FloydWarshallShortestPaths fws;
 
